@@ -22,11 +22,6 @@ namespace BlogSystemHSSC
     {
         public MainWindow()
         {
-            InitializeComponent();
-
-            // test commit
-
-            // test commit 1
         }
     }
 }
