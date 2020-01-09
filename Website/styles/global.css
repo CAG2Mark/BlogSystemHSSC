@@ -1,0 +1,133 @@
+/* Default styles */
+
+:root {
+    --accent-color: #0070BA;
+    --lightGray: #EEEEEE;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+/* Support styles */
+.noSelect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* HEADER */
+
+
+/* Logo Area */
+
+#logoContainer {
+    margin: 16px auto;
+    width: 1020px;
+    overflow: hidden;
+}
+
+#headerLogoText {
+    display: inline-block;
+    font: bold 36px COUTUREBold, Arial, Helvetica, sans-serif;
+    margin: 0 0 0 12px;
+    vertical-align: middle;
+    color: #333333;
+}
+
+#headerLogo {
+    display: inline-block;
+    vertical-align: middle;
+    height: 150px;
+}
+
+#navigation {
+    height: 54px;
+    padding: 8px 0 0 0;
+    overflow: hidden;
+}
+
+#navigation>ul {
+    list-style-type: none;
+    overflow: hidden;
+    margin: -7px auto 0 auto;
+    width: 379px;
+    position: relative;
+    left:-4px;
+
+    padding: 8px 0 0 8px;
+
+    font: bold 22px acumin-pro, Arial, Helvetica, sans-serif;
+
+    z-index: 2;
+}
+
+#navigation>ul li {
+    transition: margin 100ms ease;
+
+    float: left;
+    background-color: var(--accent-color);
+    height: 54px;
+}
+
+#navigation>ul li:hover {
+    margin: -5px 4px 5px -4px;
+}
+
+#navigation>ul li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+    margin-top:-6px;
+}
+
+#navBackContainer {
+    position: absolute;
+    margin-top: -54px;
+    width: 100%;
+}
+
+#navBackground {
+    position: absolute;
+
+    background-color: var(--accent-color);
+    width: 100%;
+    height: 54px;
+    margin: 0 auto;
+    z-index: 0;
+}
+
+#navBackdrop {
+    background: #828384;
+    width: 376px;
+    height: 54px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* FOOTER */
+
+footer {
+    background-color: var(--lightGray);
+    height: 400px;
+}
+
+/* when it is not wide enough to display the hssc text */
+
+@media (max-width: 1100px) {
+    #logoContainer {
+        width: 150px;
+    }
+
+    #headerLogoText {
+        display: none;
+    }
+}
