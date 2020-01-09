@@ -8,7 +8,6 @@
 body {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
 }
 
 /* Support styles */
@@ -47,77 +46,57 @@ body {
 }
 
 #navigation {
-    height: 54px;
-    padding: 8px 0 0 0;
-    overflow: hidden;
+    height: 50px;
+
+    border-style: solid;
+    border-width: 2px 0;
+    border-radius: 0;
+    border-color: var(--accent-color);
+
+    width: 80%;
+    margin: 0 auto;
+
+    text-align: center;
 }
 
 #navigation>ul {
-    list-style-type: none;
-    overflow: hidden;
-    margin: -7px auto 0 auto;
-    width: 379px;
-    position: relative;
-    left:-4px;
+    display: inline-block;
 
-    padding: 8px 0 0 8px;
+    list-style-type: none;
+    padding: 0;
+    overflow: hidden;
 
     font: bold 22px acumin-pro, Arial, Helvetica, sans-serif;
-
-    z-index: 2;
+    margin: -2px 0 0 0;
 }
 
 #navigation>ul li {
-    transition: margin 100ms ease;
-
     float: left;
-    background-color: var(--accent-color);
-    height: 54px;
 }
 
-#navigation>ul li:hover {
-    margin: -5px 4px 5px -4px;
+.navBorder {
+    position: relative;
+    width: 2px;
+    float: right;
+    margin-top: 16px;
+    height: 24px;
+    background-color: black;
 }
 
 #navigation>ul li a {
     display: block;
-    color: white;
+    color: black;
     text-align: center;
-    padding: 16px;
+    padding: 16px 24px;
     text-decoration: none;
-    margin-top:-6px;
-}
 
-#navBackContainer {
-    position: absolute;
-    margin-top: -54px;
-    width: 100%;
-}
-
-#navBackground {
-    position: absolute;
-
-    background-color: var(--accent-color);
-    width: 100%;
-    height: 54px;
-    margin: 0 auto;
-    z-index: 0;
-}
-
-#navBackdrop {
-    background: #828384;
-    width: 376px;
-    height: 54px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
+    margin-top: -6px;
 }
 
 /* FOOTER */
 
 footer {
     background-color: var(--lightGray);
-    height: 400px;
 }
 
 /* when it is not wide enough to display the hssc text */
