@@ -1,0 +1,47 @@
+7 Jan 2020, 10:32 CLIENT -> STUDENT
+
+Dear <Student>,
+
+Here are the project details below:
+
+Project
+Creating an online blog/news website that acts as a repository for student articles and a homepage for student groups (HSSC). This will allow student articles to be digitised. It will be a high traffic platform.
+
+It should contain:
+- a blog system that can be regularly and easily updated to allow for upload of articles
+- a user-friendly interface and layout
+- general website elements such as 'about us' etc.
+
+It should look something like this: https://hkisjunto.org/
+or this: https://www.therchktruth.org/
+
+Best regards,
+<Client>
+
+----------------
+
+7 Jan 2020, 20:11 STUDENT -> CLIENT
+
+Dear <Client>,
+
+To accommodate the 'high traffic', I feel it is appropriate to use a third-party hosting provider. I plan on using Github Pages, such that the website URL would be hsscstc.github.io. Should you have the budget, it may also be viable to purchase a custom domain name.
+
+Here is my proposed plan:
+- I shall design a website with a design inspired by the websites you have given.
+- I shall then design an application which allows you to create, edit and manage blog posts for your organisation.
+- Every time you want to update the website, you will 'export' the website from the application. The application will (re)build the whole website with all the custom styles I have created such that it can be uploaded directly to the host.
+- This is to remove the need for costly infrastructure such as servers and databases, since the built website is technically a static website but functions like a dynamic site.
+A few things to note:
+- After consulting some of your organisation's members, I have decided that the header and title fonts will be Couture, and Acumin will be the body font.
+
+Please confirm that this is suitable for you and I will begin with the development of the solution.
+
+----------------
+
+8 Jan 2020, 20:33 CLIENT -> STUDENT
+
+Yes.
+
+----------------
+
+END OF TRANSCRIPT
