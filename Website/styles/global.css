@@ -14,15 +14,31 @@
     display: none;
 }
 
+html {
+    overflow-x: hidden;
+}
+
 body {
-    margin: 0;
+    transition: margin 200ms ease;
+
+    margin: 0 0 0 0;
     padding: 0;
 
     font: 20px acumin-pro, -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+
+    overflow-x: hidden;
+}
+
+.bodyshifted {
+    margin: 0 0 0 300px;
+}
+
+#bodyarea {
+    width: 100%;
 }
 
 #body-container {
-    width: 80%;
+    width: 80vw;
     margin: 0 auto;
 }
 
@@ -33,13 +49,13 @@ body {
 
 @media (max-width: 1300px) {
     #body-container {
-        width: 90%;
+        width: 90vw;
     }
 }
 
 @media (max-width: 1100px) {
     #body-container {
-        width: 95%;
+        width: 95vw;
     }
 }
 
@@ -111,7 +127,7 @@ header {
     text-align: center;
 }
 
-#navigation>ul {
+.navigation-desktop {
     display: inline-block;
 
     list-style-type: none;
@@ -122,7 +138,7 @@ header {
     margin: -2px 0 0 0;
 }
 
-#navigation>ul li {
+.navigation-desktop li {
     float: left;
 }
 
@@ -135,7 +151,7 @@ header {
     background-color: black;
 }
 
-#navigation>ul li a {
+.navigation-desktop li a {
     transition: border-color 80ms;
 
     display: block;
@@ -149,7 +165,7 @@ header {
     border-color: transparent;
 }
 
-#navigation>ul li a:hover {
+.navigation-desktop li a:hover {
     border-style: solid;
     border-width: 0 0 2px 0;
     border-color: black;
@@ -157,20 +173,75 @@ header {
 
 /* #endregion */
 
-/* #region mobile nav */
+/* #region Top nav */
 
-#navigation-mobile {
+#topbar {
+    transition: all 200ms ease-in-out;
+
     border-color: #d1d1d1;
     background-color: white;
-    top: 0;
-    
+
     border-width: 0 0 2px 0;
     border-style: solid;
     height: 56px;
-    width: 100%;
+    width: 100vw;
 
     position: fixed;
+
+    z-index: 999;
+
+    text-align: center;
 }
+
+#topbar-nav {
+    margin-top: 1px;
+}
+
+.top-desktop-visible {
+    top: 0;
+}
+
+.top-desktop-hidden {
+    top: -58px;
+}
+
+#topbar-hssc-logo {
+    height: 48px;
+    margin: 4px;
+    float: right;
+}
+
+#hamburger-container {
+    cursor: hand;
+    width: 30px;
+    margin: 16px 12px;
+}
+
+.hamburger-bar {
+    position: relative;
+
+    height: 4px;
+    margin: 6px 0;
+    width: 100%;
+
+    background-color: rgb(41, 41, 41);
+}
+
+/* #region side navigation */
+
+#navigation-side {
+    display: block;
+    width: 300px;
+    margin-left: -300px;
+    height: 100vh;
+
+    position: fixed;
+    top: 0;
+
+    background: rgb(238, 238, 238);
+}
+
+/* #endregion */
 
 /* #endregion */
 
@@ -225,23 +296,35 @@ footer {
     }
 
     #date-container {
-        display: none;
+        margin-top: 4px;
     }
+
 }
 
 /* MOBILE */
 
 @media (max-width: 600px) {
 
+    #bodyarea {
+        width: 100%;
+        float: left;
+    }
+
     #body-container {
         margin-top: 56px;
     }
 
-    #headerLogoText {
-        display: none;
+    #nagiation-top {
+        top: 0 !important;
+        display: block !important;
     }
 
-    #date-container {
+    .top-desktop-hidden {
+        top: 0;
+        opacity: 1;
+    }
+
+    #headerLogoText {
         display: none;
     }
 
@@ -251,6 +334,10 @@ footer {
 
     .mobileonly {
         display: block;
+    }
+
+    .desktoponly {
+        display: none;
     }
     
 }

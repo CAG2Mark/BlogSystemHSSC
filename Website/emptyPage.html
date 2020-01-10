@@ -24,56 +24,88 @@
 
 <body>
 
-    <div class="mobileonly" id="navigation-mobile"></div>
+    <div id="navigation-side"></div>
 
-    <div id="body-container">
-        <header>
-            <div id="logo-container">
-                <img alt="HSSC Logo" class="no-select" src="content/images/hsscLogo.png" id="header-logo">
-                <img class="noSelect" id="header-logo-text" src="content/images/hsscText.png">
-            </div>
-            <div id="date-container">
-                Friday 10th Janurary, 2019
-            </div>
-            <div id="navigation">
-                <ul>
-                    <li>
-                        <span class="nav-border"></span>
-                        <a href="index.html">
-                            Home
-                        </a>
-                    </li>
-                    <li>
-                        <span class="nav-border"></span>
-                        <a href="blog.html">Blog</a>
-                    </li>
-                    <li>
-                        <span class="nav-border"></span>
-                        <a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-            </div>
+    <div id="bodyarea">
 
-            <div class="separator mobileonly"></div>
-        </header>
+        <div id="topbar" class="top-desktop-hidden">
 
-        <!-- temp spacer -->
-        <div style="height: 1000px">
+            <img alt="HSSC Logo" class="mobileonly" id="topbar-hssc-logo" src="content/images/hsscLogo.png">
+
+            <span class="mobileonly" id="hamburger-container">
+                <div class="hamburger-bar"></div>
+                <div class="hamburger-bar"></div>
+                <div class="hamburger-bar"></div>
+            </span>
+
+            <ul id="topbar-nav" class="navigation-desktop desktoponly">
+                <li>
+                    <span class="nav-border"></span>
+                    <a href="index.html">Home</a>
+                </li>
+                <li>
+                    <span class="nav-border"></span>
+                    <a href="blog.html">Blog</a>
+                </li>
+                <li>
+                    <span class="nav-border"></span>
+                    <a href="about.html">About</a></li>
+                <li>
+                    <a href="contact.html">Contact</a>
+                </li>
+            </ul>
+
         </div>
 
-        <footer id="footer-color-filler"></footer>
+        <div id="body-container">
+            <header>
+                <div id="logo-container">
+                    <img alt="HSSC Logo" class="no-select" src="content/images/hsscLogo.png" id="header-logo">
+                    <img class="noSelect" id="header-logo-text" src="content/images/hsscText.png">
+                </div>
+                <div id="date-container">
+                    Friday 10th Janurary, 2019
+                </div>
+                <div id="navigation">
+                    <ul id="navigation-header" class="navigation-desktop">
+                        <li>
+                            <span class="nav-border"></span>
+                            <a href="index.html">Home</a>
+                        </li>
+                        <li>
+                            <span class="nav-border"></span>
+                            <a href="blog.html">Blog</a>
+                        </li>
+                        <li>
+                            <span class="nav-border"></span>
+                            <a href="about.html">About</a></li>
+                        <li>
+                            <a href="contact.html">Contact</a>
+                        </li>
+                    </ul>
+                </div>
 
-        <footer>
-            <div class="spacer"></div>
+                <div class="separator mobileonly"></div>
+            </header>
 
-            <span id="footer-logo-container">
-                <img alt="HSSC Logo" id="footer-hssc-logo" src="content/images/hsscLogo.png">
-                <span>Copyright © 2020 HSSC</span>
-            </span>
-        </footer>
+            <!-- temp spacer -->
+            <div style="height: 1000px">
+            </div>
 
-        <!-- script -->
-        <script src="scripts/global.js"></script>
-        
+            <footer id="footer-color-filler"></footer>
+
+            <footer>
+                <div class="spacer"></div>
+
+                <span id="footer-logo-container">
+                    <img alt="HSSC Logo" id="footer-hssc-logo" src="content/images/hsscLogo.png">
+                    <span>Copyright © 2020 HSSC</span>
+                </span>
+            </footer>
+
+            <!-- script -->
+            <script src="scripts/global.js"></script>
+
+        </div>
     </div>
 </body>

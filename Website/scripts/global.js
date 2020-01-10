@@ -41,6 +41,45 @@ var dayOfWeek = days[date.getDay()];
 var dayOfMonth = date.getDate() + generateSuffix(date.getDate());
 var month = months[date.getMonth()];
 
-document.getElementById("dateContainer").innerHTML = dayOfWeek + " " + dayOfMonth + " " + month + ", " + date.getFullYear();
+document.getElementById("date-container").innerHTML = dayOfWeek + " " + dayOfMonth + " " + month + ", " + date.getFullYear();
+
+//#endregion
+
+//#region topbar
+
+document.body.onscroll = (e) => {
+
+    //console.log("test");
+
+    var scroll = window.scrollY;
+
+    var navScrollPos = document.getElementById("navigation-header").offsetTop;
+
+    if (scroll > navScrollPos) {
+        var navTop = document.getElementById("topbar");
+        navTop.classList.add("top-desktop-visible");
+        navTop.classList.remove("top-desktop-hidden");
+    }
+    else {
+        var navTop = document.getElementById("topbar");
+        navTop.classList.add("top-desktop-hidden");
+        navTop.classList.remove("top-desktop-visible");
+    }
+}
+
+var sideBarToggled = false;
+
+document.getElementById("hamburger-container").onclick = (e) => {
+
+    sideBarToggled = !sideBarToggled;
+
+
+    if (sideBarToggled) {
+        document.body.classList.add("bodyshifted");
+    }
+    else {
+        document.body.classList.remove("bodyshifted");
+    }
+}
 
 //#endregion
