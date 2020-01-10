@@ -1,3 +1,5 @@
+var html = document.getElementById("html");
+
 //#region date
 
 // get the time for a GMT offset
@@ -73,12 +75,26 @@ document.getElementById("hamburger-container").onclick = (e) => {
 
     sideBarToggled = !sideBarToggled;
 
+    var sidebar = document.getElementById("navigation-side");
+    var bodyArea = document.getElementById("bodyarea");
 
     if (sideBarToggled) {
-        document.body.classList.add("bodyshifted");
+        sidebar.classList.remove("pushy-closed");
+        sidebar.classList.add("pushy-open");
+
+        bodyArea.classList.add("bodyshifted");
+        html.style.overflow = "hidden";
     }
     else {
-        document.body.classList.remove("bodyshifted");
+        sidebar.classList.add("pushy-closed");
+        sidebar.classList.remove("pushy-open");
+
+        bodyArea.classList.remove("bodyshifted");
+
+        setTimeout(() => {
+            html.style.overflow = "visible";
+        }, 200);
+
     }
 }
 
