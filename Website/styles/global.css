@@ -1,17 +1,50 @@
 /* Default styles */
 
+
 :root {
     --accent-color: #0070BA;
     --lightGray: #EEEEEE;
 }
 
+.spacer {
+    height: 24px;
+}
+
+.mobileonly {
+    display: none;
+}
+
 body {
     margin: 0;
     padding: 0;
+
+    font: 20px acumin-pro, -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+}
+
+#body-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.separator {
+    height: 2px;
+    background-color: var(--accent-color);
+}
+
+@media (max-width: 1300px) {
+    #body-container {
+        width: 90%;
+    }
+}
+
+@media (max-width: 1100px) {
+    #body-container {
+        width: 95%;
+    }
 }
 
 /* Support styles */
-.noSelect {
+.no-select {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -20,30 +53,50 @@ body {
     user-select: none;
 }
 
-/* HEADER */
+/* #region HEADER */
 
-
-/* Logo Area */
-
-#logoContainer {
-    margin: 16px auto;
-    width: 1020px;
-    overflow: hidden;
+header {
+    text-align:center;
 }
 
-#headerLogoText {
+/* #endregion */
+
+
+/* #region Logo Area */
+
+#logo-container {
+    margin: 16px 0;
+    width: auto;
+    overflow: hidden;
     display: inline-block;
-    font: bold 36px COUTUREBold, Arial, Helvetica, sans-serif;
+}
+
+#header-logo-text {
+    display: inline-block;
     margin: 0 0 0 12px;
     vertical-align: middle;
     color: #333333;
+    height: 41px;
 }
 
-#headerLogo {
+#header-logo {
     display: inline-block;
     vertical-align: middle;
     height: 150px;
 }
+
+/* #endregion */
+
+/* Date */
+
+#date-container {
+    height: 30px;
+    text-align: center;
+    width: 100%;
+    margin: -30px 0 16px 0;
+}
+
+/* #region Navigation */
 
 #navigation {
     height: 50px;
@@ -53,7 +106,6 @@ body {
     border-radius: 0;
     border-color: var(--accent-color);
 
-    width: 80%;
     margin: 0 auto;
 
     text-align: center;
@@ -74,7 +126,7 @@ body {
     float: left;
 }
 
-.navBorder {
+.nav-border {
     position: relative;
     width: 2px;
     float: right;
@@ -84,29 +136,121 @@ body {
 }
 
 #navigation>ul li a {
+    transition: border-color 80ms;
+
     display: block;
     color: black;
     text-align: center;
-    padding: 16px 24px;
+    margin: 10px 24px 0 24px;
     text-decoration: none;
 
-    margin-top: -6px;
+    border-style: solid;
+    border-width: 0 0 2px 0;
+    border-color: transparent;
 }
 
-/* FOOTER */
+#navigation>ul li a:hover {
+    border-style: solid;
+    border-width: 0 0 2px 0;
+    border-color: black;
+}
+
+/* #endregion */
+
+/* #region mobile nav */
+
+#navigation-mobile {
+    border-color: #d1d1d1;
+    background-color: white;
+    top: 0;
+    
+    border-width: 0 0 2px 0;
+    border-style: solid;
+    height: 56px;
+    width: 100%;
+
+    position: fixed;
+}
+
+/* #endregion */
+
+/* #region FOOTER */
 
 footer {
     background-color: var(--lightGray);
+    height: 128px;
+
+    position: absolute;
+
+    overflow: hidden;
 }
+
+
+
+#footer-hssc-logo {
+    height: 72px;
+}
+
+#footer-logo-container {
+    margin-top: 12px;
+}
+
+#footer-logo-container * {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#footer-logo-container span {
+    margin: 0 0 6px 12px;
+}
+
+#footer-color-filler {
+    background-color: var(--lightGray);
+    height: 128px;
+
+    position: absolute;
+
+    left: 0;
+    width: 100%;
+}
+
+/* #endregion */
 
 /* when it is not wide enough to display the hssc text */
 
-@media (max-width: 1100px) {
-    #logoContainer {
-        width: 150px;
+@media (max-width: 1150px) {
+
+    #header-logo-text {
+        display: none;
+    }
+
+    #date-container {
+        display: none;
+    }
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    #body-container {
+        margin-top: 56px;
     }
 
     #headerLogoText {
         display: none;
     }
+
+    #date-container {
+        display: none;
+    }
+
+    #navigation {
+        display: none;
+    }
+
+    .mobileonly {
+        display: block;
+    }
+    
 }

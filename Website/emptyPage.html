@@ -9,11 +9,14 @@
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
 
+    <title>Blank Page</title>
+
     <!-- fonts -->
 
-    <!-- couture -->
-    <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/couture" type="text/css" />
-    <!-- acumin -->
+
+    <!-- Couture is removed for copyright and performance reasons. A logo compiled using font bitmaps has instead been used. -->
+
+    <!-- Acumin via. typekit -->
     <link rel="stylesheet" href="https://use.typekit.net/idx8cma.css">
 
 
@@ -21,39 +24,56 @@
 
 <body>
 
-    <div id="bodyContainer">
+    <div class="mobileonly" id="navigation-mobile"></div>
+
+    <div id="body-container">
         <header>
-            <div id="logoContainer">
-                <img alt="HSSC Logo" class="noSelect" src="content/images/hsscLogo.png" id="headerLogo">
-                <span class="noSelect" id="headerLogoText">HUMANITIES AND SOCIAL SCIENCES COUNCIL</h1>
+            <div id="logo-container">
+                <img alt="HSSC Logo" class="no-select" src="content/images/hsscLogo.png" id="header-logo">
+                <img class="noSelect" id="header-logo-text" src="content/images/hsscText.png">
+            </div>
+            <div id="date-container">
+                Friday 10th Janurary, 2019
             </div>
             <div id="navigation">
                 <ul>
                     <li>
-                        <span class="navBorder"></span>
+                        <span class="nav-border"></span>
                         <a href="index.html">
                             Home
                         </a>
                     </li>
                     <li>
-                        <span class="navBorder"></span>
+                        <span class="nav-border"></span>
                         <a href="blog.html">Blog</a>
                     </li>
                     <li>
-                        <span class="navBorder"></span>
+                        <span class="nav-border"></span>
                         <a href="about.html">About</a></li>
                     <li><a href="contact.html">Contact</a></li>
                 </ul>
             </div>
+
+            <div class="separator mobileonly"></div>
         </header>
 
         <!-- temp spacer -->
         <div style="height: 1000px">
-
         </div>
 
-        <footer>
+        <footer id="footer-color-filler"></footer>
 
+        <footer>
+            <div class="spacer"></div>
+
+            <span id="footer-logo-container">
+                <img alt="HSSC Logo" id="footer-hssc-logo" src="content/images/hsscLogo.png">
+                <span>Copyright © 2020 HSSC</span>
+            </span>
         </footer>
+
+        <!-- script -->
+        <script src="scripts/global.js"></script>
+        
     </div>
 </body>
