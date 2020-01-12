@@ -27,8 +27,23 @@
 
 <body>
 
-    <div id="navigation-side" class="pushy-closed mobileonly">
-        Hello
+    <div id="sidebar" class="pushy-closed mobileonly">
+        <ul id="navigation-side" class="navigation-list mobileonly">
+            <li>
+                <a href="index.html">Home</a>
+                <span class="nav-border"></span>
+            </li>
+            <li>
+                <a href="blog.html">Blog</a>
+                <span class="nav-border"></span>
+            </li>
+            <li>
+                <a href="about.html">About</a></li>
+                <span class="nav-border"></span>
+            <li>
+                <a href="contact.html">Contact</a>
+            </li>
+        </ul>
     </div>
 
     <div id="bodyarea">
@@ -43,7 +58,7 @@
                 <div class="hamburger-bar"></div>
             </span>
 
-            <ul id="topbar-nav" class="navigation-desktop desktoponly">
+            <ul id="topbar-nav" class="navigation-list desktoponly">
                 <li>
                     <span class="nav-border"></span>
                     <a href="index.html">Home</a>
@@ -72,7 +87,7 @@
                     Friday 10th Janurary, 2019
                 </div>
                 <div id="navigation">
-                    <ul id="navigation-header" class="navigation-desktop">
+                    <ul id="navigation-header" class="navigation-list">
                         <li>
                             <span class="nav-border"></span>
                             <a href="index.html">Home</a>
@@ -93,8 +108,9 @@
                 <div class="separator mobileonly"></div>
             </header>
 
+
             <!-- temp spacer -->
-            <div style="height: 1000px">
+            <div style="height: 2500px">
             </div>
 
             <footer>
@@ -106,8 +122,9 @@
                 </span>
             </footer>
 
-            <!-- script -->
+            <!-- scripts -->
             <script src="scripts/global.js"></script>
+            <script src="scripts/dateDisplay.js"></script>
 
         </div>
 
