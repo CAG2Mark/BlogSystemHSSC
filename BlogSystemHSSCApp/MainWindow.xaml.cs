@@ -23,5 +23,15 @@ namespace BlogSystemHSSC
         public MainWindow()
         {
         }
+
+        private void ClickClose(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void ClickMinimize(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
     }
 }

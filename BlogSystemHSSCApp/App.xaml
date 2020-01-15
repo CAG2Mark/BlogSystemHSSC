@@ -4,6 +4,12 @@
              xmlns:local="clr-namespace:BlogSystemHSSC"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/ResourceDictionaries/Colors.xaml" />
+                <ResourceDictionary Source="/ResourceDictionaries/Fonts.xaml" />
+                <ResourceDictionary Source="/ResourceDictionaries/Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
