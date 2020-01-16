@@ -24,14 +24,38 @@ namespace BlogSystemHSSC
         {
         }
 
+        #region top bar controls
+
+        /// <summary>
+        /// Closes the window.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ClickClose(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
 
+        /// <summary>
+        /// Minimizes the window.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ClickMinimize(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
         }
+
+        /// <summary>
+        /// Toggles between the maximized and normal state of the window.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ClickMaxMix(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        }
+
+        #endregion
     }
 }

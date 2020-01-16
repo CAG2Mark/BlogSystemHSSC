@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlogSystemHSSC"
         mc:Ignorable="d"
-        Title="Blog System" Height="450" Width="800">
+        Title="Blog System" Height="720" Width="1280">
 
     <WindowChrome.WindowChrome>
         <WindowChrome ResizeBorderThickness="5" GlassFrameThickness="0,0.1,0,0" CaptionHeight="40"/>
@@ -96,14 +96,22 @@
             </ListBox>
 
 
-                <Button Click="ClickClose" ToolTip="Close" DockPanel.Dock="Right" Height="28" Width="28" HorizontalAlignment="Right" Margin="2 2 6 2">
-                    <Path Stretch="Fill" Height="20" Width="20" Data="M28.45,25.86L18.59,16l9.86-9.86c0.73-0.73,0.73-1.93,0-2.66v0c-0.73-0.73-1.93-0.73-2.66,0l-9.86,9.86           L6.21,3.62c-0.73-0.73-1.93-0.73-2.66,0v0c-0.73,0.73-0.73,1.93,0,2.66L13.26,16l-9.72,9.72c-0.73,0.73-0.73,1.93,0,2.66           s1.93,0.73,2.66,0l9.72-9.72l9.86,9.86c0.73,0.73,1.93,0.73,2.66,0C29.18,27.79,29.18,26.59,28.45,25.86z" Fill="White"/>
-                </Button>
+            <Button Click="ClickClose" ToolTip="Close" DockPanel.Dock="Right" Height="28" Width="28" HorizontalAlignment="Right" Margin="2 2 6 2">
+                <Path Stretch="Fill" Height="20" Width="20" Data="M28.45,25.86L18.59,16l9.86-9.86c0.73-0.73,0.73-1.93,0-2.66v0c-0.73-0.73-1.93-0.73-2.66,0l-9.86,9.86           L6.21,3.62c-0.73-0.73-1.93-0.73-2.66,0v0c-0.73,0.73-0.73,1.93,0,2.66L13.26,16l-9.72,9.72c-0.73,0.73-0.73,1.93,0,2.66           s1.93,0.73,2.66,0l9.72-9.72l9.86,9.86c0.73,0.73,1.93,0.73,2.66,0C29.18,27.79,29.18,26.59,28.45,25.86z" Fill="White"/>
+            </Button>
 
-                <Button Click="ClickMinimize" ToolTip="Minimize" DockPanel.Dock="Right" Height="28" Width="28" HorizontalAlignment="Right" Margin="2">
+            <Button  Click="ClickMaxMix" ToolTip="Minimize" DockPanel.Dock="Right" Height="28" Width="28" HorizontalAlignment="Right" Margin="2">
+                <Path Stretch="Fill" Height="20" Width="20" Data="
+                      M325.81,347.06h-140c-12.13,0-22-9.87-22-22v-138c0-12.13,9.87-22,22-22h140c12.13,0,22,9.87,22,22v138
+	C347.81,337.19,337.94,347.06,325.81,347.06z M185.81,185.06c-1.08,0-2,0.92-2,2v138c0,1.08,0.92,2,2,2h140c1.08,0,2-0.92,2-2v-138
+	c0-1.08-0.92-2-2-2H185.81z" Fill="White"
+                              />
+            </Button>
+
+            <Button Click="ClickMinimize" ToolTip="Minimize" DockPanel.Dock="Right" Height="28" Width="28" HorizontalAlignment="Right" Margin="2">
                     <Path Stretch="Fill" Height="3" Width="20" Data="M27.52,17.84H4.48C3.67,17.84,3,17.02,3,16c0-1.02,0.67-1.84,1.48-1.84h23.03c0.82,0,1.48,0.83,1.48,1.84          C29,17.02,28.33,17.84,27.52,17.84z" Fill="White"
                               />
-                </Button>
+            </Button>
 
                
 
