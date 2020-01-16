@@ -14,6 +14,9 @@ namespace BlogSystemHSSC.Blog
         #region blog editor
 
         private string rtfText;
+        /// <summary>
+        /// The RTF text to be displayed in the rich editor.
+        /// </summary>
         public string RtfText
         {
             get => rtfText;
@@ -21,6 +24,9 @@ namespace BlogSystemHSSC.Blog
         }
 
         private BlogPost currentPost;
+        /// <summary>
+        /// The post the user is currently editing.
+        /// </summary>
         public BlogPost CurrentPost
         {
             get => currentPost;
@@ -32,6 +38,9 @@ namespace BlogSystemHSSC.Blog
         #endregion
 
         private ObservableCollection<BlogPost> blogPosts;
+        /// <summary>
+        /// All the blog posts the user has saved.
+        /// </summary>
         public ObservableCollection<BlogPost> BlogPosts
         {
             get => blogPosts;

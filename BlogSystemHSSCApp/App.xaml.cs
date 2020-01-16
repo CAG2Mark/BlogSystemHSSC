@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CefSharp;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -13,5 +14,14 @@ namespace BlogSystemHSSC
     /// </summary>
     public partial class App : Application
     {
+        public App()
+        {
+            Exit += onAppExit;
+        }
+
+        private void onAppExit(object sender, ExitEventArgs e)
+        {
+            Cef.Shutdown();
+        }
     }
 }
