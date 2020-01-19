@@ -4,7 +4,6 @@
                     xmlns:customcontrols="clr-namespace:BlogSystemHSSC.CustomControls">
 
   
-
     <Style TargetType="Button">
         <Setter Property="FontFamily" Value="{StaticResource SourceSansProRegular}"></Setter>
         <Setter Property="Foreground" Value="{StaticResource Dark0Brush}"></Setter>
@@ -124,6 +123,7 @@
         </Setter>
     </Style>
     
+    <!--#region  Combobox -->
     <!-- Combobox-related styles are adapted from online sources. -->
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
         <Grid>
@@ -287,7 +287,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <!--#endregion-->
 
+    <!--#region Listbox-->
     <Style TargetType="customcontrols:RoundedListBox">
         <Setter Property="Background" Value="#0A000000"></Setter>
         <Setter Property="Template">
@@ -331,6 +333,8 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <!--#endregion-->
 
     <Style TargetType="{x:Type customcontrols:RoundedButton}">
         <Setter Property="FontFamily" Value="{StaticResource SourceSansProRegular}"></Setter>
@@ -361,6 +365,7 @@
         </Style.Triggers>
     </Style>
 
+    <!--#region Scrollbar -->
     <Style x:Key="ScrollBarTrackThumb"
         TargetType="{x:Type Thumb}">
         <Setter Property="Template">
@@ -500,6 +505,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    <!--#endregion-->
 
     <Style TargetType="RadioButton">
         <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
@@ -589,4 +595,26 @@
         </Setter>
     </Style>
 
+    <Style TargetType="ContextMenu">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope" Value="True" />
+        <Setter Property="HasDropShadow" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContextMenu">
+                    <Border x:Name="Border" CornerRadius="4"
+                Background="{StaticResource Light1Brush}"
+                BorderThickness="1">
+                        <Border.BorderBrush>
+                            <SolidColorBrush Color="{StaticResource BorderColorDark2}" />
+                        </Border.BorderBrush>
+                        <StackPanel IsItemsHost="True"
+                      KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
 </ResourceDictionary>

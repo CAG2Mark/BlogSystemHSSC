@@ -94,8 +94,8 @@
     </Compile>
     <Compile Include="CustomControls\RoundedButton.cs" />
     <Compile Include="CustomControls\RoundedListBox.cs" />
-    <Compile Include="CustomControls\RtfEditorBox.xaml.cs">
-      <DependentUpon>RtfEditorBox.xaml</DependentUpon>
+    <Compile Include="CustomControls\RichTextEditor.xaml.cs">
+      <DependentUpon>RichTextEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
@@ -108,7 +108,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CustomControls\RtfEditorBox.xaml">
+    <Page Include="CustomControls\RichTextEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -166,10 +166,11 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Resource Include="Resources\Fonts\SourceSansPro-BoldIt.otf" />
+    <Resource Include="Resources\Fonts\SourceSansPro-It.otf" />
     <Resource Include="Resources\Fonts\SourceSansPro-Bold.otf" />
     <Resource Include="Resources\Fonts\SourceSansPro-ExtraLight.otf" />
     <Resource Include="Resources\Fonts\SourceSansPro-Light.otf" />
-    <Resource Include="Resources\Fonts\SourceSansPro-LightIt.otf" />
     <Resource Include="Resources\Fonts\SourceSansPro-Regular.otf" />
     <Resource Include="Resources\Fonts\SourceSansPro-Semibold.otf" />
   </ItemGroup>

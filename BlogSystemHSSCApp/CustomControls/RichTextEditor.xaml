@@ -1,0 +1,295 @@
+﻿<UserControl x:Class="BlogSystemHSSC.CustomControls.RichTextEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:local="clr-namespace:BlogSystemHSSC.CustomControls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Border CornerRadius="4" BorderThickness="1.5" BorderBrush="{StaticResource BorderColorBrush}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="42"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+        
+            <!-- Controls -->
+            
+            <!-- 
+            
+            NOTE: All icons are either made by me in Illustrator or downloaded from material icons:
+            material.io/resources/icons
+           
+            
+            -->
+
+            <Border Background="{StaticResource Light4Brush}" CornerRadius="3 3 0 0">
+
+                <Border.Resources>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="18"></Setter>
+                        <Setter Property="FontFamily" Value="{StaticResource SourceSansProRegular}"></Setter>
+                        <Setter Property="Foreground" Value="{StaticResource Dark0Brush}"></Setter>
+                        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                    </Style>
+
+                    <Thickness x:Key="ButtonMargin">0 4 2 4</Thickness>
+
+                    <sys:Double x:Key="ButtonWidth">28</sys:Double>
+                    <sys:Double x:Key="ButtonHeight">28</sys:Double>
+
+
+                    <Style x:Key="Separator" TargetType="Border">
+                        <Setter Property="Width" Value="1"></Setter>
+                        <Setter Property="Height" Value="26"></Setter>
+                        <Setter Property="Background" Value="{StaticResource BorderColorDark2Brush}"></Setter>
+                        <Setter Property="Margin" Value="4 2 4 0"></Setter>
+                    </Style>
+                    
+                    <!-- Special button style for editor -->
+                    
+                    <Style TargetType="Button" x:Key="EditorButton">
+
+                        <Setter Property="Background" Value="Transparent"></Setter>
+
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border CornerRadius="4" Background="{TemplateBinding Background}">
+                                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#0A000000"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#16000000"></Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+
+                </Border.Resources>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="3 0 0 2">
+                    <ToggleButton x:Name="ToggleBoldButton" ToolTip="Bold (Ctrl+B)"
+                                  
+                                  Margin="{StaticResource ButtonMargin}" 
+                                  Width="{StaticResource ButtonWidth}" 
+                                  Height="{StaticResource ButtonHeight}" 
+                                  Click="boldClicked"
+                                  
+                                  IsChecked="{Binding IsBold, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        
+                        <TextBlock FontFamily="{StaticResource SourceSansProBold}" FontSize="26" Foreground="Gray" Margin="0 0 0 2">B</TextBlock>
+                    
+                    </ToggleButton>
+
+                    <ToggleButton x:Name="ToggleItalicButton" ToolTip="Italic (Ctrl+I)"
+                                  Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="italicClicked"
+                                  IsChecked="{Binding IsItalic, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        
+                        <Path Data="M11.305,0.807L11.544,0h14.422l-0.284,0.807c-1.307,0-2.305,0.289-2.994,0.871c-0.688,0.58-1.297,1.793-1.818,3.637
+		l-5.401,18.908c-0.394,1.336-0.589,2.23-0.589,2.68c0,0.523,0.204,0.931,0.609,1.222c0.521,0.377,1.512,0.58,2.964,0.608
+		l-0.22,0.806H3.572l0.24-0.806c1.467,0,2.541-0.28,3.225-0.838c0.683-0.561,1.3-1.783,1.852-3.672l5.446-18.908
+		c0.333-1.162,0.501-2.041,0.501-2.635c0-0.537-0.203-0.959-0.609-1.266C13.817,1.11,12.844,0.909,11.305,0.807z"
+                              
+                              Height="16" Stretch="Uniform" Fill="Gray"></Path>
+                        
+                    </ToggleButton>
+
+                    <ToggleButton x:Name="ToggleUnderlineButton" ToolTip="Underline (Ctrl+U)"
+                                  Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="underlineClicked"
+                                  IsChecked="{Binding IsUnderline, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        <Path Data="M65.49,95.29c-10.28,0-18.13-3.03-23.54-9.1c-5.42-6.07-8.13-15.74-8.13-29.01V14.71h17.96V59c0,7.77,1.17,13.19,3.52,16.26
+	c2.35,3.08,5.74,4.61,10.19,4.61c4.45,0,7.89-1.54,10.32-4.61c2.43-3.07,3.64-8.5,3.64-16.26v-44.3h17.23v42.48
+	c0,13.27-2.65,22.94-7.95,29.01C83.43,92.26,75.69,95.29,65.49,95.29z M99.31,104.47H30.88v10.57h68.43V104.47z"
+                              
+                              Height="18"
+                              Margin="0 2 0 0" Stretch="Uniform" Fill="Gray"></Path>
+                        
+                    </ToggleButton>
+
+                    <Border Style="{StaticResource Separator}"></Border>
+
+                    <ToggleButton x:Name="ToggleAlignLeftButton" IsChecked="True" 
+                                  Command="EditingCommands.AlignLeft" 
+                                  CommandTarget="{Binding ElementName=EditorTextBox}" 
+                                  Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="alignClicked">
+                        <Path Data="M15 15H3v2h12v-2zm0-8H3v2h12V7zM3 13h18v-2H3v2zm0 8h18v-2H3v2zM3 3v2h18V3H3z"
+                              Height="16" Stretch="Uniform" Fill="Gray"></Path>
+                        
+                    </ToggleButton>
+
+                    <ToggleButton x:Name="ToggleAlignCenterButton" 
+                                  Command="EditingCommands.AlignCenter" 
+                                  CommandTarget="{Binding ElementName=EditorTextBox}" 
+                                  Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="alignClicked">
+                        <Path Data="M7 15v2h10v-2H7zm-4 6h18v-2H3v2zm0-8h18v-2H3v2zm4-6v2h10V7H7zM3 3v2h18V3H3z"
+                              
+                              Height="16" Stretch="Uniform" Fill="Gray"></Path>
+                        
+                    </ToggleButton>
+
+                    <ToggleButton x:Name="ToggleAlignRightButton" 
+                                  Command="EditingCommands.AlignRight"  
+                                  CommandTarget="{Binding ElementName=EditorTextBox}" 
+                                  Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="alignClicked">
+                        <Path Data="M3 21h18v-2H3v2zm6-4h12v-2H9v2zm-6-4h18v-2H3v2zm6-4h12V7H9v2zM3 3v2h18V3H3z"
+                              
+                              Height="16" Stretch="Uniform" Fill="Gray"></Path>
+                        
+                    </ToggleButton>
+
+                    <ToggleButton x:Name="ToggleAlignJustifyButton"  
+                                  Command="EditingCommands.AlignJustify"  
+                                  CommandTarget="{Binding ElementName=EditorTextBox}" 
+                                  Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="alignClicked">
+                        <Path Data="M3 21h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18v-2H3v2zm0-4h18V7H3v2zm0-6v2h18V3H3z"
+                              
+                              Height="16" Stretch="Uniform" Fill="Gray"></Path>
+                        
+                    </ToggleButton>
+
+                    <Border Style="{StaticResource Separator}"></Border>
+
+                    <Button Style="{StaticResource EditorButton}" x:Name="AddUlButton"  
+                            Command="EditingCommands.ToggleBullets"  
+                            CommandTarget="{Binding ElementName=EditorTextBox}" 
+                            Click="addListButtonClicked"
+                            Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}">
+                        <Path Data="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"
+                              
+                              Height="16" Stretch="Uniform" Fill="Gray"></Path>
+
+                    </Button>
+
+                    <Button Style="{StaticResource EditorButton}" x:Name="AddOlButton"  
+                            Command="EditingCommands.ToggleNumbering"  
+                            CommandTarget="{Binding ElementName=EditorTextBox}" 
+                            Click="addListButtonClicked"
+                            Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}">
+                        <Path Data="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"
+                              
+                              Height="16" Stretch="Uniform" Fill="Gray"></Path>
+
+                    </Button>
+
+                    <Button Style="{StaticResource EditorButton}" x:Name="DecreaseIndentButton"  
+                            Command="EditingCommands.DecreaseIndentation"  
+                            CommandTarget="{Binding ElementName=EditorTextBox}" 
+                            Click="addListButtonClicked"
+                            Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}">
+                        <Path Data="M11 17h10v-2H11v2zm-8-5l4 4V8l-4 4zm0 9h18v-2H3v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"
+                              
+                              Height="16" Stretch="Uniform" Fill="Gray"></Path>
+
+                    </Button>
+
+                    <Button Style="{StaticResource EditorButton}" x:Name="IncreaseIndentButton"  
+                            Command="EditingCommands.IncreaseIndentation"  
+                            CommandTarget="{Binding ElementName=EditorTextBox}" 
+                            Click="addListButtonClicked"
+                            Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}">
+                        <Path Data="M3 21h18v-2H3v2zM3 8v8l4-4-4-4zm8 9h10v-2H11v2zM3 3v2h18V3H3zm8 6h10V7H11v2zm0 4h10v-2H11v2z"
+                              
+                              Height="16" Stretch="Uniform" Fill="Gray"></Path>
+
+                    </Button>
+
+                    <Border Style="{StaticResource Separator}"></Border>
+
+                    <ToggleButton x:Name="ToggleSubscriptButton"
+                                  Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="subscriptClicked"
+                                  IsChecked="{Binding IsSubscript, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                  >
+                        <Path Data="M16,7.41L11.41,12L16,16.59L14.59,18L10,13.41L5.41,18L4,16.59L8.59,12L4,7.41L5.41,6L10,10.59L14.59,6L16,7.41M21.85,21.03H16.97V20.03L17.86,19.23C18.62,18.58 19.18,18.04 19.56,17.6C19.93,17.16 20.12,16.75 20.13,16.36C20.14,16.08 20.05,15.85 19.86,15.66C19.68,15.5 19.39,15.38 19,15.38C18.69,15.38 18.42,15.44 18.16,15.56L17.5,15.94L17.05,14.77C17.32,14.56 17.64,14.38 18.03,14.24C18.42,14.1 18.85,14 19.32,14C20.1,14.04 20.7,14.25 21.1,14.66C21.5,15.07 21.72,15.59 21.72,16.23C21.71,16.79 21.53,17.31 21.18,17.78C20.84,18.25 20.42,18.7 19.91,19.14L19.27,19.66V19.68H21.85V21.03Z"
+                              Margin="0 3 0 0"
+                              Width="16" Stretch="Uniform" Fill="Gray"></Path>
+
+                    </ToggleButton>
+
+                    <ToggleButton x:Name="ToggleSuperscriptButton"
+                                  Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="superscriptClicked"
+                                  IsChecked="{Binding IsSuperscript, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        
+                        <Path Data="M16,7.41L11.41,12L16,16.59L14.59,18L10,13.41L5.41,18L4,16.59L8.59,12L4,7.41L5.41,6L10,10.59L14.59,6L16,7.41M21.85,9H16.97V8L17.86,7.18C18.62,6.54 19.18,6 19.56,5.55C19.93,5.11 20.12,4.7 20.13,4.32C20.14,4.04 20.05,3.8 19.86,3.62C19.68,3.43 19.39,3.34 19,3.33C18.69,3.34 18.42,3.4 18.16,3.5L17.5,3.89L17.05,2.72C17.32,2.5 17.64,2.33 18.03,2.19C18.42,2.05 18.85,2 19.32,2C20.1,2 20.7,2.2 21.1,2.61C21.5,3 21.72,3.54 21.72,4.18C21.71,4.74 21.53,5.26 21.18,5.73C20.84,6.21 20.42,6.66 19.91,7.09L19.27,7.61V7.63H21.85V9Z"
+                              Margin="0 0 0 3" Width="16" Stretch="Uniform" Fill="Gray"></Path>
+
+                    </ToggleButton>
+
+                    <Border Style="{StaticResource Separator}"></Border>
+
+
+                    <Button Style="{StaticResource EditorButton}" x:Name="AddImageButton"  
+                            Command="EditingCommands.DecreaseIndentation"  
+                            CommandTarget="{Binding ElementName=EditorTextBox}" 
+                            Click="addImageButtonClicked"
+                            Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}">
+                        <Path Data="M19 7v2.99s-1.99.01-2 0V7h-3s.01-1.99 0-2h3V2h2v3h3v2h-3zm-3 4V8h-3V5H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-8h-3zM5 19l3-4 2 3 3-4 4 5H5z"
+                              
+                              Height="18" Margin="0 0 0 2" Stretch="Uniform" Fill="Gray"></Path>
+
+                    </Button>
+
+                </StackPanel>
+            </Border>
+        
+            <!-- text box -->
+            <RichTextBox x:Name="EditorTextBox" 
+                         SpellCheck.IsEnabled="True" Grid.Row="1" 
+                         
+                         KeyUp="editorTextBoxKeyUp"
+                         SelectionChanged="editorTextBoxSelectionChanged" 
+                         TextChanged="editorTextBoxTextChanged"
+                         
+                         AcceptsReturn="True" 
+                         AcceptsTab="True" 
+                        
+                         >
+                
+                <RichTextBox.Resources>
+                    <Style TargetType="Paragraph">
+                        <Setter Property="Margin" Value="0 0 0 10"/>
+                    </Style>
+                </RichTextBox.Resources>
+
+                <RichTextBox.Style>
+                    <Style TargetType="RichTextBox">
+
+                        <Setter Property="FontFamily" Value="{StaticResource SourceSansProRegular}"></Setter>
+                        <Setter Property="Foreground" Value="{StaticResource Dark0Brush}"></Setter>
+                        <Setter Property="FontSize" Value="18"></Setter>
+
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="RichTextBox">
+                                    <Border x:Name="Border" CornerRadius="0 0 3 3" Background="{StaticResource Light1Brush}">
+                                        <ScrollViewer x:Name="Sv" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" PreviewMouseWheel="scvMouseWheeled">
+                                            <Border Width="{Binding ElementName=Sv, Path=ActualWidth}" x:Name="PART_ContentHost" Margin="4 8 8 0" Padding="0 0 8 0" VerticalAlignment="Top"></Border>
+                                        </ScrollViewer>
+                                    </Border>
+
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource BorderColorDark1Brush}"></Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsFocused" Value="True">
+                                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource BorderColorDark2Brush}"></Setter>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+
+                    </Style>
+                </RichTextBox.Style>
+            </RichTextBox>
+        
+        </Grid>
+    </Border>
+</UserControl>

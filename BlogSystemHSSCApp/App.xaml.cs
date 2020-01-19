@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Animation;
 
 namespace BlogSystemHSSC
 {
@@ -14,6 +15,12 @@ namespace BlogSystemHSSC
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            // Improves RichTextBox input performance but decreases animation performance. Must override the default value.
+            Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata { DefaultValue = 1 });
+        }
+
         public App()
         {
             Exit += onAppExit;

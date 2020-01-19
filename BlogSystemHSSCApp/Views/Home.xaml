@@ -24,6 +24,6 @@
         <WindowsFormsHost x:Name="WfHost" Grid.Row="0" Grid.Column="1" Margin="0 0 3 3" Background="Transparent">
         </WindowsFormsHost>
 
-        <customcontrols:RtfEditorBox Grid.Row="1" Grid.Column="1" Margin="10"></customcontrols:RtfEditorBox>
+        <customcontrols:RichTextEditor Grid.Row="1" Grid.Column="1" Margin="10"></customcontrols:RichTextEditor>
     </Grid>
 </UserControl>
