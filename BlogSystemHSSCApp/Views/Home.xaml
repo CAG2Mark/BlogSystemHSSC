@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BlogSystemHSSC.Views"
-             
+             xmlns:customcontrols="clr-namespace:BlogSystemHSSC.CustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="1280"
              Background="{StaticResource Light0Brush}">
@@ -21,7 +21,9 @@
         <Border Width="300" Grid.RowSpan="2" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 2 0"></Border>
         <Border Grid.Column="1" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 0 2"></Border>
 
-        <WindowsFormsHost x:Name="WfHost" Grid.Row="1" Grid.Column="1" Margin="0 0 3 3" Background="Transparent">
+        <WindowsFormsHost x:Name="WfHost" Grid.Row="0" Grid.Column="1" Margin="0 0 3 3" Background="Transparent">
         </WindowsFormsHost>
+
+        <customcontrols:RtfEditorBox Grid.Row="1" Grid.Column="1" Margin="10"></customcontrols:RtfEditorBox>
     </Grid>
 </UserControl>

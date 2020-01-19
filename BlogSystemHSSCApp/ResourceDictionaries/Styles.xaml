@@ -33,6 +33,33 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="ToggleButton">
+
+        <Setter Property="Background" Value="Transparent"></Setter>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border CornerRadius="4" Background="{TemplateBinding Background}">
+                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#0A000000"></Setter>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#16000000"></Setter>
+            </Trigger>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="#16000000"></Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="TextBox">
         <Setter Property="FontFamily" Value="{StaticResource SourceSansProRegular}"></Setter>
         <Setter Property="Foreground" Value="{StaticResource Dark0Brush}"></Setter>
@@ -96,7 +123,8 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    
+    <!-- Combobox-related styles are adapted from online sources. -->
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -234,7 +262,6 @@
         </Style.Triggers>
     </Style>
 
-    <!-- SimpleStyles: ComboBoxItem -->
     <Style x:Key="{x:Type ComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="true"/>
         <Setter Property="OverridesDefaultStyle" Value="true"/>

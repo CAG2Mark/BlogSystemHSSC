@@ -89,8 +89,14 @@
     </ApplicationDefinition>
     <Compile Include="BindableBase.cs" />
     <Compile Include="Blog\BlogConfig.cs" />
+    <Compile Include="CustomControls\NumericUpDown.xaml.cs">
+      <DependentUpon>NumericUpDown.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\RoundedButton.cs" />
     <Compile Include="CustomControls\RoundedListBox.cs" />
+    <Compile Include="CustomControls\RtfEditorBox.xaml.cs">
+      <DependentUpon>RtfEditorBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
@@ -98,6 +104,14 @@
     <Compile Include="Website\PostListPageGenerator.cs" />
     <Compile Include="Website\PostPageGenerator.cs" />
     <Compile Include="Website\TagPageGenerator.cs" />
+    <Page Include="CustomControls\NumericUpDown.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\RtfEditorBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Home.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
