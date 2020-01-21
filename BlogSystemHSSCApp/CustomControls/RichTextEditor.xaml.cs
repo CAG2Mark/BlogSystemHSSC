@@ -51,9 +51,20 @@ namespace BlogSystemHSSC.CustomControls
 
         #endregion
 
+        /// <summary>
+        /// Provides an interface for the user to easily edit rich text.
+        /// </summary>
         public RichTextEditor()
         {
             InitializeComponent();
+            EditorTextBox.AutoWordSelection = false;
+        }
+
+        private double selFontSize = 18;
+        public double SelFontSize
+        {
+            get => selFontSize;
+            set { selFontSize = value; OnPropertyChanged(); }
         }
 
         private bool isBold;
@@ -62,7 +73,6 @@ namespace BlogSystemHSSC.CustomControls
             get => isBold;
             set { isBold = value; OnPropertyChanged(); }
         }
-
 
         private bool isItalic;
         public bool IsItalic
@@ -97,6 +107,15 @@ namespace BlogSystemHSSC.CustomControls
             ScrollViewer scv = (ScrollViewer)sender;
             scv.ScrollToVerticalOffset(scv.VerticalOffset - e.Delta);
             e.Handled = true;
+        }
+
+        private void fontSizeChanged(object sender, EventArgs e)
+        {
+            EditorTextBox.Selection.ApplyPropertyValue(
+                TextElement.FontSizeProperty,
+                SelFontSize
+            );
+            EditorTextBox.Focus();
         }
 
         #region toggle button clicked
@@ -218,6 +237,16 @@ namespace BlogSystemHSSC.CustomControls
         {
             try
             {
+                // round to the nearest 0.5
+                SelFontSize = Math.Round((double)EditorTextBox.Selection.GetPropertyValue(TextElement.FontSizeProperty) * 2) / 2;
+            }
+            catch (Exception)
+            {
+
+            }
+
+            try
+            {
                 IsBold = (FontWeight)EditorTextBox.Selection.GetPropertyValue(TextElement.FontWeightProperty) == FontWeights.Bold;
             }
             catch (InvalidCastException)
@@ -232,6 +261,31 @@ namespace BlogSystemHSSC.CustomControls
             catch (InvalidCastException)
             {
                 IsItalic = false;
+            }
+            
+            try
+            {
+                var decorations = (TextDecorationCollection)EditorTextBox.Selection.GetPropertyValue(Inline.TextDecorationsProperty);
+
+                // Credit: https://stackoverflow.com/questions/57593990/how-to-check-if-text-in-a-richtextbox-is-underlined
+
+                if (decorations.Count == 0)
+                {
+                    IsUnderline = false;
+                }
+                else
+                {
+                    // must iterate through all possible decorations selected
+                    foreach (var decoration in decorations)
+                    {
+                        if (decoration.Location == TextDecorationLocation.Underline) IsUnderline = true;
+                    }
+                }
+                
+            }
+            catch (Exception)
+            {
+                IsUnderline = false;
             }
 
             try
@@ -288,25 +342,27 @@ namespace BlogSystemHSSC.CustomControls
 
         private void editorTextBoxKeyUp(object sender, KeyEventArgs e)
         {
-
             if (Keyboard.Modifiers == ModifierKeys.Control) {
 
                 // Bold - CTRL + B
                 if (e.Key == Key.B)
                 {
-                    IsBold = !isBold;
+                    if (EditorTextBox.Selection.Text.Length == 0)
+                        checkSelection();
                 }
 
                 // Italic - CTRL + I
                 if (e.Key == Key.I)
                 {
-                    IsItalic = !IsItalic;
+                    if (EditorTextBox.Selection.Text.Length == 0)
+                        checkSelection();
                 }
 
                 // Underline - CTRL + U
                 if (e.Key == Key.U)
                 {
-                    IsUnderline = !IsUnderline;
+                    if (EditorTextBox.Selection.Text.Length == 0)
+                        checkSelection();
                 }
 
                 // On Paste
@@ -314,8 +370,9 @@ namespace BlogSystemHSSC.CustomControls
                 {
                     var tr = new TextRange(EditorTextBox.Document.ContentStart, EditorTextBox.Document.ContentEnd);
                     tr.ApplyPropertyValue(FontFamilyProperty, EditorTextBox.FontFamily);
-                    tr.ApplyPropertyValue(FontSizeProperty, EditorTextBox.FontSize);
                 }
+
+                return;
             }
         }
 

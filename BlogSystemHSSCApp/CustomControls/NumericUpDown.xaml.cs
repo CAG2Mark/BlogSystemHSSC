@@ -129,7 +129,7 @@ DependencyProperty.RegisterAttached("ValueType", typeof(NumberValueType), typeof
         }
         bool loaded = false;
 
-        public event EventHandler OnValueChanged;
+        public event EventHandler ValueChanged;
 
         public void SetVal() // sets the current value to the textbox
         {
@@ -137,7 +137,7 @@ DependencyProperty.RegisterAttached("ValueType", typeof(NumberValueType), typeof
 
             if (loaded)
             {
-                OnValueChanged?.Invoke(this, new EventArgs());
+                ValueChanged?.Invoke(this, new EventArgs());
             }
 
             if (ValueType == NumberValueType.Percentage)

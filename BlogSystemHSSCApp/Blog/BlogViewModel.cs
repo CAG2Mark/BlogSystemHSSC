@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace BlogSystemHSSC.Blog
 {
+    /// <summary>
+    /// Loads and links the blog posts with the view.
+    /// </summary>
     public class BlogViewModel : BindableBase
     {
         #region UI values
@@ -46,7 +49,5 @@ namespace BlogSystemHSSC.Blog
             get => blogPosts;
             set => Set(ref blogPosts, value);
         }
-
-        
     }
 }

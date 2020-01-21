@@ -18,12 +18,24 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Border Width="300" Grid.RowSpan="2" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 2 0"></Border>
+        <Border Width="300" Grid.RowSpan="2" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 2 0">
+            <StackPanel  Margin="12">
+                <DockPanel>
+                    <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProBold}" Foreground="{StaticResource Dark0Brush}" FontSize="24">Posts</TextBlock>
+
+                    <TextBox VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Width="136"></TextBox>
+                    <Path HorizontalAlignment="Right" DockPanel.Dock="Right"
+                          Data="{StaticResource SearchIcon}" Fill="{StaticResource BorderColorDark2Brush}" Margin="8 0" Height="20" Width="20" Stretch="UniformToFill"></Path>
+
+                </DockPanel>
+                
+                
+                
+            </StackPanel>
+        </Border>
         <Border Grid.Column="1" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 0 2"></Border>
 
-        <WindowsFormsHost x:Name="WfHost" Grid.Row="0" Grid.Column="1" Margin="0 0 3 3" Background="Transparent">
+        <WindowsFormsHost x:Name="WfHost" Grid.Row="1" Grid.Column="1" Margin="0 0 3 3" Background="Transparent">
         </WindowsFormsHost>
-
-        <customcontrols:RichTextEditor Grid.Row="1" Grid.Column="1" Margin="10"></customcontrols:RichTextEditor>
     </Grid>
 </UserControl>
