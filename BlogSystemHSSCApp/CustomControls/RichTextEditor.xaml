@@ -79,7 +79,7 @@
 
                     <local:NumericUpDown MinValue="1" MaxValue="500" ValueType="Pixels" Margin="4 0" VerticalAlignment="Center" Width="80"  
                                          CurrentValue="{Binding SelFontSize, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                         ValueChanged="FontSizeChanged"></local:NumericUpDown>
+                                         ValueChanged="fontSizeChanged"></local:NumericUpDown>
 
                     <Border Style="{StaticResource Separator}"></Border>
                     

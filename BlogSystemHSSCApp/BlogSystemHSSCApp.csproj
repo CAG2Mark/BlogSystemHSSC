@@ -97,8 +97,13 @@
     <Compile Include="CustomControls\RichTextEditor.xaml.cs">
       <DependentUpon>RichTextEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Global.cs" />
+    <Compile Include="IBindableBase.cs" />
     <Compile Include="Views\Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PostEditor.xaml.cs">
+      <DependentUpon>PostEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Website\PageGenerator.cs" />
     <Compile Include="Website\PostListPageGenerator.cs" />
@@ -113,6 +118,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ResourceDictionaries\Icons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResourceDictionaries\ViewModelDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -143,6 +152,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ResourceDictionaries\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PostEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

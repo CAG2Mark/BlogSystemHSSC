@@ -1,0 +1,6 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:BlogSystemHSSC.ResourceDictionaries"
+                    xmlns:blog="clr-namespace:BlogSystemHSSC.Blog">
+    <blog:BlogViewModel x:Key="BlogViewModel"></blog:BlogViewModel>
+</ResourceDictionary>

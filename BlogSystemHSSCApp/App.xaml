@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="/ResourceDictionaries/Fonts.xaml" />
                 <ResourceDictionary Source="/ResourceDictionaries/Icons.xaml" />
                 <ResourceDictionary Source="/ResourceDictionaries/Styles.xaml" />
+                <ResourceDictionary Source="/ResourceDictionaries/ViewModelDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

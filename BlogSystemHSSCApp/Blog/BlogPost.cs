@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace BlogSystemHSSC.Blog
 {
@@ -59,16 +60,14 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref isArchived, value);
         }
 
-        private IEnumerable<string> rtfControls;
+        private FlowDocument document;
         /// <summary>
-        /// Contains all of the RTF controls of the blog post.
-        /// 
-        /// Should only be iterated through.
+        /// The document containing all of the post data.
         /// </summary>
-        public IEnumerable<string> RtfControls
+        public FlowDocument Document
         {
-            get => rtfControls;
-            set => Set(ref rtfControls, value);
+            get => document;
+            set => Set(ref document, value);
         }
     }
 }

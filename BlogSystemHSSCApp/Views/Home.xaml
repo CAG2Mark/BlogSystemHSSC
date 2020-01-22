@@ -7,7 +7,8 @@
              xmlns:customcontrols="clr-namespace:BlogSystemHSSC.CustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="1280"
-             Background="{StaticResource Light0Brush}">
+             Background="{StaticResource Light0Brush}"
+             DataContext="{StaticResource BlogViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
@@ -18,24 +19,61 @@
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Border Width="300" Grid.RowSpan="2" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 2 0">
+        <Border Width="350" Grid.RowSpan="2" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 2 0">
             <StackPanel  Margin="12">
-                <DockPanel>
-                    <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProBold}" Foreground="{StaticResource Dark0Brush}" FontSize="24">Posts</TextBlock>
+                <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProBold}" Foreground="{StaticResource Dark0Brush}" FontSize="24">Posts</TextBlock>
 
-                    <TextBox VerticalAlignment="Center" HorizontalAlignment="Right" DockPanel.Dock="Right" Width="136"></TextBox>
-                    <Path HorizontalAlignment="Right" DockPanel.Dock="Right"
-                          Data="{StaticResource SearchIcon}" Fill="{StaticResource BorderColorDark2Brush}" Margin="8 0" Height="20" Width="20" Stretch="UniformToFill"></Path>
 
+                <DockPanel Margin="0 8 0 0">
+
+                    <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProRegular}" Foreground="{StaticResource Dark0Brush}" FontSize="18" Margin="0 0 6 0">Search</TextBlock>
+                    <TextBox VerticalAlignment="Center" Width="136"></TextBox>
+                    
+                    
+                    <customcontrols:RoundedButton HorizontalAlignment="Right" Margin="-1">
+                        <Path Data="{StaticResource AddIcon}" Margin="10"></Path>
+                    </customcontrols:RoundedButton>
                 </DockPanel>
-                
-                
-                
+
+                <ListBox Grid.Row="2" ItemsSource="{Binding BlogPosts}"
+                                         Background="Transparent" BorderThickness="0" 
+                                         Padding="0 0 12 0" ScrollViewer.CanContentScroll="True"
+                                         x:Name="CommandsListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                    <ListBox.Resources>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter></ContentPresenter>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.Resources>
+
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel IsItemsHost="True"></StackPanel>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+
             </StackPanel>
+            
         </Border>
         <Border Grid.Column="1" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 0 2"></Border>
 
         <WindowsFormsHost x:Name="WfHost" Grid.Row="1" Grid.Column="1" Margin="0 0 3 3" Background="Transparent">
         </WindowsFormsHost>
+
+        <local:PostEditor Grid.Row="1" Grid.Column="1"></local:PostEditor>
     </Grid>
 </UserControl>

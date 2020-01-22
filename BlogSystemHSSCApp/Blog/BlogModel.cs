@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlogSystemHSSC.Blog
 {
-    public class BlogConfig : BindableBase
+    public class BlogModel : BindableBase
     {
         private List<string> categories;
         public List<string> Categories

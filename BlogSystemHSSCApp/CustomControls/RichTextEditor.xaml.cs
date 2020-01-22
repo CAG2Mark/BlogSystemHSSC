@@ -14,7 +14,7 @@ namespace BlogSystemHSSC.CustomControls
     /// <summary>
     /// Interaction logic for RtfEditorBox.xaml
     /// </summary>
-    public partial class RichTextEditor : UserControl, INotifyPropertyChanged
+    public partial class RichTextEditor : UserControl, IBindableBase
     {
 
         #region dependency properties
@@ -64,42 +64,42 @@ namespace BlogSystemHSSC.CustomControls
         public double SelFontSize
         {
             get => selFontSize;
-            set { selFontSize = value; OnPropertyChanged(); }
+            set => Set(ref selFontSize, value);
         }
 
         private bool isBold;
         public bool IsBold
         {
             get => isBold;
-            set { isBold = value; OnPropertyChanged(); }
+            set => Set(ref isBold, value);
         }
 
         private bool isItalic;
         public bool IsItalic
         {
             get => isItalic;
-            set { isItalic = value; OnPropertyChanged(); }
+            set => Set(ref isItalic, value);
         }
 
         private bool isUnderline;
         public bool IsUnderline
         {
             get => isUnderline;
-            set { isUnderline = value; OnPropertyChanged(); }
+            set => Set(ref isUnderline, value);
         }
 
         private bool isSubscript;
         public bool IsSubscript
         {
             get => isSubscript;
-            set { isSubscript = value; OnPropertyChanged(); }
+            set => Set(ref isSubscript, value);
         }
 
         private bool isSuperscript;
         public bool IsSuperscript
         {
             get => isSuperscript;
-            set { isSuperscript = value; OnPropertyChanged(); }
+            set => Set(ref isSuperscript, value);
         }
 
         private void scvMouseWheeled(object sender, MouseWheelEventArgs e)
@@ -377,12 +377,24 @@ namespace BlogSystemHSSC.CustomControls
         }
 
 
-        #region INoifyPropertyChanged members
+        #region IBindable members
+
         public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string propertyName = null)
+
+        public void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public void Set<T>(ref T reference, T value, [CallerMemberName] string propertyName = null)
+        {
+            // set the reference value.
+            reference = value;
+            // call PropertyChanged on the property.
+            OnPropertyChanged(propertyName);
+        }
+
         #endregion
+
     }
 }

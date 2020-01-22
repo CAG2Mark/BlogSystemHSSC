@@ -36,6 +36,13 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref currentPost, value);
         }
 
+        private BlogModel config;
+        public BlogModel Config
+        {
+            get => config;
+            set => Set(ref config, value);
+        }
+
         #endregion
 
         #endregion
