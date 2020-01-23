@@ -7,7 +7,7 @@
              xmlns:customcontrols="clr-namespace:BlogSystemHSSC.CustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             Background="{StaticResource Light0Brush}">
+             Background="{StaticResource Light1Brush}">
     <Grid Margin="16" DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -30,14 +30,14 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock VerticalAlignment="Center" Margin="0 0 6 0">Title</TextBlock>
-            <TextBox Grid.Column="1"></TextBox>
-            <customcontrols:RoundedButton Grid.Column="2" Margin="2">
+            <TextBox Grid.Column="1" Text="{Binding BlogPost.Title}"></TextBox>
+            <customcontrols:RoundedButton Grid.Column="2" Margin="2" Click="SavePost">
                 <Path Data="{StaticResource TickIcon}" Margin="8" Stretch="Uniform"></Path>
             </customcontrols:RoundedButton>
 
         </Grid>
 
-        <customcontrols:RichTextEditor Grid.Row="1" RichDocument="{Binding BlogPost.}"></customcontrols:RichTextEditor>
+        <customcontrols:RichTextEditor Grid.Row="1" RichDocument="{Binding BlogPost.Document}"></customcontrols:RichTextEditor>
 
     </Grid>
 </UserControl>

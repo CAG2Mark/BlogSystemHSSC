@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using BlogSystemHSSC.Blog;
 using CefSharp;
 using CefSharp.WinForms;
 
@@ -41,6 +42,18 @@ namespace BlogSystemHSSC.Views
 
             //browser = new ChromiumWebBrowser("https://google.com");
             //WfHost.Child = browser;
+        }
+
+        private void EditPost(object sender, RoutedEventArgs e)
+        {
+            // get the blog post
+            var obj = (Button)sender;
+            var post = (BlogPost)obj.CommandParameter;
+
+            // execute the command
+            var vm = (BlogViewModel)DataContext;
+            if (vm.OpenBlogPostCommand.CanExecute(post))
+                vm.OpenBlogPostCommand.Execute(post);
         }
     }
 }

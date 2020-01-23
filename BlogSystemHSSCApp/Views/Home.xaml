@@ -30,14 +30,14 @@
                     <TextBox VerticalAlignment="Center" Width="136"></TextBox>
                     
                     
-                    <customcontrols:RoundedButton HorizontalAlignment="Right" Margin="-1">
+                    <customcontrols:RoundedButton HorizontalAlignment="Right" Margin="-1" Command="{Binding CreatePostCommand}">
                         <Path Data="{StaticResource AddIcon}" Margin="10"></Path>
                     </customcontrols:RoundedButton>
                 </DockPanel>
 
-                <ListBox Grid.Row="2" ItemsSource="{Binding BlogPosts}"
+                <ListBox Grid.Row="2" ItemsSource="{Binding Blog.BlogPosts}"
                                          Background="Transparent" BorderThickness="0" 
-                                         Padding="0 0 12 0" ScrollViewer.CanContentScroll="True"
+                                         Padding="0 0 8 0" Margin="0 8 -8 0" ScrollViewer.CanContentScroll="True"
                                          x:Name="CommandsListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
                     <ListBox.Resources>
@@ -61,12 +61,49 @@
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
+                            <StackPanel>
+
+                                <DockPanel LastChildFill="True">
+                                    <StackPanel Margin="0 4">
+
+                                        <StackPanel.Resources>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="FontFamily" Value="{StaticResource SourceSansProRegular}"></Setter>
+                                                <Setter Property="FontSize" Value="18"></Setter>
+                                                <Setter Property="Foreground" Value="{StaticResource Dark0Brush}"></Setter>
+                                            </Style>
+                                        </StackPanel.Resources>
+
+                                        <!-- TITLE -->
+                                        <TextBlock FontWeight="Bold" Text="{Binding Title}"></TextBlock>
+
+                                        <StackPanel Orientation="Horizontal">
+                                            <!-- AUTHOR -->
+                                            <TextBlock Margin="0 0 8 0" Text="{Binding Author}"></TextBlock>
+                                            
+                                            <!-- DATE -->
+                                            <TextBlock Foreground="{StaticResource Light10Brush}"
+                                                       Text="{Binding PublishTime, StringFormat='{}{0:dd/MM/yy}'}"></TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <!-- EDIT POST BUTTON -->
+                                    <customcontrols:RoundedButton HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                                  Click="EditPost" CommandParameter="{Binding}">
+                                        <Path Data="{StaticResource RightArrowIcon}" Margin="10" Fill="Gray" Stretch="Uniform"></Path>
+                                    </customcontrols:RoundedButton>
+                                </DockPanel>
+
+                                <Rectangle Height="2" Fill="{StaticResource BorderColorDark1Brush}"></Rectangle>
+
+                            </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
 
 
             </StackPanel>
+
             
         </Border>
         <Border Grid.Column="1" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 0 2"></Border>

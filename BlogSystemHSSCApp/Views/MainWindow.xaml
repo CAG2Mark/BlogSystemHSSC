@@ -27,6 +27,8 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
+        
+        <!-- #region top bar -->
         <DockPanel Background="{StaticResource FancyRedBrush}">
             <DockPanel.Resources>
                 <Style TargetType="{x:Type Button}">
@@ -117,6 +119,8 @@
 
                 
             </DockPanel>
+        
+        <!-- #endregion -->
 
         <Border Background="{StaticResource Light1Brush}" Grid.Row="1" CornerRadius="0 0 10 10" ClipToBounds="True">
             <Grid>
@@ -139,7 +143,9 @@
                         <local:Home></local:Home>
                     </TabItem>
 
-                    <TabItem></TabItem>
+                    <TabItem>
+                        <local:EditorPage></local:EditorPage>
+                    </TabItem>
 
                     <TabItem></TabItem>
                     

@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="BlogSystemHSSC.Views.EditorPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BlogSystemHSSC.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Background="{StaticResource Light6Brush}" DataContext="{StaticResource BlogViewModel}">
+
+    <TabControl FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" ItemsSource="{Binding OpenBlogPosts}" BorderThickness="0"
+                Background="{StaticResource Light1Brush}">
+
+
+        <TabControl.Resources>
+            <Style TargetType="TabItem">
+                <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Border Name="ContentContainer" CornerRadius="2 2 0 0">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="Transparent"></Setter>
+                                    </Style>
+                                </Border.Style>
+                                <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,4" MinWidth="70"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="ContentContainer" Property="Background" Value="{StaticResource Light1Brush}" />
+                                </Trigger>
+
+                                <Trigger Property="IsMouseOver" Value="True" SourceName="ContentContainer">
+                                    <Setter TargetName="ContentContainer" Property="Background" Value="{StaticResource Light3Brush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </TabControl.Resources>
+
+        <TabControl.ItemTemplate>
+            <DataTemplate>
+                <TextBlock Text="{Binding Title}" Margin="2"></TextBlock>
+            </DataTemplate>
+        </TabControl.ItemTemplate>
+
+        <TabControl.ContentTemplate>
+            <DataTemplate>
+                <local:PostEditor BlogPost="{Binding}" PostChanged="PostEditor_PostChanged"></local:PostEditor>
+            </DataTemplate>
+        </TabControl.ContentTemplate>
+
+    </TabControl>
+</UserControl>
+                                                                              

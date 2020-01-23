@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace BlogSystemHSSC
 {
@@ -15,6 +16,7 @@ namespace BlogSystemHSSC
     /// </summary>
     public abstract class BindableBase : INotifyPropertyChanged
     {
+
 
         /// <summary>
         /// Sets the value of a property such that it can be binded to the view.

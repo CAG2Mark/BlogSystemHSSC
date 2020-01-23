@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -47,6 +48,8 @@ namespace BlogSystemHSSC.Views
         public PostEditor()
         {
             InitializeComponent();
+
+            Console.Write("New editor created");
         }
 
         #region IBindable members
@@ -67,5 +70,13 @@ namespace BlogSystemHSSC.Views
         }
 
         #endregion
+
+        public event EventHandler PostChanged;
+
+        private void SavePost(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show(XamlWriter.Save(BlogPost.Document));
+            PostChanged?.Invoke(this, new EventArgs());
+        }
     }
 }

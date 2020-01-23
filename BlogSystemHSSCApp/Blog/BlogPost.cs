@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
+using System.Windows.Markup;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace BlogSystemHSSC.Blog
 {
@@ -20,7 +24,17 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref author, value);
         }
 
-        private DateTime publishTime;
+        private string title = "New Post";
+        /// <summary>
+        /// The title of the post.
+        /// </summary>
+        public string Title
+        {
+            get => title;
+            set => Set(ref title, value);
+        }
+
+        private DateTime publishTime = DateTime.Now;
         /// <summary>
         /// The DateTime of when the post was published.
         /// </summary>
@@ -61,6 +75,7 @@ namespace BlogSystemHSSC.Blog
         }
 
         private FlowDocument document;
+        [XmlIgnore]
         /// <summary>
         /// The document containing all of the post data.
         /// </summary>
@@ -68,6 +83,30 @@ namespace BlogSystemHSSC.Blog
         {
             get => document;
             set => Set(ref document, value);
+        }
+
+        public string DocumentStr
+        {
+            get
+            {
+                if (Document == null) return "";
+
+                Console.WriteLine(XamlWriter.Save(Document));
+
+                return XamlWriter.Save(Document);
+            }
+       
+            set 
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    Document = new FlowDocument();
+                    return;
+                }
+
+                var stream = new XmlTextReader(new StringReader(value));
+                Document = (FlowDocument)XamlReader.Load(stream);
+            }
         }
     }
 }

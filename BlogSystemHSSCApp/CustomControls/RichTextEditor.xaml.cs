@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 
 namespace BlogSystemHSSC.CustomControls
@@ -47,6 +48,7 @@ namespace BlogSystemHSSC.CustomControls
                 EditorTextBox.Document = RichDocument;
             }
             else wasChangedInternally = false;
+
         }
 
         #endregion
