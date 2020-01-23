@@ -90,9 +90,6 @@ namespace BlogSystemHSSC.Blog
             get
             {
                 if (Document == null) return "";
-
-                Console.WriteLine(XamlWriter.Save(Document));
-
                 return XamlWriter.Save(Document);
             }
        

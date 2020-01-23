@@ -339,7 +339,7 @@ namespace BlogSystemHSSC.CustomControls
         {
             checkSelection();
             wasChangedInternally = true;
-            RichDocument = EditorTextBox.Document;
+            //RichDocument = EditorTextBox.Document;
         }
 
         private void editorTextBoxKeyUp(object sender, KeyEventArgs e)

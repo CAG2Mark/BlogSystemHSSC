@@ -75,7 +75,6 @@ namespace BlogSystemHSSC.Views
 
         private void SavePost(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(XamlWriter.Save(BlogPost.Document));
             PostChanged?.Invoke(this, new EventArgs());
         }
     }

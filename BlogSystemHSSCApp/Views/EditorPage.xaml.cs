@@ -32,5 +32,17 @@ namespace BlogSystemHSSC.Views
             if (vm.BlogEditedCommand.CanExecute(null))
                 vm.BlogEditedCommand.Execute(null);
         }
+
+        private void CloseEditor(object sender, RoutedEventArgs e)
+        {
+            // get the blog post
+            var obj = (Button)sender;
+            var post = (BlogPost)obj.CommandParameter;
+
+            // execute the command
+            var vm = (BlogViewModel)DataContext;
+            if (vm.CloseBlogPostCommand.CanExecute(post))
+                vm.CloseBlogPostCommand.Execute(post);
+        }
     }
 }
