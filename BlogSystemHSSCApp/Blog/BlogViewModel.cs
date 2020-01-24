@@ -208,7 +208,7 @@ namespace BlogSystemHSSC.Blog
 
         #region events
 
-        public event EventHandler<PostCreatedEventArgs> PostCreated;
+        public event EventHandler<BlogPostEventArgs> PostCreated;
 
         #endregion
 
@@ -225,7 +225,7 @@ namespace BlogSystemHSSC.Blog
             blogEdited();
 
             // notify the view
-            PostCreated?.Invoke(this, new PostCreatedEventArgs(newPost));
+            PostCreated?.Invoke(this, new BlogPostEventArgs(newPost));
         }
 
         /// <summary>
@@ -301,9 +301,9 @@ namespace BlogSystemHSSC.Blog
     /// <summary>
     /// The EventArgs used for the PostCreated event which passes on the post that was created.
     /// </summary>
-    public class PostCreatedEventArgs : EventArgs
+    public class BlogPostEventArgs : EventArgs
     {
-        public PostCreatedEventArgs(BlogPost p)
+        public BlogPostEventArgs(BlogPost p)
         {
             Post = p;
         }

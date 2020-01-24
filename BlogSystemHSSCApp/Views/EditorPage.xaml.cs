@@ -43,6 +43,13 @@ namespace BlogSystemHSSC.Views
             var vm = (BlogViewModel)DataContext;
             if (vm.CloseBlogPostCommand.CanExecute(post))
                 vm.CloseBlogPostCommand.Execute(post);
+
+            MasterTabControl.Items[vm.OpenBlogPosts.IndexOf(post)]
+        }
+
+        public void JumpToBlogPost(BlogPost post)
+        {
+            MasterTabControl.SelectedItem = post;
         }
     }
 }

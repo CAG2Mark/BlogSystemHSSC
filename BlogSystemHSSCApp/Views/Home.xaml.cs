@@ -44,6 +44,8 @@ namespace BlogSystemHSSC.Views
             //WfHost.Child = browser;
         }
 
+        public event EventHandler<BlogPostEventArgs> RequestOpenPost;
+
         private void EditPost(object sender, RoutedEventArgs e)
         {
             // get the blog post
@@ -54,6 +56,8 @@ namespace BlogSystemHSSC.Views
             var vm = (BlogViewModel)DataContext;
             if (vm.OpenBlogPostCommand.CanExecute(post))
                 vm.OpenBlogPostCommand.Execute(post);
+
+            RequestOpenPost?.Invoke(this, new BlogPostEventArgs(post));
         }
     }
 }

@@ -128,7 +128,7 @@
                     <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
-                <TabControl SelectedIndex="{Binding ElementName=TabControlListBox, Path=SelectedIndex}" Margin="-2 -4 -2 -2" BorderThickness="0" Background="Transparent" ClipToBounds="True">
+                <TabControl x:Name="MasterTabControl" SelectedIndex="{Binding ElementName=TabControlListBox, Path=SelectedIndex}" Margin="-2 -4 -2 -2" BorderThickness="0" Background="Transparent" ClipToBounds="True">
                     <TabControl.Resources>
                         <Style TargetType="TabItem">
                             <Setter Property="Template">
@@ -140,11 +140,11 @@
                     </TabControl.Resources>
 
                     <TabItem>
-                        <local:Home></local:Home>
+                        <local:Home RequestOpenPost="Home_RequestOpenPost"></local:Home>
                     </TabItem>
 
                     <TabItem>
-                        <local:EditorPage></local:EditorPage>
+                        <local:EditorPage x:Name="EditorPage"></local:EditorPage>
                     </TabItem>
 
                     <TabItem></TabItem>

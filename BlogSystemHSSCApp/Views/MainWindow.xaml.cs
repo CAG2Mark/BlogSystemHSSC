@@ -22,6 +22,7 @@ namespace BlogSystemHSSC.Views
     {
         public MainWindow()
         {
+            InitializeComponent();
         }
 
         #region top bar controls
@@ -57,5 +58,12 @@ namespace BlogSystemHSSC.Views
         }
 
         #endregion
+
+        private void Home_RequestOpenPost(object sender, Blog.BlogPostEventArgs e)
+        {
+            var post = e.Post;
+            MasterTabControl.SelectedIndex = 1;
+            EditorPage.JumpToBlogPost(post);
+        }
     }
 }

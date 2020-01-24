@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Background="{StaticResource Light6Brush}" DataContext="{StaticResource BlogViewModel}">
 
-    <customcontrols:TabControlEx FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" ItemsSource="{Binding OpenBlogPosts}" BorderThickness="0"
+    <customcontrols:TabControlEx x:Name="MasterTabControl"  FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" ItemsSource="{Binding OpenBlogPosts}" BorderThickness="0"
                 Background="{StaticResource Light1Brush}">
 
 
