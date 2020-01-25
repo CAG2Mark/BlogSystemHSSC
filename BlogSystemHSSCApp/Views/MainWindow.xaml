@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlogSystemHSSC.Views"
         mc:Ignorable="d"
-        Title="Blog System" Height="720" Width="1280" Background="{StaticResource Light0Brush}">
+        Title="Blog System" Height="720" Width="1280" Background="{StaticResource Light0Brush}"
+        DataContext="{StaticResource BlogViewModel}">
 
     <WindowChrome.WindowChrome>
         <WindowChrome ResizeBorderThickness="5" GlassFrameThickness="0,0.1,0,0" CaptionHeight="40"/>
@@ -140,7 +141,7 @@
                     </TabControl.Resources>
 
                     <TabItem>
-                        <local:Home RequestOpenPost="Home_RequestOpenPost"></local:Home>
+                        <local:Home RequestOpenPost="OnPostEditRequest"></local:Home>
                     </TabItem>
 
                     <TabItem>

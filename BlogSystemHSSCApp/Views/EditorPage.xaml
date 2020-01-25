@@ -8,12 +8,19 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Background="{StaticResource Light6Brush}" DataContext="{StaticResource BlogViewModel}">
 
-    <customcontrols:TabControlEx x:Name="MasterTabControl"  FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" ItemsSource="{Binding OpenBlogPosts}" BorderThickness="0"
+    <TabControl x:Name="MasterTabControl"  FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" ItemsSource="{Binding OpenBlogPosts, Mode=TwoWay}" BorderThickness="0"
                 Background="{StaticResource Light1Brush}">
 
 
-        <customcontrols:TabControlEx.Resources>
+        <TabControl.Resources>
             <Style TargetType="TabItem">
+
+                <!-- THE BELOW 3 LINES ARE NOT BY CODE. IT IS FROM HERE: 
+                https://social.msdn.microsoft.com/Forums/vstudio/en-US/ed077477-a742-4c3d-bd4e-3efdd5dd6ba2/dragdrop-tabitem?forum=wpf -->
+                <Setter Property="AllowDrop" Value="True"/>
+                <EventSetter Event="PreviewMouseMove" Handler="TabItem_PreviewMouseMove"/>
+                <EventSetter Event="Drop" Handler="TabItem_Drop"/>
+                
                 <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
                 <Setter Property="Template">
                     <Setter.Value>
@@ -42,13 +49,15 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-        </customcontrols:TabControlEx.Resources>
+        </TabControl.Resources>
 
-        <customcontrols:TabControlEx.ItemTemplate>
+        <TabControl.ItemTemplate>
             <DataTemplate>
                 <DockPanel LastChildFill="True" Height="32">
                     <TextBlock Text="{Binding Title}"  MinWidth="70" MaxWidth="130" Margin="2 2 4 4" VerticalAlignment="Center"></TextBlock>
-                    <Button VerticalAlignment="Center" Click="CloseEditor" CommandParameter="{Binding}">
+                    <Button x:Name="CloseButton" VerticalAlignment="Center" Click="CloseEditor" CommandParameter="{Binding}"
+                            MouseEnter="CloseButton_MouseEnter"
+                            MouseLeave="CloseButton_MouseLeave">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Background" Value="Transparent"></Setter>
@@ -85,14 +94,14 @@
                     </Button>
                 </DockPanel>
             </DataTemplate>
-        </customcontrols:TabControlEx.ItemTemplate>
+        </TabControl.ItemTemplate>
 
-        <customcontrols:TabControlEx.ContentTemplate>
+        <TabControl.ContentTemplate>
             <DataTemplate>
                 <local:PostEditor BlogPost="{Binding}" PostChanged="PostEditor_PostChanged"></local:PostEditor>
             </DataTemplate>
-        </customcontrols:TabControlEx.ContentTemplate>
+        </TabControl.ContentTemplate>
 
-    </customcontrols:TabControlEx>
+    </TabControl>
 </UserControl>
                                                                               

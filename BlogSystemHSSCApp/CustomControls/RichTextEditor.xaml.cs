@@ -1,7 +1,9 @@
-﻿using Microsoft.Win32;
+﻿using BlogSystemHSSC.Blog;
+using Microsoft.Win32;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -23,7 +25,7 @@ namespace BlogSystemHSSC.CustomControls
         public static readonly DependencyProperty RichDocumentProperty =
             DependencyProperty.Register(
                 "RichDocument", 
-                typeof(FlowDocument), 
+                typeof(LinkedRichDocument), 
                 typeof(RichTextEditor),
                 new PropertyMetadata(
                     null, 
@@ -31,11 +33,15 @@ namespace BlogSystemHSSC.CustomControls
                     )
                 );
 
-        public FlowDocument RichDocument
+        public LinkedRichDocument RichDocument
         {
-            get => (FlowDocument)GetValue(RichDocumentProperty);
+            get => (LinkedRichDocument)GetValue(RichDocumentProperty);
             set => SetValue(RichDocumentProperty, value);
         }
+
+        public DisconnectableRtb EditorTextBox;
+
+        private bool disconnectInvokedFromThis = false;
 
         bool wasChangedInternally = false;
         private void richDocumentChanged()
@@ -45,10 +51,46 @@ namespace BlogSystemHSSC.CustomControls
             // prevent infinite loop of setting then callback
             if (!wasChangedInternally)
             {
-                EditorTextBox.Document = RichDocument;
+                if (RichDocument == null) return;
+
+                EditorTextBox = RichDocument.AssignedTextBox;
+                EditorTextBox.RequestDisconnect += EditorTextBox_RequestDisconnect;
+
+                setChild();
             }
             else wasChangedInternally = false;
+        }
 
+        private void EditorTextBox_RequestDisconnect(object sender, EventArgs e)
+        {
+            // Prevent self-disconnect
+            if (!disconnectInvokedFromThis)
+            {
+                // Deassociate self with the text box
+                EditorTextBox.TextChanged -= editorTextBoxTextChanged;
+                EditorTextBox.SelectionChanged -= editorTextBoxSelectionChanged;
+                EditorTextBox.KeyUp -= editorTextBoxKeyUp;
+                RtbContainer.Child = null;
+            }
+            disconnectInvokedFromThis = false;
+        }
+
+        private void setChild()
+        {
+            // Disconnect editortextbox from its previous parent.
+            disconnectInvokedFromThis = true;
+            EditorTextBox.Disconnect();
+
+            // Set this as its parent.
+            RtbContainer.Child = EditorTextBox;
+
+            Console.Write("Succeeded");
+
+            // Add event handlers
+            EditorTextBox.TextChanged += editorTextBoxTextChanged;
+            EditorTextBox.SelectionChanged += editorTextBoxSelectionChanged;
+            EditorTextBox.KeyUp += editorTextBoxKeyUp;
+            
         }
 
         #endregion
@@ -59,7 +101,8 @@ namespace BlogSystemHSSC.CustomControls
         public RichTextEditor()
         {
             InitializeComponent();
-            EditorTextBox.AutoWordSelection = false;
+
+            //MessageBox.Show("test");
         }
 
         private double selFontSize = 18;

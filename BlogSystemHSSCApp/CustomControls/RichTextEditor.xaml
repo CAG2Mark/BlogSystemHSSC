@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:BlogSystemHSSC.CustomControls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    
     <Border CornerRadius="4" BorderThickness="1.5" BorderBrush="{StaticResource BorderColorBrush}">
         <Grid>
             <Grid.RowDefinitions>
@@ -16,12 +17,9 @@
         
             <!-- Controls -->
             
-            <!-- 
-            
+            <!--
             NOTE: All icons are either made by me in Illustrator or downloaded from material icons:
             material.io/resources/icons
-           
-            
             -->
 
             <Border Background="{StaticResource Light4Brush}" CornerRadius="3 3 0 0">
@@ -240,30 +238,14 @@
 
                 </StackPanel>
             </Border>
-        
-            <!-- text box -->
-            <RichTextBox x:Name="EditorTextBox"  AutoWordSelection="False"
-                         
-                         SpellCheck.IsEnabled="True" Grid.Row="1" 
-                         
-                         KeyUp="editorTextBoxKeyUp"
-                         SelectionChanged="editorTextBoxSelectionChanged" 
-                         TextChanged="editorTextBoxTextChanged"
-                         
-                         AcceptsReturn="True" 
-                         AcceptsTab="True" 
-                        
-                         >
-                
-                <RichTextBox.Resources>
-                    <Style TargetType="Paragraph">
-                        <Setter Property="Margin" Value="0 0 0 10"/>
-                    </Style>
-                </RichTextBox.Resources>
 
-                <RichTextBox.Style>
-                    <Style TargetType="RichTextBox">
-
+            <Border x:Name="RtbContainer" Grid.Row="1">
+                <Border.Resources>
+                    <Style TargetType="local:DisconnectableRtb">
+                        <Setter Property="AutoWordSelection" Value="False"/>
+                        <Setter Property="SpellCheck.IsEnabled" Value="True"/>
+                        <Setter Property="AcceptsReturn" Value="True"/>
+                        <Setter Property="AcceptsTab" Value="True"/>
                         <Setter Property="FontFamily" Value="{StaticResource SourceSansProRegular}"></Setter>
                         <Setter Property="Foreground" Value="{StaticResource Dark0Brush}"></Setter>
                         <Setter Property="FontSize" Value="18"></Setter>
@@ -290,8 +272,13 @@
                         </Setter>
 
                     </Style>
-                </RichTextBox.Style>
-            </RichTextBox>
+
+                    <Style TargetType="Paragraph">
+                        <Setter Property="Margin" Value="0 0 0 10"/>
+                    </Style>
+                </Border.Resources>
+            </Border>
+            
         
         </Grid>
     </Border>

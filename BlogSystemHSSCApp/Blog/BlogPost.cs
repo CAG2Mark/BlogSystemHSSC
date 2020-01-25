@@ -74,12 +74,12 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref isArchived, value);
         }
 
-        private FlowDocument document;
+        private LinkedRichDocument document;
         [XmlIgnore]
         /// <summary>
         /// The document containing all of the post data.
         /// </summary>
-        public FlowDocument Document
+        public LinkedRichDocument Document
         {
             get => document;
             set => Set(ref document, value);
@@ -90,19 +90,19 @@ namespace BlogSystemHSSC.Blog
             get
             {
                 if (Document == null) return "";
-                return XamlWriter.Save(Document);
+                return XamlWriter.Save(Document.AssignedDocument);
             }
        
             set 
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    Document = new FlowDocument();
+                    Document.AssignedDocument = new FlowDocument();
                     return;
                 }
 
                 var stream = new XmlTextReader(new StringReader(value));
-                Document = (FlowDocument)XamlReader.Load(stream);
+                Document = new LinkedRichDocument((FlowDocument)XamlReader.Load(stream));
             }
         }
     }

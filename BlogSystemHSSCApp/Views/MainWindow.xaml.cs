@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlogSystemHSSC.Blog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,10 @@ namespace BlogSystemHSSC.Views
         public MainWindow()
         {
             InitializeComponent();
+
+            var vm = (BlogViewModel)DataContext;
+
+            vm.PostCreated += OnPostEditRequest;
         }
 
         #region top bar controls
@@ -59,11 +64,11 @@ namespace BlogSystemHSSC.Views
 
         #endregion
 
-        private void Home_RequestOpenPost(object sender, Blog.BlogPostEventArgs e)
+        private void OnPostEditRequest(object sender, BlogPostEventArgs e)
         {
             var post = e.Post;
-            MasterTabControl.SelectedIndex = 1;
             EditorPage.JumpToBlogPost(post);
+            MasterTabControl.SelectedIndex = 1;
         }
     }
 }

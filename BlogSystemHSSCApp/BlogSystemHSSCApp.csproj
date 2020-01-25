@@ -89,6 +89,8 @@
     </ApplicationDefinition>
     <Compile Include="BindableBase.cs" />
     <Compile Include="Blog\BlogModel.cs" />
+    <Compile Include="Blog\LinkedRichDocument.cs" />
+    <Compile Include="CustomControls\DisconnectableRtb.cs" />
     <Compile Include="CustomControls\NumericUpDown.xaml.cs">
       <DependentUpon>NumericUpDown.xaml</DependentUpon>
     </Compile>

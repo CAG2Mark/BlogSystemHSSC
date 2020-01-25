@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Xml.Serialization;
 
@@ -224,6 +225,9 @@ namespace BlogSystemHSSC.Blog
 
             blogEdited();
 
+            // open the blog post in the view
+            openBlogPost(newPost);
+
             // notify the view
             PostCreated?.Invoke(this, new BlogPostEventArgs(newPost));
         }
@@ -239,16 +243,18 @@ namespace BlogSystemHSSC.Blog
             saveBlog();
         }
 
+
         /// <summary>
         /// Adds a blog post editor to the TabControl in the view.
         /// </summary>
         private void openBlogPost(object param)
         {
             var post = (BlogPost)param;
+            if (!OpenBlogPosts.Contains(post)) OpenBlogPosts.Add(post);
 
-            if (!openBlogPosts.Contains(post))
-                openBlogPosts.Add(post);
         }
+
+
 
         /// <summary>
         /// Closes a blog post editor in the tabcontrol in the editor.
@@ -257,8 +263,8 @@ namespace BlogSystemHSSC.Blog
         {
             var post = (BlogPost)param;
 
-            if (openBlogPosts.Contains(post))
-                openBlogPosts.Remove(post);
+            if (OpenBlogPosts.Contains(post))
+                OpenBlogPosts.Remove(post);
         }
 
 

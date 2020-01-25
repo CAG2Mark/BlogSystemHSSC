@@ -86,7 +86,11 @@ namespace BlogSystemHSSC.CustomControls
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
-                    throw new NotImplementedException("Replace not implemented yet");
+
+                    UpdateSelectedItem();
+
+                    break;
+                    //throw new NotImplementedException("Replace not implemented yet");
             }
         }
 

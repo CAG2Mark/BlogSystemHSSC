@@ -33,7 +33,7 @@ namespace BlogSystemHSSC.Views
             typeof(PostEditor),
             new PropertyMetadata(
                 new BlogPost(),
-                (o, e) => ((PostEditor)o).OnPropertyChanged(nameof(BlogPost))
+                (o, e) => ((PostEditor)o).blogPostChanged()
                 )
             );
 
@@ -43,13 +43,16 @@ namespace BlogSystemHSSC.Views
             set => SetValue(BlogPostProperty, value);
         }
 
+        private void blogPostChanged()
+        {
+            OnPropertyChanged(nameof(BlogPost));
+        }
+
 
         #endregion
         public PostEditor()
         {
             InitializeComponent();
-
-            Console.Write("New editor created");
         }
 
         #region IBindable members

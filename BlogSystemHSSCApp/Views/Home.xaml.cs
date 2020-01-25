@@ -40,8 +40,8 @@ namespace BlogSystemHSSC.Views
 
             InitializeComponent();
 
-            //browser = new ChromiumWebBrowser("https://google.com");
-            //WfHost.Child = browser;
+            browser = new ChromiumWebBrowser("https://google.com");
+            WfHost.Child = browser;
         }
 
         public event EventHandler<BlogPostEventArgs> RequestOpenPost;

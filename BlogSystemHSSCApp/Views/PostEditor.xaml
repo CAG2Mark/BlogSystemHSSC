@@ -37,7 +37,7 @@
 
         </Grid>
 
-        <customcontrols:RichTextEditor Grid.Row="1" RichDocument="{Binding BlogPost.Document}"></customcontrols:RichTextEditor>
+        <customcontrols:RichTextEditor x:Name="Editor"  Grid.Row="1" RichDocument="{Binding BlogPost.Document}"></customcontrols:RichTextEditor>
 
     </Grid>
 </UserControl>
