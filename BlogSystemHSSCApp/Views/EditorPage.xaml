@@ -8,11 +8,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Background="{StaticResource Light6Brush}" DataContext="{StaticResource BlogViewModel}">
 
-    <TabControl x:Name="MasterTabControl"  FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" ItemsSource="{Binding OpenBlogPosts, Mode=TwoWay}" BorderThickness="0"
+    <customcontrols:NonReloadingTabControl x:Name="MasterTabControl"  FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" ItemsSource="{Binding OpenBlogPosts, Mode=TwoWay}" BorderThickness="0"
                 Background="{StaticResource Light1Brush}">
 
 
-        <TabControl.Resources>
+        <customcontrols:NonReloadingTabControl.Resources>
             <Style TargetType="TabItem">
 
                 <!-- THE BELOW 3 LINES ARE NOT BY CODE. IT IS FROM HERE: 
@@ -49,9 +49,9 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-        </TabControl.Resources>
+        </customcontrols:NonReloadingTabControl.Resources>
 
-        <TabControl.ItemTemplate>
+        <customcontrols:NonReloadingTabControl.ItemTemplate>
             <DataTemplate>
                 <DockPanel LastChildFill="True" Height="32">
                     <TextBlock Text="{Binding Title}"  MinWidth="70" MaxWidth="130" Margin="2 2 4 4" VerticalAlignment="Center"></TextBlock>
@@ -94,14 +94,14 @@
                     </Button>
                 </DockPanel>
             </DataTemplate>
-        </TabControl.ItemTemplate>
+        </customcontrols:NonReloadingTabControl.ItemTemplate>
 
-        <TabControl.ContentTemplate>
+        <customcontrols:NonReloadingTabControl.ContentTemplate>
             <DataTemplate>
                 <local:PostEditor BlogPost="{Binding}" PostChanged="PostEditor_PostChanged"></local:PostEditor>
             </DataTemplate>
-        </TabControl.ContentTemplate>
+        </customcontrols:NonReloadingTabControl.ContentTemplate>
 
-    </TabControl>
+    </customcontrols:NonReloadingTabControl>
 </UserControl>
                                                                               

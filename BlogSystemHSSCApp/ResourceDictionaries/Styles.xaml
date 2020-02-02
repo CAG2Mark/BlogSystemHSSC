@@ -626,7 +626,7 @@
 
     <!-- Credit: http://www.pluralsight-training.net/community/blogs/eburke/archive/2009/04/30/keeping-the-wpf-tab-control-from-destroying-its-children.aspx -->
 
-    <Style TargetType="customcontrols:TabControlEx">
+    <Style TargetType="customcontrols:NonReloadingTabControl">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabControl}">

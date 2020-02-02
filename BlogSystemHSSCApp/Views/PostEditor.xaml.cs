@@ -37,6 +37,9 @@ namespace BlogSystemHSSC.Views
                 )
             );
 
+        /// <summary>
+        /// The blog post assigned to this editor.
+        /// </summary>
         public BlogPost BlogPost
         {
             get => (BlogPost)GetValue(BlogPostProperty);
@@ -46,6 +49,19 @@ namespace BlogSystemHSSC.Views
         private void blogPostChanged()
         {
             OnPropertyChanged(nameof(BlogPost));
+
+            if (BlogPost != null)
+                BlogPost.PropertyChanged += BlogPost_PropertyChanged;
+        }
+
+        private void BlogPost_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // Brute force method to update the rich text box's document
+
+            if (e.PropertyName.Equals("Title"))
+            {
+                Editor.setChild();
+            }
         }
 
 

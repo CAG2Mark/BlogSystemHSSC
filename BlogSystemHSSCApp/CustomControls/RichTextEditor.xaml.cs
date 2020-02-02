@@ -75,7 +75,7 @@ namespace BlogSystemHSSC.CustomControls
             disconnectInvokedFromThis = false;
         }
 
-        private void setChild()
+        public void setChild()
         {
             // Disconnect editortextbox from its previous parent.
             disconnectInvokedFromThis = true;
@@ -250,6 +250,8 @@ namespace BlogSystemHSSC.CustomControls
             var dialog = new OpenFileDialog();
             dialog.Filter = "Image files (*.jpg, *.jpeg, *.png) | *.jpg; *.jpeg; *.png";
 
+            EditorTextBox.Focus();
+
             if (dialog.ShowDialog() == false) return;
 
             // Credit: https://social.msdn.microsoft.com/Forums/vstudio/en-US/e4b322c2-2553-4802-bd0d-fe7ef7e90b37/inserting-image-into-richtextbox-control?forum=wpf
@@ -266,7 +268,7 @@ namespace BlogSystemHSSC.CustomControls
 
                 image.Height = 250;
 
-                EditorTextBox.Document.Blocks.Add(p);
+                RichDocument.AssignedDocument.Blocks.InsertAfter(EditorTextBox.CaretPosition.Paragraph.PreviousBlock, p);
             }
             catch (Exception)
             {

@@ -74,7 +74,7 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref isArchived, value);
         }
 
-        private LinkedRichDocument document;
+        private LinkedRichDocument document = new LinkedRichDocument(new FlowDocument());
         [XmlIgnore]
         /// <summary>
         /// The document containing all of the post data.

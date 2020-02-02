@@ -13,29 +13,39 @@ namespace BlogSystemHSSC.CustomControls
 
     // NOTE: Not my code.
     // Credit: 
-    // http://www.pluralsight-training.net/community/blogs/eburke/archive/2009/04/30/keeping-the-wpf-tab-control-from-destroying-its-children.aspx
-    [TemplatePart(Name = "PART_ItemsHolder", Type = typeof(Panel))]
-    public class TabControlEx : TabControl
-    {
-        private Panel ItemsHolderPanel = null;
+    // https://github.com/cefsharp/CefSharp/blob/master/CefSharp.Wpf.Example/Controls/NonReloadingTabControl.cs
 
-        public TabControlEx()
-            : base()
+
+    /// <summary>
+    /// Extended TabControl which saves the displayed item so you don't get the performance hit of
+    /// unloading and reloading the VisualTree when switching tabs
+    /// </summary>
+    /// <remarks>
+    /// Based on example from http://stackoverflow.com/a/9802346, which in turn is based on
+    /// http://www.pluralsight-training.net/community/blogs/eburke/archive/2009/04/30/keeping-the-wpf-tab-control-from-destroying-its-children.aspx
+    /// with some modifications so it reuses a TabItem's ContentPresenter when doing drag/drop operations
+    /// </remarks>
+    [TemplatePart(Name = "PART_ItemsHolder", Type = typeof(Panel))]
+    public class NonReloadingTabControl : TabControl
+    {
+        private Panel itemsHolderPanel;
+
+        public NonReloadingTabControl()
         {
             // This is necessary so that we get the initial databound selected item
-            ItemContainerGenerator.StatusChanged += ItemContainerGenerator_StatusChanged;
+            ItemContainerGenerator.StatusChanged += ItemContainerGeneratorStatusChanged;
         }
 
         /// <summary>
         /// If containers are done, generate the selected item
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ItemContainerGenerator_StatusChanged(object sender, EventArgs e)
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="EventArgs"/> instance containing the event data.</param>
+        private void ItemContainerGeneratorStatusChanged(object sender, EventArgs e)
         {
-            if (this.ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
+            if (ItemContainerGenerator.Status == GeneratorStatus.ContainersGenerated)
             {
-                this.ItemContainerGenerator.StatusChanged -= ItemContainerGenerator_StatusChanged;
+                ItemContainerGenerator.StatusChanged -= ItemContainerGeneratorStatusChanged;
                 UpdateSelectedItem();
             }
         }
@@ -46,25 +56,27 @@ namespace BlogSystemHSSC.CustomControls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            ItemsHolderPanel = GetTemplateChild("PART_ItemsHolder") as Panel;
+            itemsHolderPanel = GetTemplateChild("PART_ItemsHolder") as Panel;
             UpdateSelectedItem();
         }
 
         /// <summary>
         /// When the items change we remove any generated panel children and add any new ones as necessary
         /// </summary>
-        /// <param name="e"></param>
+        /// <param name="e">The <see cref="NotifyCollectionChangedEventArgs"/> instance containing the event data.</param>
         protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e)
         {
             base.OnItemsChanged(e);
 
-            if (ItemsHolderPanel == null)
+            if (itemsHolderPanel == null)
+            {
                 return;
+            }
 
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Reset:
-                    ItemsHolderPanel.Children.Clear();
+                    itemsHolderPanel.Children.Clear();
                     break;
 
                 case NotifyCollectionChangedAction.Add:
@@ -73,9 +85,11 @@ namespace BlogSystemHSSC.CustomControls
                     {
                         foreach (var item in e.OldItems)
                         {
-                            ContentPresenter cp = FindChildContentPresenter(item);
+                            var cp = FindChildContentPresenter(item);
                             if (cp != null)
-                                ItemsHolderPanel.Children.Remove(cp);
+                            {
+                                itemsHolderPanel.Children.Remove(cp);
+                            }
                         }
                     }
 
@@ -86,11 +100,7 @@ namespace BlogSystemHSSC.CustomControls
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
-
-                    UpdateSelectedItem();
-
-                    break;
-                    //throw new NotImplementedException("Replace not implemented yet");
+                    throw new NotImplementedException("Replace not implemented yet");
             }
         }
 
@@ -102,56 +112,76 @@ namespace BlogSystemHSSC.CustomControls
 
         private void UpdateSelectedItem()
         {
-            if (ItemsHolderPanel == null)
+            if (itemsHolderPanel == null)
+            {
                 return;
+            }
 
             // Generate a ContentPresenter if necessary
-            TabItem item = GetSelectedTabItem();
+            var item = GetSelectedTabItem();
             if (item != null)
+            {
                 CreateChildContentPresenter(item);
+            }
 
             // show the right child
-            foreach (ContentPresenter child in ItemsHolderPanel.Children)
+            foreach (ContentPresenter child in itemsHolderPanel.Children)
+            {
                 child.Visibility = ((child.Tag as TabItem).IsSelected) ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
         private ContentPresenter CreateChildContentPresenter(object item)
         {
             if (item == null)
+            {
                 return null;
+            }
 
-            ContentPresenter cp = FindChildContentPresenter(item);
+            var cp = FindChildContentPresenter(item);
 
             if (cp != null)
+            {
                 return cp;
+            }
 
-            // the actual child to be added.  cp.Tag is a reference to the TabItem
-            cp = new ContentPresenter();
-            cp.Content = (item is TabItem) ? (item as TabItem).Content : item;
-            cp.ContentTemplate = this.SelectedContentTemplate;
-            cp.ContentTemplateSelector = this.SelectedContentTemplateSelector;
-            cp.ContentStringFormat = this.SelectedContentStringFormat;
-            cp.Visibility = Visibility.Collapsed;
-            cp.Tag = (item is TabItem) ? item : (this.ItemContainerGenerator.ContainerFromItem(item));
-            ItemsHolderPanel.Children.Add(cp);
+            var tabItem = item as TabItem;
+            cp = new ContentPresenter
+            {
+                Content = (tabItem != null) ? tabItem.Content : item,
+                ContentTemplate = this.SelectedContentTemplate,
+                ContentTemplateSelector = this.SelectedContentTemplateSelector,
+                ContentStringFormat = this.SelectedContentStringFormat,
+                Visibility = Visibility.Collapsed,
+                Tag = tabItem ?? (this.ItemContainerGenerator.ContainerFromItem(item))
+            };
+            itemsHolderPanel.Children.Add(cp);
             return cp;
         }
 
         private ContentPresenter FindChildContentPresenter(object data)
         {
             if (data is TabItem)
+            {
                 data = (data as TabItem).Content;
+            }
 
             if (data == null)
+            {
                 return null;
+            }
 
-            if (ItemsHolderPanel == null)
+            if (itemsHolderPanel == null)
+            {
                 return null;
+            }
 
-            foreach (ContentPresenter cp in ItemsHolderPanel.Children)
+            foreach (ContentPresenter cp in itemsHolderPanel.Children)
             {
                 if (cp.Content == data)
+                {
                     return cp;
+                }
             }
 
             return null;
@@ -159,13 +189,13 @@ namespace BlogSystemHSSC.CustomControls
 
         protected TabItem GetSelectedTabItem()
         {
-            object selectedItem = base.SelectedItem;
+            var selectedItem = SelectedItem;
             if (selectedItem == null)
+            {
                 return null;
+            }
 
-            TabItem item = selectedItem as TabItem;
-            if (item == null)
-                item = base.ItemContainerGenerator.ContainerFromIndex(base.SelectedIndex) as TabItem;
+            var item = selectedItem as TabItem ?? ItemContainerGenerator.ContainerFromIndex(SelectedIndex) as TabItem;
 
             return item;
         }

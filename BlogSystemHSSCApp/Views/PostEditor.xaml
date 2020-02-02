@@ -11,6 +11,7 @@
     <Grid Margin="16" DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
@@ -37,7 +38,24 @@
 
         </Grid>
 
-        <customcontrols:RichTextEditor x:Name="Editor"  Grid.Row="1" RichDocument="{Binding BlogPost.Document}"></customcontrols:RichTextEditor>
+        <Grid Grid.Row="1" Margin="0 0 0 6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <DockPanel LastChildFill="True">
+                <TextBlock VerticalAlignment="Center" Margin="0 0 6 0">Author</TextBlock>
+                <TextBox Margin="0 0 6 0" Text="{Binding BlogPost.Author}"></TextBox>
+            </DockPanel>
+
+            <DockPanel Grid.Column="1" Margin="8 0 0 0">
+                <TextBlock VerticalAlignment="Center" Margin="0 0 6 0">Categories</TextBlock>
+            </DockPanel>
+
+        </Grid>
+        
+        <customcontrols:RichTextEditor x:Name="Editor"  Grid.Row="2" RichDocument="{Binding BlogPost.Document}"></customcontrols:RichTextEditor>
 
     </Grid>
 </UserControl>

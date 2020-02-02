@@ -88,9 +88,24 @@ namespace BlogSystemHSSC.Views
                 int sourceIndex = posts.IndexOf(postSource);
                 int targetIndex = posts.IndexOf(postTarget);
 
-                var tmp = posts[sourceIndex];
-                posts[sourceIndex] = posts[targetIndex];
-                posts[targetIndex] = tmp;
+                // Don't use this code. It replaces items which is not supported by TabControlEx.
+
+                // var tmp = posts[sourceIndex];
+                // posts[sourceIndex] = posts[targetIndex];
+                // posts[targetIndex] = tmp;
+
+                posts.RemoveAt(sourceIndex);
+                posts.Insert(sourceIndex, postTarget);
+
+                posts.RemoveAt(targetIndex);
+                if (targetIndex > posts.Count - 1)
+                {
+                    posts.Add(postSource);
+                }
+                else
+                {
+                    posts.Insert(targetIndex, postSource);
+                }
 
                 MasterTabControl.SelectedIndex = targetIndex;
             }
