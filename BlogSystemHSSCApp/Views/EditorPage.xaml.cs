@@ -113,6 +113,8 @@ namespace BlogSystemHSSC.Views
 
         #endregion
 
+        #region tab control functionality
+
         private bool mouseOverCloseButton;
 
         private void CloseButton_MouseEnter(object sender, MouseEventArgs e)
@@ -124,5 +126,132 @@ namespace BlogSystemHSSC.Views
         {
             mouseOverCloseButton = false;
         }
+
+        #endregion
+
+        private void EditPost(object sender, RoutedEventArgs e)
+        {
+            // get the blog post
+            var obj = (Button)sender;
+            var post = (BlogPost)obj.CommandParameter;
+
+            // execute the command
+            var vm = (BlogViewModel)DataContext;
+            if (vm.OpenBlogPostCommand.CanExecute(post))
+                vm.OpenBlogPostCommand.Execute(post);
+
+            JumpToBlogPost(post);
+        }
+
+        #region categories view
+
+        private async void CategoryClick(object sender, MouseButtonEventArgs e)
+        {
+            // detect double click, should only fire on double click
+            if (e.ClickCount != 2) return;
+
+            var grid = (Grid)sender;
+
+            // These are categories that should not be edited
+            var categoryName = ((BlogCategory)grid.DataContext).Name;
+            if (categoryName.Equals("All") || categoryName.Equals("Archived")) return;
+
+            var editGrid = (Grid)grid.Children[0];
+
+            editGrid.Visibility = Visibility.Visible;
+
+            // give the UI time to respond before selecting all text in textbox
+
+            await Task.Delay(1);
+
+            // select all text
+            var textBox = (TextBox)editGrid.Children[0];
+            textBox.Focus();
+            textBox.SelectAll();
+        }
+
+        private void CategoryEditDone(object sender, RoutedEventArgs e)
+        {
+            var editGrid = (Grid)((Button)sender).CommandParameter;
+            editGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private bool hasPendingCategoryCreate;
+
+        private void CategoryCreated(object sender, RoutedEventArgs e)
+        {
+            hasPendingCategoryCreate = true;
+        }
+
+        private async void CategoryLoaded(object sender, RoutedEventArgs e)
+        {
+            if (!hasPendingCategoryCreate) return;
+
+            var grid = (Grid)sender;
+
+            var editGrid = (Grid)grid.Children[0];
+
+            editGrid.Visibility = Visibility.Visible;
+
+            // give the UI time to respond before selecting all text in textbox
+
+            await Task.Delay(1);
+
+            // select all text
+            var textBox = (TextBox)editGrid.Children[0];
+            textBox.Focus();
+            textBox.SelectAll();
+
+            hasPendingCategoryCreate = false;
+        }
+
+
+        private void CategoryTextBoxKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape || e.Key == Key.Enter)
+            {
+                var textBox = (TextBox)sender;
+                var editGrid = (Grid)textBox.Parent;
+                editGrid.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void CategoryTextBoxLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (isMouseOverDeleteButton) return;
+
+            var textBox = (TextBox)sender;
+            var editGrid = (Grid)textBox.Parent;
+            editGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void DeleteCategoryClick(object sender, RoutedEventArgs e)
+        {
+            var category = (BlogCategory)((Button)sender).CommandParameter;
+
+            if (MessageBox.Show("Are you sure you want to delete the category \"" + category.ToString() + "\"?", "Delete Category", MessageBoxButton.YesNo)
+                == MessageBoxResult.Yes)
+            {
+                var vm = (BlogViewModel)DataContext;
+                if (vm.DeleteCategoryCommand.CanExecute(category))
+                    vm.DeleteCategoryCommand.Execute(category);
+            }
+        }
+
+        bool isMouseOverDeleteButton;
+
+        private void DeleteButtonMouseEnter(object sender, MouseEventArgs e)
+        {
+            isMouseOverDeleteButton = true;
+        }
+
+        private void DeleteButtonMouseLeave(object sender, MouseEventArgs e)
+        {
+            isMouseOverDeleteButton = false;
+        }
+
+        #endregion
+
+
     }
 }

@@ -23,6 +23,9 @@ namespace BlogSystemHSSC.Blog
         public BlogViewModel()
         {
             if (!loadBlog()) MessageBox.Show("Could not load the blog file");
+
+            VisibleCategories.Add(new BlogCategory("All"));
+            VisibleCategories.Add(new BlogCategory("Archived"));
         }
 
         #region serialzation
@@ -57,7 +60,7 @@ namespace BlogSystemHSSC.Blog
             {
                 return false;
             }
-            
+
         }
 
         /// <summary>
@@ -112,6 +115,13 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref currentPost, value);
         }
 
+        private ObservableCollection<BlogCategory> visibleCategories = new ObservableCollection<BlogCategory>();
+        public ObservableCollection<BlogCategory> VisibleCategories 
+        { 
+            get => visibleCategories;
+            set => Set(ref visibleCategories, value); 
+        }
+
         #endregion
 
         #endregion
@@ -144,11 +154,11 @@ namespace BlogSystemHSSC.Blog
 
         #endregion
 
+        // Josh Smith's implementation
         #region Commands
 
         private bool canExecute = true;
 
-        // Josh Smith's implementation.
         private RelayCommand createPostCommand;
         public ICommand CreatePostCommand
         {
@@ -192,6 +202,7 @@ namespace BlogSystemHSSC.Blog
         }
 
         private RelayCommand closeBlogPostCommand;
+
         public ICommand CloseBlogPostCommand
         {
             get
@@ -204,6 +215,35 @@ namespace BlogSystemHSSC.Blog
                 return closeBlogPostCommand;
             }
         }
+
+        private RelayCommand createCategoryCommand;
+        public ICommand CreateCategoryCommand
+        {
+            get
+            {
+                if (createCategoryCommand == null)
+                {
+                    createCategoryCommand = new RelayCommand(param => createCategory(),
+                        param => this.canExecute);
+                }
+                return createCategoryCommand;
+            }
+        }
+
+        private RelayCommand deleteCategoryCommand;
+        public ICommand DeleteCategoryCommand
+        {
+            get
+            {
+                if (deleteCategoryCommand == null)
+                {
+                    deleteCategoryCommand = new RelayCommand(param => deleteCategory(param),
+                        param => this.canExecute);
+                }
+                return deleteCategoryCommand;
+            }
+        }
+
 
         #endregion
 
@@ -267,6 +307,21 @@ namespace BlogSystemHSSC.Blog
                 OpenBlogPosts.Remove(post);
         }
 
+
+        #endregion
+
+        #region categories
+
+
+        private void createCategory()
+        {
+            VisibleCategories.Add(new BlogCategory("New Category"));
+        }
+        
+        private void deleteCategory(object param)
+        {
+            VisibleCategories.Remove((BlogCategory)param);
+        }
 
         #endregion
 

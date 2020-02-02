@@ -6,102 +6,265 @@
              xmlns:local="clr-namespace:BlogSystemHSSC.Views"
              xmlns:customcontrols="clr-namespace:BlogSystemHSSC.CustomControls"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Background="{StaticResource Light6Brush}" DataContext="{StaticResource BlogViewModel}">
+             d:DesignHeight="720" d:DesignWidth="1280" Background="{StaticResource Light6Brush}" DataContext="{StaticResource BlogViewModel}">
 
-    <customcontrols:NonReloadingTabControl x:Name="MasterTabControl"  FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" ItemsSource="{Binding OpenBlogPosts, Mode=TwoWay}" BorderThickness="0"
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Border  Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 2 0">
+            <StackPanel Orientation="Horizontal">
+
+                <Border Padding="12" Background="{StaticResource Light4Brush}">
+                    <StackPanel  Width="220">
+
+                        <DockPanel>
+                            <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProBold}" Foreground="{StaticResource Dark0Brush}" FontSize="24">Categories</TextBlock>
+
+                            
+                            <customcontrols:RoundedButton HorizontalAlignment="Right" Margin="-1" Click="CategoryCreated" Command="{Binding CreateCategoryCommand}">
+                                <Path Data="{StaticResource AddIcon}" Margin="10"></Path>
+                            </customcontrols:RoundedButton>
+                        </DockPanel>
+                        
+                        <ListBox SelectedIndex="0"  ItemsSource="{Binding VisibleCategories}" Margin="-12 12 -12 0">
+
+                            <ListBox.Style>
+                                <Style TargetType="ListBox">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBox">
+                                                <Border>
+                                                    <ScrollViewer VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly">
+                                                        <StackPanel IsItemsHost="True"/>
+                                                    </ScrollViewer>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.Style>
+
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Height="36" Margin="6 0 12 0" MouseDown="CategoryClick" Loaded="CategoryLoaded" DataContext="{Binding}">
+                                        <Grid x:Name="EditGrid" Visibility="Collapsed" Panel.ZIndex="1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <!-- AltTextboxStyle has an opaque background -->
+                                            <TextBox KeyDown="CategoryTextBoxKeyDown" LostFocus="CategoryTextBoxLostFocus" Text="{Binding Path=Value, Mode=TwoWay}" Margin="-7.5 -1 4 0" Style="{StaticResource AltTextboxStyle}"></TextBox>
+
+                                            <customcontrols:RoundedButton Grid.Column="2" Margin="4 0 0 0" Height="32" Width="32"
+                                                                          Click="DeleteCategoryClick" CommandParameter="{Binding}"
+                                                                          
+                                                                          MouseEnter="DeleteButtonMouseEnter"
+                                                                          MouseLeave="DeleteButtonMouseLeave">
+                                                <Path Data="{StaticResource DeleteIcon}" Fill="Gray" Stretch="Uniform" Margin="10"></Path>
+                                            </customcontrols:RoundedButton>
+                                        </Grid>
+
+                                        <TextBlock Margin="0 6 0 0" FontSize="18" Text="{Binding Path=Value}" SnapsToDevicePixels="True">
+                                        </TextBlock>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel  Margin="12" Width="300">
+
+                    <DockPanel>
+
+                        <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProBold}" Foreground="{StaticResource Dark0Brush}" FontSize="24">Posts</TextBlock>
+
+                        
+                        <customcontrols:RoundedButton HorizontalAlignment="Right" Margin="-1" Command="{Binding CreatePostCommand}">
+                            <Path Data="{StaticResource AddIcon}" Margin="10"></Path>
+                        </customcontrols:RoundedButton>
+                    </DockPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0 8 0 0">
+
+                        <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProRegular}" Foreground="{StaticResource Dark0Brush}" FontSize="18" Margin="0 0 6 0">Search</TextBlock>
+                        <TextBox VerticalAlignment="Center" Width="176"></TextBox>
+
+                    </StackPanel>
+
+                    <ListBox Grid.Row="2" ItemsSource="{Binding Blog.BlogPosts}"
+                                             Background="Transparent" BorderThickness="0" 
+                                             Padding="0 0 8 0" Margin="0 8 -8 0" ScrollViewer.CanContentScroll="True"
+                                             x:Name="CommandsListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                        <ListBox.Resources>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <ContentPresenter></ContentPresenter>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.Resources>
+
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel IsItemsHost="True"></StackPanel>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+
+                                    <DockPanel LastChildFill="True">
+                                        <StackPanel Margin="0 4">
+
+                                            <StackPanel.Resources>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="FontFamily" Value="{StaticResource SourceSansProRegular}"></Setter>
+                                                    <Setter Property="FontSize" Value="18"></Setter>
+                                                    <Setter Property="Foreground" Value="{StaticResource Dark0Brush}"></Setter>
+                                                </Style>
+                                            </StackPanel.Resources>
+
+                                            <!-- TITLE -->
+                                            <TextBlock FontWeight="Bold" Text="{Binding Title}"></TextBlock>
+
+                                            <StackPanel Orientation="Horizontal">
+                                                <!-- AUTHOR -->
+                                                <TextBlock Margin="0 0 8 0" Text="{Binding Author}"></TextBlock>
+
+                                                <!-- DATE -->
+                                                <TextBlock Foreground="{StaticResource Light10Brush}"
+                                                           Text="{Binding PublishTime, StringFormat='{}{0:dd/MM/yy}'}"></TextBlock>
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                        <!-- EDIT POST BUTTON -->
+                                        <customcontrols:RoundedButton HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                                      Click="EditPost" CommandParameter="{Binding}">
+                                            <Path Data="{StaticResource RightArrowIcon}" Margin="10" Fill="Gray" Stretch="Uniform"></Path>
+                                        </customcontrols:RoundedButton>
+                                    </DockPanel>
+
+                                    <Rectangle Height="2" Fill="{StaticResource BorderColorDark1Brush}"></Rectangle>
+
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <customcontrols:NonReloadingTabControl Grid.Column="1" x:Name="MasterTabControl"  FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" ItemsSource="{Binding OpenBlogPosts, Mode=TwoWay}" BorderThickness="0"
                 Background="{StaticResource Light1Brush}">
 
 
-        <customcontrols:NonReloadingTabControl.Resources>
-            <Style TargetType="TabItem">
+            <customcontrols:NonReloadingTabControl.Resources>
+                <Style TargetType="TabItem">
 
-                <!-- THE BELOW 3 LINES ARE NOT BY CODE. IT IS FROM HERE: 
+                    <!-- THE BELOW 3 LINES ARE NOT BY CODE. IT IS FROM HERE: 
                 https://social.msdn.microsoft.com/Forums/vstudio/en-US/ed077477-a742-4c3d-bd4e-3efdd5dd6ba2/dragdrop-tabitem?forum=wpf -->
-                <Setter Property="AllowDrop" Value="True"/>
-                <EventSetter Event="PreviewMouseMove" Handler="TabItem_PreviewMouseMove"/>
-                <EventSetter Event="Drop" Handler="TabItem_Drop"/>
-                
-                <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="TabItem">
-                            <Border Name="ContentContainer" CornerRadius="2 2 0 0">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="Background" Value="Transparent"></Setter>
-                                    </Style>
-                                </Border.Style>
-                                <ContentPresenter x:Name="ContentSite"
+                    <Setter Property="AllowDrop" Value="True"/>
+                    <EventSetter Event="PreviewMouseMove" Handler="TabItem_PreviewMouseMove"/>
+                    <EventSetter Event="Drop" Handler="TabItem_Drop"/>
+
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border Name="ContentContainer" CornerRadius="2 2 0 0">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="Transparent"></Setter>
+                                        </Style>
+                                    </Border.Style>
+                                    <ContentPresenter x:Name="ContentSite"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
                                         ContentSource="Header"
                                         Margin="10,4" MinWidth="70"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True" SourceName="ContentContainer">
-                                    <Setter TargetName="ContentContainer" Property="Background" Value="{StaticResource Light3Brush}" />
-                                </Trigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter TargetName="ContentContainer" Property="Background" Value="{StaticResource Light1Brush}" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </customcontrols:NonReloadingTabControl.Resources>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True" SourceName="ContentContainer">
+                                        <Setter TargetName="ContentContainer" Property="Background" Value="{StaticResource Light3Brush}" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="ContentContainer" Property="Background" Value="{StaticResource Light1Brush}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </customcontrols:NonReloadingTabControl.Resources>
 
-        <customcontrols:NonReloadingTabControl.ItemTemplate>
-            <DataTemplate>
-                <DockPanel LastChildFill="True" Height="32">
-                    <TextBlock Text="{Binding Title}"  MinWidth="70" MaxWidth="130" Margin="2 2 4 4" VerticalAlignment="Center"></TextBlock>
-                    <Button x:Name="CloseButton" VerticalAlignment="Center" Click="CloseEditor" CommandParameter="{Binding}"
+            <customcontrols:NonReloadingTabControl.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel LastChildFill="True" Height="32">
+                        <TextBlock Text="{Binding Title}"  MinWidth="70" MaxWidth="130" Margin="2 2 4 4" VerticalAlignment="Center"></TextBlock>
+                        <Button x:Name="CloseButton" VerticalAlignment="Center" Click="CloseEditor" CommandParameter="{Binding}"
                             MouseEnter="CloseButton_MouseEnter"
                             MouseLeave="CloseButton_MouseLeave">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="Transparent"></Setter>
-                                <Setter Property="Height" Value="18"></Setter>
-                                <Setter Property="Width" Value="18" />
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent"></Setter>
+                                    <Setter Property="Height" Value="18"></Setter>
+                                    <Setter Property="Width" Value="18" />
+                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
 
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border CornerRadius="9" Background="{TemplateBinding Background}">
-                                                <Path x:Name="Cross" Data="{StaticResource CloseIcon}" Stretch="Uniform" Margin="5"  Fill="#666666"></Path>
-                                            </Border>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border CornerRadius="9" Background="{TemplateBinding Background}">
+                                                    <Path x:Name="Cross" Data="{StaticResource CloseIcon}" Stretch="Uniform" Margin="5"  Fill="#666666"></Path>
+                                                </Border>
 
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="Cross" Property="Fill" Value="{StaticResource Light1Brush}"></Setter>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Cross" Property="Fill" Value="{StaticResource Light1Brush}"></Setter>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
 
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#444444"></Setter>
-                                    </Trigger>
-                                    <Trigger Property="IsPressed" Value="True">
-                                        <Setter Property="Background" Value="#333333"></Setter>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </DockPanel>
-            </DataTemplate>
-        </customcontrols:NonReloadingTabControl.ItemTemplate>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#444444"></Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter Property="Background" Value="#333333"></Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </DockPanel>
+                </DataTemplate>
+            </customcontrols:NonReloadingTabControl.ItemTemplate>
 
-        <customcontrols:NonReloadingTabControl.ContentTemplate>
-            <DataTemplate>
-                <local:PostEditor BlogPost="{Binding}" PostChanged="PostEditor_PostChanged"></local:PostEditor>
-            </DataTemplate>
-        </customcontrols:NonReloadingTabControl.ContentTemplate>
+            <customcontrols:NonReloadingTabControl.ContentTemplate>
+                <DataTemplate>
+                    <local:PostEditor BlogPost="{Binding}" PostChanged="PostEditor_PostChanged"></local:PostEditor>
+                </DataTemplate>
+            </customcontrols:NonReloadingTabControl.ContentTemplate>
 
-    </customcontrols:NonReloadingTabControl>
+        </customcontrols:NonReloadingTabControl>
+        
+    </Grid>
+
+    
 </UserControl>
                                                                               
