@@ -10,14 +10,19 @@ namespace BlogSystemHSSC.Blog
     {
         public BlogCategory(string value)
         {
-            this.name = value;
+            name = value;
         }
 
         private string name;
         public string Name
         {
             get => name;
-            set => Set(ref this.name, value);
+            set
+            {
+                // Don't change the value if it equals all, archived or is empty
+                Set(ref name,
+                    !(value.Equals("All") || value.Equals("Archived") || string.IsNullOrWhiteSpace(value)) ? value : name);
+            }
         }
 
         public override string ToString()

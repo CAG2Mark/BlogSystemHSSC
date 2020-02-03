@@ -2,7 +2,9 @@
 using Microsoft.Win32;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +13,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 
 namespace BlogSystemHSSC.CustomControls
 {
@@ -55,6 +58,8 @@ namespace BlogSystemHSSC.CustomControls
 
                 EditorTextBox = RichDocument.AssignedTextBox;
                 EditorTextBox.RequestDisconnect += EditorTextBox_RequestDisconnect;
+
+                EditorTextBox.IsDocumentEnabled = true;
 
                 setChild();
             }
@@ -277,6 +282,65 @@ namespace BlogSystemHSSC.CustomControls
 
         }
 
+        // Credit: https://stackoverflow.com/questions/9279061/dynamically-adding-hyperlinks-to-a-richtextbox
+
+        private void addHyperlinkButtonClicked(object sender, RoutedEventArgs e)
+        {
+
+            EditorTextBox.IsDocumentEnabled = true;
+
+            if (EditorTextBox.Selection.IsEmpty)
+            {
+                MessageBox.Show("Please select some text to add a hyperlink.");
+                return;
+            }
+
+            TextRange tr = EditorTextBox.Selection;
+
+            // enter link
+
+            EnterUrlDialog d;
+            if (isUrl(tr.Text)) d = new EnterUrlDialog(tr.Text);
+            else d = new EnterUrlDialog();
+
+            if (d.ShowDialog() != true) return;
+            string URI = d.Url;
+
+            Hyperlink link = new Hyperlink(tr.Start, tr.End);
+
+            link.IsEnabled = true;
+
+            try
+            {
+                link.NavigateUri = new Uri(URI);
+            }
+            catch
+            {
+                try
+                {
+                    link.NavigateUri = new Uri("https://" + URI);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Link was in an incorrect format.");
+                    return;
+                }
+            }
+            link.RequestNavigate += new RequestNavigateEventHandler(link_RequestNavigate);
+        }
+
+        private bool isUrl(string text)
+        {
+            // Regex credit: https://urlregex.com/
+
+            return Regex.IsMatch(text,
+                @"^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&%\$#_]*)?$");
+        }
+
+        private void link_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(e.Uri.AbsoluteUri.ToString());
+        }
 
         #endregion
 

@@ -16,6 +16,7 @@ namespace BlogSystemHSSC.CustomControls
         public DisconnectableRtb(FlowDocument doc)
         {
             Document = doc;
+            IsDocumentEnabled = true;
         }
 
 

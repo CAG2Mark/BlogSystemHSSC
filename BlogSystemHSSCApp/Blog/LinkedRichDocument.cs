@@ -33,9 +33,10 @@ namespace BlogSystemHSSC.Blog
             set
             {
                 Set(ref assignedDocument, value);
-                if (AssignedTextBox == null) AssignedTextBox = new DisconnectableRtb(value);
+                if (AssignedTextBox == null) AssignedTextBox = new DisconnectableRtb(value) { IsDocumentEnabled = true };
             }
         }
+
         public DisconnectableRtb AssignedTextBox { get => assignedTextBox; set => Set(ref assignedTextBox, value); }
     }
 }

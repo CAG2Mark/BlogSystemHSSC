@@ -224,6 +224,17 @@
 
                     <Border Style="{StaticResource Separator}"></Border>
 
+                    <Button Style="{StaticResource EditorButton}" x:Name="HyperlinkButton"  
+                            Click="addHyperlinkButtonClicked"
+                            Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}">
+                        <Path Data="{StaticResource LinkIcon}"
+                              
+                              Width="20" Stretch="Uniform" Fill="Gray"></Path>
+
+                    </Button>
+
+                    <Border Style="{StaticResource Separator}"></Border>
+
 
                     <Button Style="{StaticResource EditorButton}" x:Name="AddImageButton"  
                             Click="addImageButtonClicked"

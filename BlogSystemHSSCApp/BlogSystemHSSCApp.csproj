@@ -92,6 +92,9 @@
     <Compile Include="Blog\LinkedRichDocument.cs" />
     <Compile Include="Blog\BlogCategory.cs" />
     <Compile Include="CustomControls\DisconnectableRtb.cs" />
+    <Compile Include="CustomControls\EnterUrlDialog.xaml.cs">
+      <DependentUpon>EnterUrlDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\NumericUpDown.xaml.cs">
       <DependentUpon>NumericUpDown.xaml</DependentUpon>
     </Compile>
@@ -104,6 +107,7 @@
     <Compile Include="IBindableBase.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="CustomControls\NonReloadingTabControl.cs" />
+    <Compile Include="ValueConverters.cs" />
     <Compile Include="Views\EditorPage.xaml.cs">
       <DependentUpon>EditorPage.xaml</DependentUpon>
     </Compile>
@@ -117,6 +121,10 @@
     <Compile Include="Website\PostListPageGenerator.cs" />
     <Compile Include="Website\PostPageGenerator.cs" />
     <Compile Include="Website\TagPageGenerator.cs" />
+    <Page Include="CustomControls\EnterUrlDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControls\NumericUpDown.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -126,6 +134,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ResourceDictionaries\Icons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResourceDictionaries\ValueConverters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

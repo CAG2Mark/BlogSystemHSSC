@@ -1,7 +1,9 @@
 ﻿using BlogSystemHSSC.Blog;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -19,21 +22,21 @@ namespace BlogSystemHSSC.Views
     /// <summary>
     /// Interaction logic for EditorPage.xaml
     /// </summary>
-    public partial class EditorPage : UserControl
+    public partial class EditorPage : UserControl, IBindableBase
     {
         public EditorPage()
         {
             InitializeComponent();
         }
 
-        private void PostEditor_PostChanged(object sender, EventArgs e)
+        private void postEditorPostChanged(object sender, EventArgs e)
         {
             var vm = (BlogViewModel)DataContext;
             if (vm.BlogEditedCommand.CanExecute(null))
                 vm.BlogEditedCommand.Execute(null);
         }
 
-        private void CloseEditor(object sender, RoutedEventArgs e)
+        private void closeEditor(object sender, RoutedEventArgs e)
         {
             // get the blog post
             var obj = (Button)sender;
@@ -45,10 +48,15 @@ namespace BlogSystemHSSC.Views
                 vm.CloseBlogPostCommand.Execute(post);
         }
 
-        public void JumpToBlogPost(BlogPost post)
+        public async void JumpToBlogPost(BlogPost post)
         {
-            if (MasterTabControl.Items.Count > 1)
+            await Task.Delay(10);
+            if (MasterTabControl.Items.Count >= 1)
             MasterTabControl.SelectedItem = post;
+
+            // Only toggle the sidebar if the window width is less than 1600
+            if (ActualWidth < 1600)
+                SidebarToggled = false;
         }
 
         #region draggable tab control
@@ -117,19 +125,19 @@ namespace BlogSystemHSSC.Views
 
         private bool mouseOverCloseButton;
 
-        private void CloseButton_MouseEnter(object sender, MouseEventArgs e)
+        private void closeButtonMouseEnter(object sender, MouseEventArgs e)
         {
             mouseOverCloseButton = true;
         }
 
-        private void CloseButton_MouseLeave(object sender, MouseEventArgs e)
+        private void closeButtonMouseLeave(object sender, MouseEventArgs e)
         {
             mouseOverCloseButton = false;
         }
 
         #endregion
 
-        private void EditPost(object sender, RoutedEventArgs e)
+        private void editPost(object sender, RoutedEventArgs e)
         {
             // get the blog post
             var obj = (Button)sender;
@@ -145,7 +153,7 @@ namespace BlogSystemHSSC.Views
 
         #region categories view
 
-        private async void CategoryClick(object sender, MouseButtonEventArgs e)
+        private async void categoryClick(object sender, MouseButtonEventArgs e)
         {
             // detect double click, should only fire on double click
             if (e.ClickCount != 2) return;
@@ -170,7 +178,7 @@ namespace BlogSystemHSSC.Views
             textBox.SelectAll();
         }
 
-        private void CategoryEditDone(object sender, RoutedEventArgs e)
+        private void categoryEditDone(object sender, RoutedEventArgs e)
         {
             var editGrid = (Grid)((Button)sender).CommandParameter;
             editGrid.Visibility = Visibility.Collapsed;
@@ -178,12 +186,12 @@ namespace BlogSystemHSSC.Views
 
         private bool hasPendingCategoryCreate;
 
-        private void CategoryCreated(object sender, RoutedEventArgs e)
+        private void categoryCreated(object sender, RoutedEventArgs e)
         {
             hasPendingCategoryCreate = true;
         }
 
-        private async void CategoryLoaded(object sender, RoutedEventArgs e)
+        private async void categoryLoaded(object sender, RoutedEventArgs e)
         {
             if (!hasPendingCategoryCreate) return;
 
@@ -206,7 +214,7 @@ namespace BlogSystemHSSC.Views
         }
 
 
-        private void CategoryTextBoxKeyDown(object sender, KeyEventArgs e)
+        private void categoryTextBoxKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape || e.Key == Key.Enter)
             {
@@ -216,7 +224,7 @@ namespace BlogSystemHSSC.Views
             }
         }
 
-        private void CategoryTextBoxLostFocus(object sender, RoutedEventArgs e)
+        private void categoryTextBoxLostFocus(object sender, RoutedEventArgs e)
         {
             if (isMouseOverDeleteButton) return;
 
@@ -225,7 +233,7 @@ namespace BlogSystemHSSC.Views
             editGrid.Visibility = Visibility.Collapsed;
         }
 
-        private void DeleteCategoryClick(object sender, RoutedEventArgs e)
+        private void deleteCategoryClick(object sender, RoutedEventArgs e)
         {
             var category = (BlogCategory)((Button)sender).CommandParameter;
 
@@ -240,18 +248,77 @@ namespace BlogSystemHSSC.Views
 
         bool isMouseOverDeleteButton;
 
-        private void DeleteButtonMouseEnter(object sender, MouseEventArgs e)
+        private void deleteButtonMouseEnter(object sender, MouseEventArgs e)
         {
             isMouseOverDeleteButton = true;
         }
 
-        private void DeleteButtonMouseLeave(object sender, MouseEventArgs e)
+        private void deleteButtonMouseLeave(object sender, MouseEventArgs e)
         {
             isMouseOverDeleteButton = false;
         }
 
         #endregion
 
+        #region sidebar
+
+        private bool sidebarToggled = true;
+        public bool SidebarToggled
+        {
+            get => sidebarToggled;
+            set
+            {
+                if (sidebarToggled != value)
+                {
+                    // toggle sidebar
+                    if (value) BeginStoryboard((Storyboard)MainGrid.Resources["ShowSidebarStoryboard"]);
+                    else BeginStoryboard((Storyboard)MainGrid.Resources["HideSidebarStoryboard"]);
+                }
+                Set(ref sidebarToggled, value);
+            }
+        }
+
+        private void toggleSidebar(object sender, RoutedEventArgs e)
+        {
+                SidebarToggled = !SidebarToggled;
+        }
+
+        #endregion
+
+
+        #region IBindableBase members
+
+        /// <summary>
+        /// Sets the value of a property such that it can be binded to the view.
+        /// </summary>
+        /// <typeparam name="T">The type of the field to set.</typeparam>
+        /// <param name="reference">The reference of the field to set.</param>
+        /// <param name="value">The value to set.</param>
+        /// <param name="propertyName">The property name of the calling member.</param>
+        public void Set<T>(ref T reference, T value, [CallerMemberName] string propertyName = null)
+        {
+            // set the reference value.
+            reference = value;
+            // call PropertyChanged on the property.
+            OnPropertyChanged(propertyName);
+        }
+
+        #region INotifyPropertyChanged members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Invokes PropertyChanged on a given propertyName.
+        /// </summary>
+        /// <param name="propertyName">The name of the property on which to call the PropertyChanged event on.</param>
+        public void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #endregion
+
+        #endregion
 
     }
 }

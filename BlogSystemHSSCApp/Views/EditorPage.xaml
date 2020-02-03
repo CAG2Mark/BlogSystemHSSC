@@ -8,14 +8,44 @@
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="1280" Background="{StaticResource Light6Brush}" DataContext="{StaticResource BlogViewModel}">
 
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Border  Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 2 0">
-            <StackPanel Orientation="Horizontal">
+        <Grid.Resources>
+            <Storyboard x:Key="HideSidebarStoryboard" Timeline.DesiredFrameRate="50">
+                <DoubleAnimation
+                    Storyboard.TargetName="Sidebar"
+                    Storyboard.TargetProperty="Width"
+                    From="568"
+                    To="0"
+                    Duration="0:0:0.35">
+                    <DoubleAnimation.EasingFunction>
+                        <QuadraticEase EasingMode="EaseInOut"></QuadraticEase>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+
+            <Storyboard x:Key="ShowSidebarStoryboard" Timeline.DesiredFrameRate="50">
+                <DoubleAnimation
+                    Duration="0:0:0.35"
+                    Storyboard.TargetName="Sidebar"
+                    Storyboard.TargetProperty="Width"
+                    From="0"
+                    To="568">
+                    <DoubleAnimation.EasingFunction>
+                        <QuadraticEase EasingMode="EaseInOut"></QuadraticEase>
+                    </DoubleAnimation.EasingFunction>
+                </DoubleAnimation>
+            </Storyboard>
+        </Grid.Resources>
+
+        <Border  Background="{StaticResource Light2Brush}"
+                 Width="568" x:Name="Sidebar">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 
                 <Border Padding="12" Background="{StaticResource Light4Brush}">
                     <StackPanel  Width="220">
@@ -24,7 +54,7 @@
                             <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProBold}" Foreground="{StaticResource Dark0Brush}" FontSize="24">Categories</TextBlock>
 
                             
-                            <customcontrols:RoundedButton HorizontalAlignment="Right" Margin="-1" Click="CategoryCreated" Command="{Binding CreateCategoryCommand}">
+                            <customcontrols:RoundedButton HorizontalAlignment="Right" Margin="-1" Click="categoryCreated" Command="{Binding CreateCategoryCommand}">
                                 <Path Data="{StaticResource AddIcon}" Margin="10"></Path>
                             </customcontrols:RoundedButton>
                         </DockPanel>
@@ -49,7 +79,7 @@
 
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Height="36" Margin="6 0 12 0" MouseDown="CategoryClick" Loaded="CategoryLoaded" DataContext="{Binding}">
+                                    <Grid Height="36" Margin="6 0 12 0" MouseDown="categoryClick" Loaded="categoryLoaded" DataContext="{Binding}">
                                         <Grid x:Name="EditGrid" Visibility="Collapsed" Panel.ZIndex="1">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -58,18 +88,18 @@
                                             </Grid.ColumnDefinitions>
                                             
                                             <!-- AltTextboxStyle has an opaque background -->
-                                            <TextBox KeyDown="CategoryTextBoxKeyDown" LostFocus="CategoryTextBoxLostFocus" Text="{Binding Path=Value, Mode=TwoWay}" Margin="-7.5 -1 4 0" Style="{StaticResource AltTextboxStyle}"></TextBox>
+                                            <TextBox KeyDown="categoryTextBoxKeyDown" LostFocus="categoryTextBoxLostFocus" Text="{Binding Path=Name, Mode=TwoWay}" Margin="-7.5 -1 4 0" Style="{StaticResource AltTextboxStyle}"></TextBox>
 
                                             <customcontrols:RoundedButton Grid.Column="2" Margin="4 0 0 0" Height="32" Width="32"
-                                                                          Click="DeleteCategoryClick" CommandParameter="{Binding}"
+                                                                          Click="deleteCategoryClick" CommandParameter="{Binding}"
                                                                           
-                                                                          MouseEnter="DeleteButtonMouseEnter"
-                                                                          MouseLeave="DeleteButtonMouseLeave">
+                                                                          MouseEnter="deleteButtonMouseEnter"
+                                                                          MouseLeave="deleteButtonMouseLeave">
                                                 <Path Data="{StaticResource DeleteIcon}" Fill="Gray" Stretch="Uniform" Margin="10"></Path>
                                             </customcontrols:RoundedButton>
                                         </Grid>
 
-                                        <TextBlock Margin="0 6 0 0" FontSize="18" Text="{Binding Path=Value}" SnapsToDevicePixels="True">
+                                        <TextBlock Margin="0 6 0 0" FontSize="18" Text="{Binding Path=Name}" SnapsToDevicePixels="True">
                                         </TextBlock>
                                     </Grid>
                                 </DataTemplate>
@@ -150,7 +180,7 @@
 
                                         <!-- EDIT POST BUTTON -->
                                         <customcontrols:RoundedButton HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                                      Click="EditPost" CommandParameter="{Binding}">
+                                                                      Click="editPost" CommandParameter="{Binding}">
                                             <Path Data="{StaticResource RightArrowIcon}" Margin="10" Fill="Gray" Stretch="Uniform"></Path>
                                         </customcontrols:RoundedButton>
                                     </DockPanel>
@@ -167,7 +197,41 @@
             </StackPanel>
         </Border>
 
-        <customcontrols:NonReloadingTabControl Grid.Column="1" x:Name="MasterTabControl"  FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" ItemsSource="{Binding OpenBlogPosts, Mode=TwoWay}" BorderThickness="0"
+        <Button Width="18" Grid.Column="1" Click="toggleSidebar" DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}}">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="FontSize" Value="18"></Setter>
+                    <Setter Property="Background" Value="#E1E1E1"></Setter>
+                    <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+                    <Setter Property="Cursor" Value="Hand"></Setter>
+
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 2 0">
+                                    <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"></ContentPresenter>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#DDDDDD"></Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+
+            <Grid>
+                <Path Data="{StaticResource LeftArrowIcon}" Margin="4" 
+                      Visibility="{Binding SidebarToggled, Converter={StaticResource BoolVisibilityConverter}}"></Path>
+                <Path Data="{StaticResource RightArrowIcon}" Margin="4" 
+                      Visibility="{Binding SidebarToggled, Converter={StaticResource BoolVisibilityConverter}, ConverterParameter=1}"></Path>
+            </Grid>
+        </Button>
+        
+        <customcontrols:NonReloadingTabControl Grid.Column="2" x:Name="MasterTabControl"  FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" ItemsSource="{Binding OpenBlogPosts, Mode=TwoWay}" BorderThickness="0"
                 Background="{StaticResource Light1Brush}">
 
 
@@ -214,9 +278,9 @@
                 <DataTemplate>
                     <DockPanel LastChildFill="True" Height="32">
                         <TextBlock Text="{Binding Title}"  MinWidth="70" MaxWidth="130" Margin="2 2 4 4" VerticalAlignment="Center"></TextBlock>
-                        <Button x:Name="CloseButton" VerticalAlignment="Center" Click="CloseEditor" CommandParameter="{Binding}"
-                            MouseEnter="CloseButton_MouseEnter"
-                            MouseLeave="CloseButton_MouseLeave">
+                        <Button x:Name="CloseButton" VerticalAlignment="Center" Click="closeEditor" CommandParameter="{Binding}"
+                            MouseEnter="closeButtonMouseEnter"
+                            MouseLeave="closeButtonMouseLeave">
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Background" Value="Transparent"></Setter>
@@ -257,7 +321,7 @@
 
             <customcontrols:NonReloadingTabControl.ContentTemplate>
                 <DataTemplate>
-                    <local:PostEditor BlogPost="{Binding}" PostChanged="PostEditor_PostChanged"></local:PostEditor>
+                    <local:PostEditor BlogPost="{Binding}" PostChanged="postEditorPostChanged"></local:PostEditor>
                 </DataTemplate>
             </customcontrols:NonReloadingTabControl.ContentTemplate>
 

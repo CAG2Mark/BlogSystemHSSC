@@ -666,4 +666,27 @@
 
     <!--#endregion-->
 
+    <Style TargetType="{x:Type Button}" x:Key="NavbarButtonStyle">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border CornerRadius="5" x:Name="Bd" Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#1AE9E9E9" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#2AE4E4E4" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>
