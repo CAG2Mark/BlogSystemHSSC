@@ -59,5 +59,71 @@ namespace BlogSystemHSSC.Views
 
             RequestOpenPost?.Invoke(this, new BlogPostEventArgs(post));
         }
+
+        #region mouseewheel speed
+
+        // Credit: https://stackoverflow.com/questions/876994/adjust-flowdocumentreaders-scroll-increment-when-viewingmode-set-to-scroll
+
+        private void HandleScrollSpeed(object sender, MouseWheelEventArgs e)
+        {
+            try
+            {
+                if (!(sender is DependencyObject))
+                    return;
+
+                ScrollViewer scrollViewer = (((DependencyObject)sender)).GetScrollViewer() as ScrollViewer;
+                ListBox lbHost = sender as ListBox; //Or whatever your UI element is
+
+                if (scrollViewer != null && lbHost != null)
+                {
+                    double scrollSpeed = 2;
+
+                    double offset = scrollViewer.VerticalOffset - (e.Delta * scrollSpeed / 6);
+                    if (offset < 0)
+                        scrollViewer.ScrollToVerticalOffset(0);
+                    else if (offset > scrollViewer.ExtentHeight)
+                        scrollViewer.ScrollToVerticalOffset(scrollViewer.ExtentHeight);
+                    else
+                        scrollViewer.ScrollToVerticalOffset(offset);
+
+                    e.Handled = true;
+                }
+                else
+                    throw new NotSupportedException("ScrollSpeed Attached Property is not attached to an element containing a ScrollViewer.");
+            }
+            catch (Exception ex)
+            {
+                //Do something...
+            }
+        }
+
+        #endregion
+    }
+
+    public static class Extensions
+    {
+        public static DependencyObject GetScrollViewer(this DependencyObject o)
+        {
+            // Return the DependencyObject if it is a ScrollViewer
+            if (o is ScrollViewer)
+            { return o; }
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(o); i++)
+            {
+                var child = VisualTreeHelper.GetChild(o, i);
+
+                var result = GetScrollViewer(child);
+                if (result == null)
+                {
+                    continue;
+                }
+                else
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
     }
 }

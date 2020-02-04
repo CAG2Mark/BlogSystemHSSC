@@ -108,28 +108,25 @@
                     </StackPanel>
                 </Border>
 
-                <StackPanel  Margin="12" Width="300">
+                <DockPanel Margin="12" Width="300">
 
-                    <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProBold}" Foreground="{StaticResource Dark0Brush}" FontSize="24">Posts</TextBlock>
+                    <DockPanel DockPanel.Dock="Top" Margin="0 8 0 0">
 
-                        <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProBold}" Foreground="{StaticResource Dark0Brush}" FontSize="24">Posts</TextBlock>
+                        <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProRegular}" Foreground="{StaticResource Dark0Brush}" FontSize="18" Margin="0 0 6 0">Search</TextBlock>
+                        <TextBox VerticalAlignment="Center" Width="136"></TextBox>
 
-                        
-                        <customcontrols:RoundedButton HorizontalAlignment="Right" Margin="-1" Command="{Binding CreatePostCommand}">
+
+                        <customcontrols:RoundedButton HorizontalAlignment="Right" Margin="-1 -1 18 -1" Command="{Binding CreatePostCommand}">
                             <Path Data="{StaticResource AddIcon}" Margin="10"></Path>
                         </customcontrols:RoundedButton>
                     </DockPanel>
-                    <StackPanel Orientation="Horizontal" Margin="0 8 0 0">
 
-                        <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProRegular}" Foreground="{StaticResource Dark0Brush}" FontSize="18" Margin="0 0 6 0">Search</TextBlock>
-                        <TextBox VerticalAlignment="Center" Width="176"></TextBox>
-
-                    </StackPanel>
-
-                    <ListBox Grid.Row="2" ItemsSource="{Binding Blog.BlogPosts}"
-                                             Background="Transparent" BorderThickness="0" 
-                                             Padding="0 0 8 0" Margin="0 8 -8 0" ScrollViewer.CanContentScroll="True"
-                                             x:Name="CommandsListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox PreviewMouseWheel="HandleScrollSpeed" DockPanel.Dock="Top" Grid.Row="2" ItemsSource="{Binding Blog.BlogPosts}" Height="Auto"
+                                         Background="Transparent" BorderThickness="0" 
+                                         Padding="0 0 8 0" Margin="0 8 -8 -12" ScrollViewer.CanContentScroll="False"
+                                         x:Name="CommandsListBox" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                         ScrollViewer.VerticalScrollBarVisibility="Visible">
 
                         <ListBox.Resources>
                             <Style TargetType="ListBoxItem">
@@ -143,12 +140,6 @@
                                 </Setter>
                             </Style>
                         </ListBox.Resources>
-
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel IsItemsHost="True"></StackPanel>
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
 
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -174,13 +165,13 @@
 
                                                 <!-- DATE -->
                                                 <TextBlock Foreground="{StaticResource Light10Brush}"
-                                                           Text="{Binding PublishTime, StringFormat='{}{0:dd/MM/yy}'}"></TextBlock>
+                                                       Text="{Binding PublishTime, StringFormat='{}{0:dd/MM/yy}'}"></TextBlock>
                                             </StackPanel>
                                         </StackPanel>
 
                                         <!-- EDIT POST BUTTON -->
                                         <customcontrols:RoundedButton HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                                      Click="editPost" CommandParameter="{Binding}">
+                                                                  Click="editPost" CommandParameter="{Binding}">
                                             <Path Data="{StaticResource RightArrowIcon}" Margin="10" Fill="Gray" Stretch="Uniform"></Path>
                                         </customcontrols:RoundedButton>
                                     </DockPanel>
@@ -193,7 +184,7 @@
                     </ListBox>
 
 
-                </StackPanel>
+                </DockPanel>
             </StackPanel>
         </Border>
 
