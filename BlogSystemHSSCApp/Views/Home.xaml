@@ -37,7 +37,7 @@
                 <ListBox PreviewMouseWheel="HandleScrollSpeed" DockPanel.Dock="Top" Grid.Row="2" ItemsSource="{Binding Blog.BlogPosts}" Height="Auto"
                                          Background="Transparent" BorderThickness="0" 
                                          Padding="0 0 8 0" Margin="0 8 -8 -12" ScrollViewer.CanContentScroll="False"
-                                         x:Name="CommandsListBox" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                         x:Name="CommandsListBox" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                          ScrollViewer.VerticalScrollBarVisibility="Visible">
 
                     <ListBox.Resources>
@@ -55,10 +55,14 @@
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel>
+                            <StackPanel x:Name="RootStackPanel" Background="Transparent">
 
-                                <DockPanel LastChildFill="True">
-                                    <StackPanel Margin="0 4">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Margin="0 4 -36 4">
 
                                         <StackPanel.Resources>
                                             <Style TargetType="TextBlock">
@@ -74,19 +78,30 @@
                                         <StackPanel Orientation="Horizontal">
                                             <!-- AUTHOR -->
                                             <TextBlock Margin="0 0 8 0" Text="{Binding Author}"></TextBlock>
-                                            
+
                                             <!-- DATE -->
                                             <TextBlock Foreground="{StaticResource Light10Brush}"
                                                        Text="{Binding PublishTime, StringFormat='{}{0:dd/MM/yy}'}"></TextBlock>
                                         </StackPanel>
                                     </StackPanel>
 
-                                    <!-- EDIT POST BUTTON -->
-                                    <customcontrols:RoundedButton HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                                  Click="EditPost" CommandParameter="{Binding}">
-                                        <Path Data="{StaticResource RightArrowIcon}" Margin="10" Fill="Gray" Stretch="Uniform"></Path>
-                                    </customcontrols:RoundedButton>
-                                </DockPanel>
+                                    <StackPanel Panel.ZIndex="1" Width="76" Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Right">
+
+                                        <!-- DELETE POST BUTTON -->
+                                        <customcontrols:RoundedButton HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource AlternateRoundedButton}"
+                                                                      Visibility="{Binding ElementName=RootStackPanel, Path=IsMouseOver,
+                                                                            Converter={StaticResource BoolVisibilityConverter}, ConverterParameter=2}"
+                                                                      Click="deletePost" CommandParameter="{Binding}" Margin="0 0 4 0">
+                                            <Path Data="{StaticResource DeleteIcon}" Margin="10" Fill="Gray" Stretch="Uniform"></Path>
+                                        </customcontrols:RoundedButton>
+
+                                        <!-- EDIT POST BUTTON -->
+                                        <customcontrols:RoundedButton HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                                      Click="editPost" CommandParameter="{Binding}">
+                                            <Path Data="{StaticResource RightArrowIcon}" Margin="10" Fill="Gray" Stretch="Uniform"></Path>
+                                        </customcontrols:RoundedButton>
+                                    </StackPanel>
+                                </Grid>
 
                                 <Rectangle Height="2" Fill="{StaticResource BorderColorDark1Brush}"></Rectangle>
 

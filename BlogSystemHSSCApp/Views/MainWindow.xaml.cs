@@ -70,5 +70,12 @@ namespace BlogSystemHSSC.Views
             EditorPage.JumpToBlogPost(post);
             MasterTabControl.SelectedIndex = 1;
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var vm = (BlogViewModel)DataContext;
+            if (vm.SaveBlogCommand.CanExecute(null))
+                vm.SaveBlogCommand.Execute(null);
+        }
     }
 }

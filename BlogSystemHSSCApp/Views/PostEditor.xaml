@@ -12,6 +12,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
@@ -45,13 +46,87 @@
                 <TextBox Margin="0 0 6 0" Text="{Binding BlogPost.Author}"></TextBox>
             </DockPanel>
 
-            <DockPanel Grid.Column="1" Margin="8 0 0 0">
+            <Grid Grid.Column="1" Margin="8 0 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
                 <TextBlock VerticalAlignment="Center" Margin="0 0 6 0">Categories</TextBlock>
-            </DockPanel>
+                <ToolBar ItemsSource="{Binding BlogPost.Categories}" Grid.Column="1">
+
+                    <ToolBar.Style>
+                        <Style TargetType="ToolBar">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ToolBar">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                                <ColumnDefinition Width="36"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <ToolBarPanel x:Name="PART_ToolBarPanel" IsItemsHost="True"></ToolBarPanel>
+
+                                            <ToggleButton  Width="36" Height="36" 
+                                                           Grid.Column="1"
+                                                           IsChecked="{Binding IsOverflowOpen, Mode=TwoWay, 
+                                                           RelativeSource={RelativeSource TemplatedParent}}"
+                                                           Visibility="{TemplateBinding HasOverflowItems, Converter={StaticResource BoolVisibilityConverter}}">
+                                                <Grid>
+                                                    <Path Data="{StaticResource MoreIcon}" Fill="Gray" Stretch="Uniform" Margin="10"></Path>
+
+                                                    <Popup AllowsTransparency="True"
+                                                           Placement="Bottom"
+                                                           StaysOpen="False"
+                                                           Focusable="False"
+                                                           IsOpen="{Binding IsOverflowOpen, 
+                                                        RelativeSource={RelativeSource TemplatedParent}}"
+                                                           >
+
+                                                        <Border Background="#EFEFEF" BorderBrush="{StaticResource BorderColorDark1Brush}" CornerRadius="4" BorderThickness="1.5">
+                                                            <ToolBarOverflowPanel 
+                                                                x:Name="PART_ToolBarOverflowPanel"
+                                                                Margin="2"
+                                                                WrapWidth="200"
+                                                                Focusable="True"
+                                                                FocusVisualStyle="{x:Null}"
+                                                                KeyboardNavigation.TabNavigation="Cycle"
+                                                                KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                                        </Border>
+                                                    </Popup>
+                                                </Grid>
+                                            </ToggleButton>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ToolBar.Style>
+
+                    <ToolBar.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{StaticResource Light4Brush}" Height="30" Margin="4 0" CornerRadius="15">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" Margin="12 0 0 0" VerticalAlignment="Center"></TextBlock>
+                                    <Button Style="{StaticResource CloseButton}" Margin="4 0 6 0"
+                                            CommandParameter="{Binding}" Click="categoryRemove"></Button>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ToolBar.ItemTemplate>
+                </ToolBar>
+                <customcontrols:RoundedButton HorizontalAlignment="Right" Grid.Column="2" Margin="4 0 0 0" Click="categoryAdd">
+                    <Path Data="{StaticResource AddIcon}" Margin="10"></Path>
+                </customcontrols:RoundedButton>
+            </Grid>
 
         </Grid>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0 0 0 4">
+            <CheckBox IsChecked="{Binding BlogPost.IsArchived}">Archived</CheckBox>
+        </StackPanel>
         
-        <customcontrols:RichTextEditor x:Name="Editor"  Grid.Row="2" RichDocument="{Binding BlogPost.Document}"></customcontrols:RichTextEditor>
+        <customcontrols:RichTextEditor x:Name="Editor"  Grid.Row="3" LostFocus="editorLostFocus" RichDocument="{Binding BlogPost.Document}"></customcontrols:RichTextEditor>
 
     </Grid>
 </UserControl>

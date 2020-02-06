@@ -1,4 +1,5 @@
 ﻿using BlogSystemHSSC.Blog;
+using BlogSystemHSSC.CustomControls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -58,10 +59,14 @@ namespace BlogSystemHSSC.Views
         {
             // Brute force method to update the rich text box's document
 
-            if (e.PropertyName.Equals("Title"))
+            if (e.PropertyName.Equals(nameof(BlogPost.Title)))
             {
                 Editor.setChild();
             }
+
+            // Saves the post if the categories, author or title change.
+            if (!e.PropertyName.Equals(nameof(BlogPost.Document)))
+                SavePost();
         }
 
 
@@ -92,9 +97,33 @@ namespace BlogSystemHSSC.Views
 
         public event EventHandler PostChanged;
 
-        private void SavePost(object sender, RoutedEventArgs e)
+        private void SavePost()
         {
             PostChanged?.Invoke(this, new EventArgs());
+        }
+
+        private void editorLostFocus(object sender, RoutedEventArgs e)
+        {
+            SavePost();
+        }
+
+        private void categoryRemove(object sender, RoutedEventArgs e)
+        {
+            var button = (Button)sender;
+            var category = (BlogCategory)button.CommandParameter;
+            BlogPost.Categories.Remove(category);
+        }
+
+        private void categoryAdd(object sender, RoutedEventArgs e)
+        {
+            var d = new CategoryDialog();
+            d.ShowDialog();
+
+            if (d.DialogResult == false) return;
+
+            // categories must be unique
+            if (!BlogPost.Categories.Contains(d.SelectedCategory))
+                BlogPost.Categories.Add(d.SelectedCategory);
         }
     }
 }

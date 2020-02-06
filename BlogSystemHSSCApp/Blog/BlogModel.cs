@@ -16,8 +16,9 @@ namespace BlogSystemHSSC.Blog
     public class BlogModel : BindableBase
     {
 
-        private List<string> categories;
-        public List<string> Categories
+
+        private ObservableCollection<BlogCategory> categories = new ObservableCollection<BlogCategory>();
+        public ObservableCollection<BlogCategory> Categories
         {
             get => categories;
             set => Set(ref categories, value);

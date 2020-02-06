@@ -285,6 +285,27 @@ namespace BlogSystemHSSC.Views
 
         #endregion
 
+        #region post management
+
+        private void deletePost(object sender, RoutedEventArgs e)
+        {
+            // get the blog post
+            var obj = (Button)sender;
+            var post = (BlogPost)obj.CommandParameter;
+
+            if (MessageBox.Show("Are you sure you want to delete the post \"" + post.Title + "\"?", "Delete Post", MessageBoxButton.YesNo)
+            != MessageBoxResult.Yes) return;
+
+
+            // execute the command
+            var vm = (BlogViewModel)DataContext;
+            if (vm.DeletePostCommand.CanExecute(post))
+                vm.DeletePostCommand.Execute(post);
+        }
+
+
+        #endregion
+
 
         #region IBindableBase members
 
@@ -351,7 +372,7 @@ namespace BlogSystemHSSC.Views
                 else
                     throw new NotSupportedException("ScrollSpeed Attached Property is not attached to an element containing a ScrollViewer.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Do something...
             }
@@ -359,5 +380,9 @@ namespace BlogSystemHSSC.Views
 
         #endregion
 
+        private void categorySelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

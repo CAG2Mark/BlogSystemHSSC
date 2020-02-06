@@ -8,6 +8,11 @@ namespace BlogSystemHSSC.Blog
 {
     public class BlogCategory : BindableBase
     {
+        public BlogCategory()
+        {
+            // Paramaterless Constructor for Serialization
+        }
+
         public BlogCategory(string value)
         {
             name = value;
@@ -28,6 +33,13 @@ namespace BlogSystemHSSC.Blog
         public override string ToString()
         {
             return Name;
+        }
+
+        public event EventHandler CategoryDeleted;
+
+        public void Delete()
+        {
+            CategoryDeleted?.Invoke(this, new EventArgs());
         }
     }
 }

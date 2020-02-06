@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,15 @@ namespace BlogSystemHSSC.Blog
 
     public class BlogPost : BindableBase
     {
+        public BlogPost()
+        {
+            // Generate the unique 16-letter ID for Disqus. 1 in 47 octillion chance of duplicates.
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            UId = new string(Enumerable.Repeat(chars, 16)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
         private string author;
         /// <summary>
         /// The author of the post.
@@ -54,14 +64,15 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref headerImageName, value);
         }
 
-        private string category;
+
+        private ObservableCollection<BlogCategory> categories = new ObservableCollection<BlogCategory>();
         /// <summary>
-        /// The category of the post.
+        /// The categories of the blog post.
         /// </summary>
-        public string Category
+        public ObservableCollection<BlogCategory> Categories
         {
-            get => category;
-            set => Set(ref category, value);
+            get => categories;
+            set => Set(ref categories, value);
         }
 
         private bool isArchived;
@@ -73,6 +84,11 @@ namespace BlogSystemHSSC.Blog
             get => isArchived;
             set => Set(ref isArchived, value);
         }
+
+        /// <summary>
+        /// The unique ID of this post for Disqus.
+        /// </summary>
+        public string UId { get; set; }
 
         private LinkedRichDocument document = new LinkedRichDocument(new FlowDocument());
         [XmlIgnore]

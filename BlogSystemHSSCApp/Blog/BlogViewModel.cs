@@ -23,9 +23,7 @@ namespace BlogSystemHSSC.Blog
         public BlogViewModel()
         {
             if (!loadBlog()) MessageBox.Show("Could not load the blog file");
-
-            VisibleCategories.Add(new BlogCategory("All"));
-            VisibleCategories.Add(new BlogCategory("Archived"));
+            loadCategories();
         }
 
         #region serialzation
@@ -61,6 +59,22 @@ namespace BlogSystemHSSC.Blog
                 return false;
             }
 
+        }
+
+        private void loadCategories()
+        {
+            // Only fire OnPropertyChanged once to avoid redundant calls
+
+            visibleCategories = new ObservableCollection<BlogCategory>();
+            visibleCategories.Add(new BlogCategory("All"));
+            visibleCategories.Add(new BlogCategory("Archived"));
+
+            foreach (var s in blog.Categories)
+            {
+                visibleCategories.Add(s);
+            }
+
+            OnPropertyChanged(nameof(VisibleCategories));
         }
 
         /// <summary>
@@ -105,21 +119,45 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref rtfText, value);
         }
 
-        private BlogPost currentPost;
-        /// <summary>
-        /// The post the user is currently editing.
-        /// </summary>
-        public BlogPost CurrentPost
+        private ObservableCollection<BlogCategory> visibleCategories = new ObservableCollection<BlogCategory>();
+        public ObservableCollection<BlogCategory> VisibleCategories
         {
-            get => currentPost;
-            set => Set(ref currentPost, value);
+            get => visibleCategories;
+            set => Set(ref visibleCategories, value);
         }
 
-        private ObservableCollection<BlogCategory> visibleCategories = new ObservableCollection<BlogCategory>();
-        public ObservableCollection<BlogCategory> VisibleCategories 
-        { 
-            get => visibleCategories;
-            set => Set(ref visibleCategories, value); 
+        public ObservableCollection<BlogPost> VisibleBlogPosts
+        {
+            get
+            {
+                if (SelectedCategory == null) 
+                    return Blog.BlogPosts;
+                 
+                // Special cases for all and archived since they are default and not user-added
+                else if (SelectedCategory.Name.Equals("All")) 
+                    return Blog.BlogPosts;
+
+                else if (SelectedCategory.Name.Equals("Archived"))
+                    return new ObservableCollection<BlogPost>(Blog.BlogPosts.Where(x => x.IsArchived));
+
+                else
+                {
+                    // linq cannot be used since after serialization pass by reference is broken
+                    var posts = new ObservableCollection<BlogPost>();
+                    foreach (var p in Blog.BlogPosts)
+                    {
+                        foreach (var c in p.Categories)
+                        {
+                            if (c.Name.Equals(SelectedCategory.Name))
+                            {
+                                posts.Add(p);
+                                continue;
+                            }
+                        }
+                    }
+                    return posts;
+                }
+            }
         }
 
         #endregion
@@ -170,6 +208,20 @@ namespace BlogSystemHSSC.Blog
                         param => this.canExecute);
                 }
                 return createPostCommand;
+            }
+        }
+
+        private RelayCommand deletePostCommand;
+        public ICommand DeletePostCommand
+        {
+            get
+            {
+                if (deletePostCommand == null)
+                {
+                    deletePostCommand = new RelayCommand(param => deletePost(param),
+                        param => this.canExecute);
+                }
+                return deletePostCommand;
             }
         }
 
@@ -244,6 +296,19 @@ namespace BlogSystemHSSC.Blog
             }
         }
 
+        private RelayCommand saveBlogCommand;
+        public ICommand SaveBlogCommand
+        {
+            get
+            {
+                if (saveBlogCommand == null)
+                {
+                    saveBlogCommand = new RelayCommand(param => saveBlog(),
+                        param => this.canExecute);
+                }
+                return saveBlogCommand;
+            }
+        }
 
         #endregion
 
@@ -263,6 +328,8 @@ namespace BlogSystemHSSC.Blog
             var newPost = new BlogPost();
             blog.BlogPosts.Insert(0, newPost);
 
+            OnPropertyChanged(nameof(VisibleBlogPosts));
+
             blogEdited();
 
             // open the blog post in the view
@@ -270,6 +337,15 @@ namespace BlogSystemHSSC.Blog
 
             // notify the view
             PostCreated?.Invoke(this, new BlogPostEventArgs(newPost));
+        }
+
+        private void deletePost(object param)
+        {
+            var post = (BlogPost)param;
+            blog.BlogPosts.Remove(post);
+            OnPropertyChanged(nameof(VisibleBlogPosts));
+
+            OpenBlogPosts.Remove(post);
         }
 
         /// <summary>
@@ -280,6 +356,9 @@ namespace BlogSystemHSSC.Blog
             // Bubble sorts all the posts once.
             BubblePostsOnce(blog.BlogPosts, blog.SortMode);
             // Saves the blog.
+
+            OnPropertyChanged(nameof(VisibleBlogPosts));
+
             saveBlog();
         }
 
@@ -312,15 +391,32 @@ namespace BlogSystemHSSC.Blog
 
         #region categories
 
+        private BlogCategory selectedCategory;
+        public BlogCategory SelectedCategory
+        {
+            get => selectedCategory;
+            set
+            {
+                Set(ref selectedCategory, value);
+                OnPropertyChanged(nameof(VisibleBlogPosts));
+            }
+        }
 
         private void createCategory()
         {
-            VisibleCategories.Add(new BlogCategory("New Category"));
+            var category = new BlogCategory("New Category");
+
+            blog.Categories.Add(category);
+            VisibleCategories.Add(category);
         }
         
         private void deleteCategory(object param)
         {
-            VisibleCategories.Remove((BlogCategory)param);
+            var category = (BlogCategory)param;
+            blog.Categories.Remove(category);
+            visibleCategories.Remove(category);
+
+            category.Delete();
         }
 
         #endregion

@@ -179,6 +179,8 @@
 
                     </Button>
 
+                    <Border Style="{StaticResource Separator}"></Border>
+
                     <Button Style="{StaticResource EditorButton}" x:Name="DecreaseIndentButton"  
                             Command="EditingCommands.DecreaseIndentation"  
                             CommandTarget="{Binding RichDocument.AssignedTextBox}" 

@@ -20,7 +20,7 @@
                 <DoubleAnimation
                     Storyboard.TargetName="Sidebar"
                     Storyboard.TargetProperty="Width"
-                    From="568"
+                    From="{Binding ElementName=SidebarStackPanel,Path=ActualWidth}"
                     To="0"
                     Duration="0:0:0.35">
                     <DoubleAnimation.EasingFunction>
@@ -35,7 +35,7 @@
                     Storyboard.TargetName="Sidebar"
                     Storyboard.TargetProperty="Width"
                     From="0"
-                    To="568">
+                    To="{Binding ElementName=SidebarStackPanel,Path=ActualWidth}">
                     <DoubleAnimation.EasingFunction>
                         <QuadraticEase EasingMode="EaseInOut"></QuadraticEase>
                     </DoubleAnimation.EasingFunction>
@@ -44,11 +44,11 @@
         </Grid.Resources>
 
         <Border  Background="{StaticResource Light2Brush}"
-                 Width="568" x:Name="Sidebar">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            x:Name="Sidebar">
+            <StackPanel x:Name="SidebarStackPanel" Orientation="Horizontal" HorizontalAlignment="Right">
 
                 <Border Padding="12" Background="{StaticResource Light4Brush}">
-                    <StackPanel  Width="220">
+                    <StackPanel  Width="180">
 
                         <DockPanel>
                             <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProBold}" Foreground="{StaticResource Dark0Brush}" FontSize="24">Categories</TextBlock>
@@ -59,7 +59,7 @@
                             </customcontrols:RoundedButton>
                         </DockPanel>
                         
-                        <ListBox SelectedIndex="0"  ItemsSource="{Binding VisibleCategories}" Margin="-12 12 -12 0">
+                        <ListBox SelectedItem="{Binding SelectedCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedIndex="0" SelectionChanged="categorySelectionChanged" ItemsSource="{Binding VisibleCategories}" Margin="-12 12 -12 0">
 
                             <ListBox.Style>
                                 <Style TargetType="ListBox">
@@ -122,11 +122,11 @@
                         </customcontrols:RoundedButton>
                     </DockPanel>
 
-                    <ListBox PreviewMouseWheel="HandleScrollSpeed" DockPanel.Dock="Top" Grid.Row="2" ItemsSource="{Binding Blog.BlogPosts}" Height="Auto"
+                    <ListBox PreviewMouseWheel="HandleScrollSpeed" DockPanel.Dock="Top" Grid.Row="2" ItemsSource="{Binding VisibleBlogPosts}" Height="Auto"
                                          Background="Transparent" BorderThickness="0" 
                                          Padding="0 0 8 0" Margin="0 8 -8 -12" ScrollViewer.CanContentScroll="False"
-                                         x:Name="CommandsListBox" ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                         ScrollViewer.VerticalScrollBarVisibility="Visible">
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                         ScrollViewer.VerticalScrollBarVisibility="Visible">
 
                         <ListBox.Resources>
                             <Style TargetType="ListBoxItem">
@@ -143,10 +143,14 @@
 
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel>
+                                <StackPanel x:Name="RootStackPanel" Background="Transparent">
 
-                                    <DockPanel LastChildFill="True">
-                                        <StackPanel Margin="0 4">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"></ColumnDefinition>
+                                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Margin="0 4 -36 4">
 
                                             <StackPanel.Resources>
                                                 <Style TargetType="TextBlock">
@@ -169,12 +173,23 @@
                                             </StackPanel>
                                         </StackPanel>
 
-                                        <!-- EDIT POST BUTTON -->
-                                        <customcontrols:RoundedButton HorizontalAlignment="Right" VerticalAlignment="Center"
-                                                                  Click="editPost" CommandParameter="{Binding}">
-                                            <Path Data="{StaticResource RightArrowIcon}" Margin="10" Fill="Gray" Stretch="Uniform"></Path>
-                                        </customcontrols:RoundedButton>
-                                    </DockPanel>
+                                        <StackPanel Panel.ZIndex="1" Width="76" Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Right">
+
+                                            <!-- DELETE POST BUTTON -->
+                                            <customcontrols:RoundedButton HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource AlternateRoundedButton}"
+                                                                      Visibility="{Binding ElementName=RootStackPanel, Path=IsMouseOver,
+                                                                            Converter={StaticResource BoolVisibilityConverter}, ConverterParameter=2}"
+                                                                      Click="deletePost" CommandParameter="{Binding}" Margin="0 0 4 0">
+                                                <Path Data="{StaticResource DeleteIcon}" Margin="10" Fill="Gray" Stretch="Uniform"></Path>
+                                            </customcontrols:RoundedButton>
+
+                                            <!-- EDIT POST BUTTON -->
+                                            <customcontrols:RoundedButton HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                                      Click="editPost" CommandParameter="{Binding}">
+                                                <Path Data="{StaticResource RightArrowIcon}" Margin="10" Fill="Gray" Stretch="Uniform"></Path>
+                                            </customcontrols:RoundedButton>
+                                        </StackPanel>
+                                    </Grid>
 
                                     <Rectangle Height="2" Fill="{StaticResource BorderColorDark1Brush}"></Rectangle>
 
@@ -267,44 +282,12 @@
 
             <customcontrols:NonReloadingTabControl.ItemTemplate>
                 <DataTemplate>
-                    <DockPanel LastChildFill="True" Height="32">
-                        <TextBlock Text="{Binding Title}"  MinWidth="70" MaxWidth="130" Margin="2 2 4 4" VerticalAlignment="Center"></TextBlock>
+                    <DockPanel LastChildFill="True" Height="32" ToolTip="{Binding Title}">
+                        <TextBlock Text="{Binding Title}"  MinWidth="70" MaxWidth="220" Margin="2 2 4 4" VerticalAlignment="Center"></TextBlock>
                         <Button x:Name="CloseButton" VerticalAlignment="Center" Click="closeEditor" CommandParameter="{Binding}"
-                            MouseEnter="closeButtonMouseEnter"
-                            MouseLeave="closeButtonMouseLeave">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Background" Value="Transparent"></Setter>
-                                    <Setter Property="Height" Value="18"></Setter>
-                                    <Setter Property="Width" Value="18" />
-                                    <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
-
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border CornerRadius="9" Background="{TemplateBinding Background}">
-                                                    <Path x:Name="Cross" Data="{StaticResource CloseIcon}" Stretch="Uniform" Margin="5"  Fill="#666666"></Path>
-                                                </Border>
-
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter TargetName="Cross" Property="Fill" Value="{StaticResource Light1Brush}"></Setter>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="#444444"></Setter>
-                                        </Trigger>
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter Property="Background" Value="#333333"></Setter>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
+                                MouseEnter="closeButtonMouseEnter"
+                                MouseLeave="closeButtonMouseLeave"
+                                Style="{StaticResource CloseButton}">
                         </Button>
                     </DockPanel>
                 </DataTemplate>

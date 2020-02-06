@@ -91,6 +91,9 @@
     <Compile Include="Blog\BlogModel.cs" />
     <Compile Include="Blog\LinkedRichDocument.cs" />
     <Compile Include="Blog\BlogCategory.cs" />
+    <Compile Include="CustomControls\CategoryDialog.xaml.cs">
+      <DependentUpon>CategoryDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\DisconnectableRtb.cs" />
     <Compile Include="CustomControls\EnterUrlDialog.xaml.cs">
       <DependentUpon>EnterUrlDialog.xaml</DependentUpon>
@@ -121,6 +124,10 @@
     <Compile Include="Website\PostListPageGenerator.cs" />
     <Compile Include="Website\PostPageGenerator.cs" />
     <Compile Include="Website\TagPageGenerator.cs" />
+    <Page Include="CustomControls\CategoryDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControls\EnterUrlDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

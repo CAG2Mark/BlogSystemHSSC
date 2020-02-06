@@ -46,7 +46,7 @@ namespace BlogSystemHSSC.Views
 
         public event EventHandler<BlogPostEventArgs> RequestOpenPost;
 
-        private void EditPost(object sender, RoutedEventArgs e)
+        private void editPost(object sender, RoutedEventArgs e)
         {
             // get the blog post
             var obj = (Button)sender;
@@ -58,6 +58,22 @@ namespace BlogSystemHSSC.Views
                 vm.OpenBlogPostCommand.Execute(post);
 
             RequestOpenPost?.Invoke(this, new BlogPostEventArgs(post));
+        }
+
+        private void deletePost(object sender, RoutedEventArgs e)
+        {
+            // get the blog post
+            var obj = (Button)sender;
+            var post = (BlogPost)obj.CommandParameter;
+
+            if (MessageBox.Show("Are you sure you want to delete the post \"" + post.Title + "\"?", "Delete Post", MessageBoxButton.YesNo)
+            != MessageBoxResult.Yes) return;
+           
+
+            // execute the command
+            var vm = (BlogViewModel)DataContext;
+            if (vm.DeletePostCommand.CanExecute(post))
+                vm.DeletePostCommand.Execute(post);
         }
 
         #region mouseewheel speed
@@ -91,7 +107,7 @@ namespace BlogSystemHSSC.Views
                 else
                     throw new NotSupportedException("ScrollSpeed Attached Property is not attached to an element containing a ScrollViewer.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Do something...
             }

@@ -18,8 +18,13 @@ namespace BlogSystemHSSC
             if (parameter != null)
                 if (parameter.ToString() == "1") visible = !visible;
 
+            // return visibility hidden instead of collapsed
+            bool hidden = false;
 
-            return visible ? Visibility.Visible : Visibility.Collapsed;
+            if (parameter != null)
+                if (parameter.ToString() == "2") hidden = true;
+
+            return visible ? Visibility.Visible : ( hidden ? Visibility.Hidden : Visibility.Collapsed);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
