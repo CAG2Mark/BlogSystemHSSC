@@ -20,7 +20,7 @@
         </Grid.ColumnDefinitions>
 
         <Border Width="350" Grid.RowSpan="2" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 2 0">
-            <DockPanel Margin="12">
+            <DockPanel Margin="12" Background="Transparent">
                 
                 <TextBlock DockPanel.Dock="Top" VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProBold}" Foreground="{StaticResource Dark0Brush}" FontSize="24">Posts</TextBlock>
                 <DockPanel DockPanel.Dock="Top" Margin="0 8 0 0">
@@ -124,5 +124,7 @@
 
         <WindowsFormsHost x:Name="WfHost" Grid.Row="1" Grid.Column="1" Margin="0 0 3 3" Background="Transparent">
         </WindowsFormsHost>
+
+        <TextBlock  Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">Website Preview Area (Not done)</TextBlock>
     </Grid>
 </UserControl>

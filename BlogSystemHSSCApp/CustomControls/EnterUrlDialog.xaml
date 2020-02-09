@@ -18,7 +18,7 @@
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
-        <Border Background="{StaticResource FancyRedBrush}">
+        <Border Background="{StaticResource AccentColor}">
             <DockPanel>
                 <TextBlock FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" Foreground="White"
                            VerticalAlignment="Center" Margin="8" Text="{Binding Title}"/>

@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:BlogSystemHSSC.ResourceDictionaries">
 
     <Color x:Key="FancyRed">#A3000A</Color>
-    <SolidColorBrush x:Key="FancyRedBrush">#A3000A</SolidColorBrush>
+    <SolidColorBrush x:Key="AccentColor">#A3000A</SolidColorBrush>
 
     <Color x:Key="Light0">#FAFAFA</Color>
     <SolidColorBrush x:Key="Light0Brush">#FAFAFA</SolidColorBrush>

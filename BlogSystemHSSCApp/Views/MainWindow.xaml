@@ -30,7 +30,7 @@
 
         
         <!-- #region top bar -->
-        <DockPanel Background="{StaticResource FancyRedBrush}">
+        <DockPanel Background="{StaticResource AccentColor}">
 
             <TextBlock FontFamily="{StaticResource SourceSansProBold}" FontSize="20" VerticalAlignment="Center" Margin="8" Foreground="White">Blog System</TextBlock>
 
