@@ -89,6 +89,7 @@
     </ApplicationDefinition>
     <Compile Include="BindableBase.cs" />
     <Compile Include="Blog\BlogModel.cs" />
+    <Compile Include="Blog\BlogVariable.cs" />
     <Compile Include="Blog\LinkedRichDocument.cs" />
     <Compile Include="Blog\BlogCategory.cs" />
     <Compile Include="CustomControls\CategoryDialog.xaml.cs">
@@ -97,6 +98,9 @@
     <Compile Include="CustomControls\DisconnectableRtb.cs" />
     <Compile Include="CustomControls\EnterUrlDialog.xaml.cs">
       <DependentUpon>EnterUrlDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\HeaderImageDialog.xaml.cs">
+      <DependentUpon>HeaderImageDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomControls\NumericUpDown.xaml.cs">
       <DependentUpon>NumericUpDown.xaml</DependentUpon>
@@ -129,6 +133,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControls\EnterUrlDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\HeaderImageDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

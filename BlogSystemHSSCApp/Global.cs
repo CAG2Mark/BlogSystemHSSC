@@ -9,6 +9,7 @@ namespace BlogSystemHSSC
 {
     public static class Global
     {
-
+        public static readonly string FilesPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+            @"\Blog System Files";
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -43,6 +44,8 @@ namespace BlogSystemHSSC.CustomControls
         }
 
         public DisconnectableRtb EditorTextBox;
+
+        public string PostUId { get; set; }
 
         private bool disconnectInvokedFromThis = false;
 
@@ -273,7 +276,16 @@ namespace BlogSystemHSSC.CustomControls
 
                 image.Height = 250;
 
-                RichDocument.AssignedDocument.Blocks.InsertAfter(EditorTextBox.CaretPosition.Paragraph.PreviousBlock, p);
+                // You have to use a try catch here as PreviousBlock.get returning null throws an exception even if it is never referenced
+                try
+                {
+                    RichDocument.AssignedDocument.Blocks.InsertAfter(EditorTextBox.CaretPosition.Paragraph.PreviousBlock, p);
+                }
+                catch (Exception)
+                {
+                    // This is when the blog post is empty and the user wants to add an image
+                    RichDocument.AssignedDocument.Blocks.Add(p);
+                }
             }
             catch (Exception)
             {
@@ -481,6 +493,46 @@ namespace BlogSystemHSSC.CustomControls
                 {
                     var tr = new TextRange(EditorTextBox.Document.ContentStart, EditorTextBox.Document.ContentEnd);
                     tr.ApplyPropertyValue(FontFamilyProperty, EditorTextBox.FontFamily);
+
+                    // Save all pasted images
+                    foreach (var block in EditorTextBox.Document.Blocks)
+                    {
+                        if (block.GetType() == typeof(Paragraph))
+                        {
+                            var inlines = ((Paragraph)block).Inlines;
+                            foreach (var inline in inlines)
+                            {
+                                if (inline.GetType() == typeof(InlineUIContainer))
+                                {
+                                    var image = (Image)((InlineUIContainer)inline).Child;
+                                    var path = $"{Global.FilesPath}\\Images";
+                                    var fileName = path + $"\\{PostUId}_{Path.GetFileNameWithoutExtension(image.Source.ToString())}.png";
+
+                                    // Convert image to byte array to save
+                                    MemoryStream stream = new MemoryStream();
+                                    var bitmap = (BitmapImage)image.Source;
+
+                                    byte[] b;
+
+                                    PngBitmapEncoder encoder = new PngBitmapEncoder();
+                                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                                    using (MemoryStream ms = new MemoryStream())
+                                    {
+                                        encoder.Save(ms);
+                                        b = ms.ToArray();
+                                    }
+
+                                    // Create the directory if it does not exist
+                                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+                                    // Write the file
+                                    File.WriteAllBytes(fileName, b);
+
+                                    image.Source = new BitmapImage(new Uri(fileName));
+                                }
+                            }
+                        }
+                    }
                 }
 
                 return;

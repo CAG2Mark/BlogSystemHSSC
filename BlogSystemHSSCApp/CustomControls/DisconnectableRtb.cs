@@ -17,6 +17,7 @@ namespace BlogSystemHSSC.CustomControls
         {
             Document = doc;
             IsDocumentEnabled = true;
+            FontSize = 18;
         }
 
 

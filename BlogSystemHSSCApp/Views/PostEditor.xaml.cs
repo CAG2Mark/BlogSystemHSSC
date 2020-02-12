@@ -53,6 +53,8 @@ namespace BlogSystemHSSC.Views
 
             if (BlogPost != null)
                 BlogPost.PropertyChanged += BlogPost_PropertyChanged;
+
+            Editor.PostUId = BlogPost.UId;
         }
 
         private void BlogPost_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -66,7 +68,7 @@ namespace BlogSystemHSSC.Views
 
             // Saves the post if the categories, author or title change.
             if (!e.PropertyName.Equals(nameof(BlogPost.Document)))
-                SavePost();
+                InvokePostChange();
         }
 
 
@@ -97,14 +99,14 @@ namespace BlogSystemHSSC.Views
 
         public event EventHandler PostChanged;
 
-        private void SavePost()
+        private void InvokePostChange()
         {
             PostChanged?.Invoke(this, new EventArgs());
         }
 
         private void editorLostFocus(object sender, RoutedEventArgs e)
         {
-            SavePost();
+            InvokePostChange();
         }
 
         private void categoryRemove(object sender, RoutedEventArgs e)
@@ -124,6 +126,12 @@ namespace BlogSystemHSSC.Views
             // categories must be unique
             if (!BlogPost.Categories.Contains(d.SelectedCategory))
                 BlogPost.Categories.Add(d.SelectedCategory);
+        }
+
+        private void setHeaderImage(object sender, RoutedEventArgs e)
+        {
+            var d = new HeaderImageDialog(BlogPost);
+            d.ShowDialog();
         }
     }
 }

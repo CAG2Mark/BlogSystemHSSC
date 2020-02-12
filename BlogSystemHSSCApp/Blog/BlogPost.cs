@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Markup;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -24,7 +26,7 @@ namespace BlogSystemHSSC.Blog
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        private string author;
+        private string author = "";
         /// <summary>
         /// The author of the post.
         /// </summary>
@@ -54,16 +56,6 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref publishTime, value);
         }
 
-        private string headerImageName;
-        /// <summary>
-        /// The name (without file extension) of the header image in the folder containing all media.
-        /// </summary>
-        public string HeaderImageName
-        {
-            get => headerImageName;
-            set => Set(ref headerImageName, value);
-        }
-
 
         private ObservableCollection<BlogCategory> categories = new ObservableCollection<BlogCategory>();
         /// <summary>
@@ -85,11 +77,69 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref isArchived, value);
         }
 
+        private bool isDraft = true;
+        /// <summary>
+        /// Whether or not the post is drafted.
+        /// </summary>
+        public bool IsDraft
+        {
+            get => isDraft;
+            set => Set(ref isDraft, value);
+        }
+
         /// <summary>
         /// The unique ID of this post for Disqus.
         /// </summary>
         public string UId { get; set; }
 
+        [XmlIgnore]
+        public ImageSource HeaderImageSource
+        {
+            get
+            {
+                if (!IsHeaderImageSet) return null;
+
+                try
+                {
+                    return new BitmapImage(new Uri(HeaderImageStr));
+                }
+                catch (Exception)
+                {
+                    // if it is an invalid image
+                    return null;
+                }
+            }
+        }
+
+        private string headerImageStr = "";
+        public string HeaderImageStr
+        {
+            get => headerImageStr;
+            set
+            { 
+                Set(ref headerImageStr, value); 
+                OnPropertyChanged(nameof(HeaderImageSource));
+                OnPropertyChanged(nameof(IsHeaderImageSet));
+            }
+        }
+
+        public bool IsHeaderImageSet => !string.IsNullOrWhiteSpace(HeaderImageStr);
+
+        private string headerImageCaption = "";
+        public string HeaderImageCaption
+        {
+            get => headerImageCaption;
+            set
+            {
+                Set(ref headerImageCaption, value);
+                OnPropertyChanged(nameof(HeaderImageSource));
+            }
+        }
+
+
+        // The document is stored during runtime as a FlowDocument/LinkedRichDocument class, but must be stored as a string
+        // because FlowDocument cannot be serialized. Therefore, the property DOcument is not serialiezd and instead
+        // the DocumentStr property is what's serialized. It is converted back into a FlowDocument when the application starts.
         private LinkedRichDocument document = new LinkedRichDocument(new FlowDocument());
         [XmlIgnore]
         /// <summary>

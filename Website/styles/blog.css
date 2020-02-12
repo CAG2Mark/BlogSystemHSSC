@@ -29,6 +29,10 @@
     margin-left: 20%;
 }
 
+.blog-post-narrow-area img {
+    max-width: 100%;
+}
+
 #blog-post-content-area {
     text-align: left;
 }
@@ -49,6 +53,8 @@
 #blog-post-share-button {
     margin-top: 4px;
 }
+
+
 
 @media (max-width: 1300px) {
 

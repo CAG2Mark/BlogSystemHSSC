@@ -32,6 +32,33 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="Button" x:Key="LightButtonStyle">
+        <Setter Property="FontFamily" Value="{StaticResource SourceSansProRegular}"></Setter>
+        <Setter Property="FontSize" Value="18"></Setter>
+        <Setter Property="Background" Value="#0FFFFFFF"></Setter>
+        <Setter Property="Height" Value="30"></Setter>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="4" Background="{TemplateBinding Background}">
+                        <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"></ContentPresenter>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#1FFFFFFF"></Setter>
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#2FFFFFFF"></Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <Style TargetType="ToggleButton">
 
         <Setter Property="Background" Value="Transparent"></Setter>

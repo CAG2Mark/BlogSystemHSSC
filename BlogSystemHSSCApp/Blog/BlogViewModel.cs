@@ -4,10 +4,13 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Xml.Serialization;
 
 namespace BlogSystemHSSC.Blog
@@ -28,8 +31,7 @@ namespace BlogSystemHSSC.Blog
 
         #region serialzation
 
-        public static readonly string FilesPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-            @"\Blog System Files";
+        public static string FilesPath => Global.FilesPath;
 
 
         /// <summary>
@@ -94,10 +96,13 @@ namespace BlogSystemHSSC.Blog
 
                 output.Dispose();
 
+                SaveStatusText = "All Changes saved";
+
                 return true;
             }
             catch (Exception)
             {
+                SaveStatusText = "Failed to Save Blog";
                 return false;
             }
         }
@@ -310,6 +315,20 @@ namespace BlogSystemHSSC.Blog
             }
         }
 
+        private RelayCommand exportBlogCommand;
+        public ICommand ExportBlogCommand
+        {
+            get
+            {
+                if (exportBlogCommand == null)
+                {
+                    exportBlogCommand = new RelayCommand(param => exportBlog(),
+                        param => this.canExecute);
+                }
+                return exportBlogCommand;
+            }
+        }
+
         #endregion
 
         #region events
@@ -348,6 +367,13 @@ namespace BlogSystemHSSC.Blog
             OpenBlogPosts.Remove(post);
         }
 
+        private string saveStatusText = "All Changes Saved";
+        public string SaveStatusText
+        {
+            get => saveStatusText;
+            set => Set(ref saveStatusText, value);
+        }
+
         /// <summary>
         /// Contains the code to run when the blog has been edited.
         /// </summary>
@@ -359,7 +385,8 @@ namespace BlogSystemHSSC.Blog
 
             OnPropertyChanged(nameof(VisibleBlogPosts));
 
-            saveBlog();
+            //saveBlog();
+            SaveStatusText = "Save Changes";
         }
 
 
@@ -421,6 +448,515 @@ namespace BlogSystemHSSC.Blog
 
         #endregion
 
+        #region blog export
+
+        // temporary
+        const string websiteDirectory = @"C:\Users\markn\source\repos\BlogSystemHSSC\Website";
+
+        private void exportBlog()
+        {
+            /*
+             * STEPS
+             * 
+             * 1) Create the individual blog post files
+             * 2) Create the individual category files
+             * 3) Create the 'All posts' page
+             * 4) Populate the rest of the pages
+             * 
+             */
+
+            /*
+             * VARIABLES
+             * 
+             * Syntax: $(<Category> <Variable Name> [Arguments])
+             * 
+             * <Represents required parameters>
+             * [Represents optional parameters>
+             * 
+             * Blog post:
+             * $(POST TITLE)
+             * $(POST DATE)
+             * $(POST CONTENT)
+             * $(POST UID)
+             * 
+             * Category page:
+             * 
+             * where <index> is the index of the post descending by date.
+             * 
+             * $(CATEGORY POST_TITLE <index>)
+             * $(CATEGORY POST_DATE <index>)
+             * $(CATEGORY POST_AUTHOR <index>)
+             * $(CATEGORY POST_PREVIEW <index>)
+             * 
+             * Global:
+             * 
+             * $(GLOBAL POST_UID <index> [category-index]) // category index: 0 = All, 1 = Archived.
+             * $(GLOBAL POST_TITLE <post-uid>)
+             * $(GLOBAL POST_DATE <post-uid>)
+             * $(GLOBAL POST_CATEGORY <post-uid>)
+             * $(GLOBAL POST_AUTHOR <post-uid>)
+             * $(GLOBAL POST_PREVIEW <post-uid>)
+             */
+
+            // Get the blog template
+
+            var directory = new DirectoryInfo(websiteDirectory);
+
+            // Find the template.
+            var searchPost = directory.GetFiles("blog_POST.html");
+            if (searchPost.Length == 0)
+            {
+                BlogExported.Invoke(this, new BlogExportEventArgs(false, "The blog post template could not be found."));
+            }
+            FileInfo blogTemplate = searchPost[0];
+
+            // Read the template string
+            string blogTemplateStr = File.ReadAllText(blogTemplate.FullName);
+
+            // Export every post file
+            foreach (var post in Blog.BlogPosts)
+            {
+                // Ignore drafted posts
+                if (post.IsDraft) continue;
+
+                var fileName = Regex.Replace(post.Title, "[^a-zA-Z0-9 -]", "");
+                fileName = fileName.Replace(" ", "-").ToLower();
+
+                // Populate the template's variables
+                string exported = replaceVariables(blogTemplateStr, post);
+
+                if (!string.IsNullOrWhiteSpace(post.HeaderImageStr))
+                {
+                    // Export the header image
+                    File.Copy(post.HeaderImageStr, $"{imagePath}\\{generateHeaderImageName(post)}", true);
+                }
+
+                // Set the root to the correct value
+                if (!Directory.Exists(exportPath)) Directory.CreateDirectory(exportPath);
+                exported = exported.Replace("index.html", "../index.html");
+
+                if (!Directory.Exists(exportPath + "\\blog")) Directory.CreateDirectory(exportPath + "\\blog");
+                // Export the page
+                File.WriteAllText(exportPath + $"\\blog\\{fileName}.html", exported);
+            }
+
+            // Copy the rest of the files over
+            DirectoryCopy(websiteDirectory, exportPath, true);
+
+        }
+
+        private static string generateHeaderImageName(BlogPost post)
+        {
+            return $"{post.UId}_HEADER{Path.GetExtension(post.HeaderImageStr)}";
+        }
+
+        // Credit: https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
+        private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+        {
+            // Get the subdirectories for the specified directory.
+            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+            if (!dir.Exists)
+            {
+                throw new DirectoryNotFoundException(
+                    "Source directory does not exist or could not be found: "
+                    + sourceDirName);
+            }
+
+            DirectoryInfo[] dirs = dir.GetDirectories();
+            // If the destination directory doesn't exist, create it.
+            if (!Directory.Exists(destDirName))
+            {
+                Directory.CreateDirectory(destDirName);
+            }
+
+            // Get the files in the directory and copy them to the new location.
+            FileInfo[] files = dir.GetFiles();
+            foreach (FileInfo file in files)
+            {
+                string temppath = Path.Combine(destDirName, file.Name);
+                file.CopyTo(temppath, true);
+            }
+
+            // If copying subdirectories, copy them and their contents to new location.
+            if (copySubDirs)
+            {
+                foreach (DirectoryInfo subdir in dirs)
+                {
+                    string temppath = Path.Combine(destDirName, subdir.Name);
+                    DirectoryCopy(subdir.FullName, temppath, copySubDirs);
+                }
+            }
+        }
+
+        private static readonly string exportPath = Global.FilesPath + "\\Export";
+        private static readonly string imagePath = exportPath + "\\content\\images";
+
+        private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null)
+        {
+            List<BlogVariable> variables = new List<BlogVariable>();
+
+            var t = text.ToCharArray();
+            bool checkNextForParentheses = false;
+
+            int nestDepth = 0;
+
+            // This entire for loop is to get all the variables.
+            for (int i = 0; i < t.Length; i++)
+            {
+                if (t[i] == '$')
+                {
+                    checkNextForParentheses = true;
+                    continue;
+                }
+
+                if (checkNextForParentheses)
+                {
+                    if (t[i] == '(')
+                    {
+
+                        if (nestDepth == 0)
+                        {
+
+                            // The StartPos and EndPos must include the entire variable string inside of the whole HTML.
+                            variables.Add(new BlogVariable() { StartPos = i - 1 });
+                        }
+
+                        nestDepth++;
+
+                    }
+                    checkNextForParentheses = false;
+                    continue;
+                }
+
+                // Check for end.
+                // nestDepth must be greater than zero because otherwise any random closing parentheses could trigger this.
+                if (nestDepth > 0) 
+                {
+                    if (t[i] == ')')
+                    {
+
+                        nestDepth--;
+
+                        if (nestDepth < 0)
+                        {
+                            throw new Exception("Nest depth went below -1.");
+                        }
+
+                        // This is when the root variable closes
+                        if (nestDepth == 0)
+                        {
+                            // Get the variable you're editing
+                            var variable = variables.Last();
+                            variable.EndPos = i + 1;
+
+                            // The variable text excluding the parentheses and dollar sign
+                            string variableText = text.Substring(variable.StartPos + 2, variable.EndPos - 1 - (variable.StartPos + 2));
+
+                            // Populate any variables inside of the variable text by recursion.
+                            variableText = replaceVariables(variableText, post, category);
+
+                            // Split the variable into its individual parts
+                            string[] parts = variableText.Split(new char[] { ' ' }, 3);
+
+                            // Detect the variable type
+
+                            BlogVariableType type;
+
+                            switch (parts[0].ToUpper())
+                            {
+                                case "GLOBAL":
+                                    type = BlogVariableType.GLOBAL;
+                                    break;
+                                case "CATEGORY":
+                                    type = BlogVariableType.CATEGORY;
+                                    break;
+                                case "POST":
+                                    type = BlogVariableType.POST;
+                                    break;
+                                case "REGION":
+                                    type = BlogVariableType.REGION;
+                                    break;
+                                case "ENDREGION":
+                                    type = BlogVariableType.ENDREGION;
+                                    break;
+
+                                default:
+                                    throw new Exception("Could not identify variable type " + parts[0]);
+                            }
+
+                            variable.Type = type;
+
+                            // Detect the variable name
+                            variable.VariableName = parts[1];
+
+                            // Detect the arguments
+                            if (parts.Length > 2)
+                            {
+                                variable.Arguments = parts[2].Split(' ');
+                            }
+                            else
+                            {
+                                variable.Arguments = null;
+                            }
+                        }
+                    }
+                }
+            }
+
+            var sb = new StringBuilder(text);
+
+            // When text is replaced, it will offset the position of the rest of the text.
+            // This variable helps prevent that from happening.
+            int offset = 0;
+
+            // This is to replace all the root variables found within the text.
+            foreach (var variable in variables)
+            {
+                string replacingText = "";
+
+                switch (variable.Type)
+                {
+                    case BlogVariableType.GLOBAL:
+                        throw new NotImplementedException();
+                        break;
+                    case BlogVariableType.CATEGORY:
+                        throw new NotImplementedException();
+                        break;
+                    case BlogVariableType.POST:
+                        {
+                            replacingText = postVariableToText(variable, post);
+                            sb.Remove(variable.StartPos + offset, variable.EndPos - variable.StartPos);
+                            sb.Insert(variable.StartPos + offset, replacingText);
+
+                            offset += replacingText.Length - (variable.EndPos - variable.StartPos);
+                        }
+                        break;
+                    case BlogVariableType.REGION:
+                        // Not implemented
+                        break;
+                    case BlogVariableType.ENDREGION:
+                        // Not implemented
+                        break;
+                }
+
+                //offset += replacingText.Length - (variable.EndPos - variable.StartPos);
+            }
+
+            return sb.ToString();
+        }
+
+        private string globalVariableToText(BlogVariable v)
+        {
+            throw new NotImplementedException();
+        }
+
+        private string categoryVariableToText(BlogVariable v, BlogCategory category)
+        {
+            throw new NotImplementedException();
+        }
+
+        private string postVariableToText(BlogVariable v, BlogPost post)
+        {
+            /*
+             * $(POST TITLE)
+             * $(POST DATE)
+             * $(POST CONTENT)
+             * $(POST UID)
+             * $(POST HEADER_IMAGE_NAME)
+             * $(POST HEADER_IMAGE_CAPTION)
+             *
+             */
+            switch (v.VariableName.ToUpper())
+            {
+                // $(POST TITLE)
+                case "TITLE":
+                    return post.Title;
+                // $(POST UID)
+                case "UID":
+                    return post.UId;
+                case "AUTHOR":
+                    return post.Author;
+                case "DATE":
+                    return post.PublishTime.ToString("MMMM") + " " + post.PublishTime.Day + generateSuffix(post.PublishTime.Day) + ", " + post.PublishTime.Year;
+                case "CONTENT":
+                    return flowDocumentToHtml(post.Document.AssignedDocument, post.UId);
+                case "HEADER_IMAGE_NAME":
+                    return generateHeaderImageName(post);
+                case "HEADER_IMAGE_CAPTION":
+                    return post.HeaderImageCaption;
+
+
+            }
+
+            throw new NotImplementedException();
+        }
+
+        private string flowDocumentToHtml(FlowDocument document, string blogUId)
+        {
+            // throw new NotImplementedException();
+
+            string html = "";
+
+            html += blocksToHtml(document.Blocks, blogUId);
+            
+            return html;
+        }
+
+        private string blocksToHtml(BlockCollection blocks, string postUId)
+        {
+            string html = "";
+
+            foreach (var obj in blocks)
+            {
+                var type = obj.GetType();
+                if (type == typeof(Paragraph))
+                {
+                    var p = ((Paragraph)obj);
+
+                    html += "<p>";
+
+                    html += inlineToHtml(p.Inlines, postUId);
+
+                    html += "</p>";
+                }
+
+
+                else if (obj.GetType() == typeof(List))
+                {
+                    var list = (List)obj;
+                    var tag = list.MarkerStyle == TextMarkerStyle.Decimal ? "ol" : "ul";
+
+                    html += $"<{tag}>";
+                    foreach (ListItem li in ((List)obj).ListItems)
+                    {
+                        html += $"<li>{blocksToHtml(li.Blocks, postUId)}</li>";
+                    }
+
+                    html += $"</{tag}>";
+                }
+            }
+
+            return html;
+        }
+
+        private string runToHtml(Run r)
+        {
+            #region Tag Generator
+
+            // Default tag.
+            string tag = "span";
+
+            // These are the only other possible tag types for RUN.
+            switch (r.BaselineAlignment)
+            {
+                case BaselineAlignment.Subscript:
+                    tag = "sub";
+                    break;
+                case BaselineAlignment.Superscript:
+                    tag = "sup";
+                    break;
+            }
+            #endregion
+
+            #region Attribute Generator
+
+            string attributes = "style=\"";
+
+            // FONT SIZE
+            // Ignore font size for subscripts and superscripts.
+            // The font size is multipled by 20/18 as the default font size in the editor is 18 but on the webpage it is 20.
+            if (r.BaselineAlignment == BaselineAlignment.Baseline)
+                attributes += $"font-size: { Math.Round(r.FontSize * 20.0 / 18.0, 1) }px; ";
+            
+            // FONT STYLE
+            if (r.FontStyle == FontStyles.Italic) attributes += "font-style: italic; ";
+
+            // FONT WEIGHT
+            if (r.FontWeight == FontWeights.Bold) attributes += "font-weight: bold; ";
+
+            // TEXT DECORATIONS
+            if (r.TextDecorations.Count > 0)
+                if (r.TextDecorations[0] == TextDecorations.Underline[0]) attributes += "text-decoration: underline; ";
+
+            attributes += "\"";
+
+            #endregion
+
+            string html = "";
+
+            html += $"<{tag} {attributes}>{r.Text}</{tag}>";
+
+            return html;
+        }
+
+      
+
+        private string inlineToHtml(InlineCollection inlines, string postUID)
+        {
+            string html = "";
+
+            foreach (var inline in inlines)
+            {
+
+                if (inline.GetType() == typeof(Run))
+                {
+                    html += runToHtml((Run)inline);
+                }
+
+                else if (inline.GetType() == typeof(Hyperlink))
+                {
+                    var link = (Hyperlink)inline;
+                    html += $"<a target=\"_blank\" href=\"{link.NavigateUri}\">{inlineToHtml(link.Inlines, postUID)}</a>";
+                }
+
+                // Image
+                else if (inline.GetType() == typeof(InlineUIContainer))
+                {
+                    var container = (InlineUIContainer)inline;
+                    var image = (Image)container.Child;
+                    var imageName = Path.GetFileName(image.Source.ToString());
+
+                    // Copy the image the folder.
+                    var fileName = $"\\{postUID}_{imageName}";
+                    if (!Directory.Exists(imagePath)) Directory.CreateDirectory(imagePath);
+                    File.Copy(
+                        image.Source.ToString().Replace("file:///", ""), imagePath + fileName, true);
+
+                    html += $"<img src=\"content/images/{fileName}\" />";
+                }
+            }
+
+            return html;
+        }
+
+        /// <summary>
+        /// Generates the suffix for a day of the week between 0 and 31.
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        private string generateSuffix(int i)
+        {
+            // there is no 11st, 12nd, 13rd.
+            if (10 < i && i < 20) return "th";
+
+            // when i reaches 0 - 9
+            if (i < 10)
+            {
+                if (i == 1) return "st";
+                if (i == 2) return "nd";
+                if (i == 3) return "rd";
+                return "th";
+            }
+
+            // Keep dividing by 10 until one of the base cases is matched
+            return generateSuffix(i % 10);
+        }
+
+        public event EventHandler<BlogExportEventArgs> BlogExported;
+
+        #endregion
+
         #region helpers
 
         /// <summary>
@@ -468,6 +1004,28 @@ namespace BlogSystemHSSC.Blog
         /// <summary>
         /// The post that was created.
         /// </summary>
-        public BlogPost Post { get; set; }
+        public BlogPost Post { get; }
+    }
+
+    /// <summary>
+    /// The EventArgs used for blog export events.
+    /// </summary>
+    public class BlogExportEventArgs : EventArgs
+    {
+        public BlogExportEventArgs(bool success, string errorMessage)
+        {
+            Success = success;
+            ErrorMessage = errorMessage;
+        }
+
+        /// <summary>
+        /// Whether the export was successful.
+        /// </summary>
+        public bool Success { get; }
+
+        /// <summary>
+        /// The error message associated with the failure of an export.
+        /// </summary>
+        public string ErrorMessage { get; } = "";
     }
 }

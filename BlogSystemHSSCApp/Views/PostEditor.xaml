@@ -105,7 +105,7 @@
 
                     <ToolBar.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="{StaticResource Light4Brush}" Height="30" Margin="4 0" CornerRadius="15">
+                            <Border Background="{StaticResource Light4Brush}" Height="30" Margin="4 2" CornerRadius="15">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Name}" Margin="12 0 0 0" VerticalAlignment="Center"></TextBlock>
                                     <Button Style="{StaticResource CloseButton}" Margin="4 0 6 0"
@@ -123,9 +123,11 @@
         </Grid>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0 0 0 4">
-            <CheckBox IsChecked="{Binding BlogPost.IsArchived}">Archived</CheckBox>
+            <CheckBox IsChecked="{Binding BlogPost.IsDraft}" Margin="0 0 16 0" VerticalAlignment="Center">Draft</CheckBox>
+            <CheckBox IsChecked="{Binding BlogPost.IsArchived}" Margin="0 0 16 0" VerticalAlignment="Center">Archived</CheckBox>
+            <Button Width="170" VerticalAlignment="Center" Margin="0 0 0 4" Click="setHeaderImage">Set Header Image</Button>
         </StackPanel>
-        
+
         <customcontrols:RichTextEditor x:Name="Editor"  Grid.Row="3" LostFocus="editorLostFocus" RichDocument="{Binding BlogPost.Document}"></customcontrols:RichTextEditor>
 
     </Grid>

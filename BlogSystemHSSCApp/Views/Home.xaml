@@ -118,7 +118,7 @@
         <Border Grid.Column="1" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 0 2">
             <DockPanel LastChildFill="False">
                 <Button Width="140" Margin="10 0">Blog Settings</Button>
-                <Button DockPanel.Dock="Right" Margin="10 0" Width="140">Export Website</Button>
+                <Button DockPanel.Dock="Right" Margin="10 0" Width="140" Command="{Binding ExportBlogCommand}">Export Website</Button>
             </DockPanel>
         </Border>
 

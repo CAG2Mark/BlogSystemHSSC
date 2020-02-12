@@ -36,44 +36,43 @@
 
             <ListBox SelectedIndex="0" x:Name="TabControlListBox"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent" BorderThickness="0" Margin="0 0 0 0">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel VerticalAlignment="Center" IsItemsHost="True" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <ListBox.Resources>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"></Setter>
-                            <Setter Property="FontFamily" Value="{StaticResource SourceSansProSemiBold}"></Setter>
-                            <Setter Property="FontSize" Value="19"></Setter>
-                            <Setter Property="Foreground" Value="#88FFFFFF"></Setter>
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ListBoxItem">
-                                        <ContentPresenter Margin="6 0 6 0"></ContentPresenter>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel VerticalAlignment="Center" IsItemsHost="True" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.Resources>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"></Setter>
+                        <Setter Property="FontFamily" Value="{StaticResource SourceSansProSemiBold}"></Setter>
+                        <Setter Property="FontSize" Value="19"></Setter>
+                        <Setter Property="Foreground" Value="#88FFFFFF"></Setter>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"></Setter>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter Margin="6 0 6 0"></ContentPresenter>
 
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Foreground" Value="#BBFFFFFF"></Setter>
-                                            </Trigger>
-                                            <Trigger Property="IsSelected" Value="True">
-                                                <Setter Property="Foreground" Value="#FFFFFF"></Setter>
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Foreground" Value="#BBFFFFFF"></Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Foreground" Value="#FFFFFF"></Setter>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
 
 
-                        </Style>
-                    </ListBox.Resources>
+                    </Style>
+                </ListBox.Resources>
 
-                    <ListBoxItem>Home</ListBoxItem>
-                    <ListBoxItem>Posts</ListBoxItem>
+                <ListBoxItem>Home</ListBoxItem>
+                <ListBoxItem>Posts</ListBoxItem>
                 <ListBoxItem>Settings</ListBoxItem>
             </ListBox>
-
 
             <Button Style="{StaticResource NavbarButtonStyle}" Click="ClickClose" ToolTip="Close" DockPanel.Dock="Right" Height="28" Width="28" HorizontalAlignment="Right" Margin="2 2 6 2">
                 <Path Stretch="Fill" Height="20" Width="20" Data="M28.45,25.86L18.59,16l9.86-9.86c0.73-0.73,0.73-1.93,0-2.66v0c-0.73-0.73-1.93-0.73-2.66,0l-9.86,9.86           L6.21,3.62c-0.73-0.73-1.93-0.73-2.66,0v0c-0.73,0.73-0.73,1.93,0,2.66L13.26,16l-9.72,9.72c-0.73,0.73-0.73,1.93,0,2.66           s1.93,0.73,2.66,0l9.72-9.72l9.86,9.86c0.73,0.73,1.93,0.73,2.66,0C29.18,27.79,29.18,26.59,28.45,25.86z" Fill="White"/>
@@ -92,10 +91,11 @@
                               />
             </Button>
 
-               
 
-                
-            </DockPanel>
+            <Button DockPanel.Dock="Right" Foreground="White" HorizontalAlignment="Right" Width="200" Margin="8 0" Style="{StaticResource LightButtonStyle}"
+                    Command="{Binding SaveBlogCommand}" WindowChrome.IsHitTestVisibleInChrome="True" Content="{Binding SaveStatusText}"></Button>
+
+        </DockPanel>
         
         <!-- #endregion -->
 
