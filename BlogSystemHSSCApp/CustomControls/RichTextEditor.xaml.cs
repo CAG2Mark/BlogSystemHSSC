@@ -69,6 +69,8 @@ namespace BlogSystemHSSC.CustomControls
             else wasChangedInternally = false;
         }
 
+
+
         private void EditorTextBox_RequestDisconnect(object sender, EventArgs e)
         {
             // Prevent self-disconnect
@@ -78,6 +80,10 @@ namespace BlogSystemHSSC.CustomControls
                 EditorTextBox.TextChanged -= editorTextBoxTextChanged;
                 EditorTextBox.SelectionChanged -= editorTextBoxSelectionChanged;
                 EditorTextBox.KeyUp -= editorTextBoxKeyUp;
+                EditorTextBox.LostFocus -= editorTextBoxLostFocus;
+
+                DataObject.RemovePastingHandler(EditorTextBox, onPaste);
+
                 RtbContainer.Child = null;
             }
             disconnectInvokedFromThis = false;
@@ -92,13 +98,20 @@ namespace BlogSystemHSSC.CustomControls
             // Set this as its parent.
             RtbContainer.Child = EditorTextBox;
 
-            Console.Write("Succeeded");
-
             // Add event handlers
             EditorTextBox.TextChanged += editorTextBoxTextChanged;
             EditorTextBox.SelectionChanged += editorTextBoxSelectionChanged;
             EditorTextBox.KeyUp += editorTextBoxKeyUp;
-            
+            EditorTextBox.LostFocus += editorTextBoxLostFocus;
+
+            DataObject.AddPastingHandler(EditorTextBox, onPaste);
+
+        }
+
+        private void editorTextBoxLostFocus(object sender, RoutedEventArgs e)
+        {
+            // Make sure all the images are saved!
+            saveTextboxImages(EditorTextBox.Document);
         }
 
         #endregion
@@ -455,12 +468,84 @@ namespace BlogSystemHSSC.CustomControls
             checkSelection();
         }
 
-
         private void editorTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
             checkSelection();
             wasChangedInternally = true;
-            //RichDocument = EditorTextBox.Document;
+        }
+
+        private void saveTextboxImages(FlowDocument doc)
+        {
+            foreach (var block in doc.Blocks)
+            {
+                if (block.GetType() == typeof(BlockUIContainer))
+                {
+                    var image = (Image)((BlockUIContainer)block).Child;
+                    savePastedImage(image);
+                }
+
+                if (block.GetType() == typeof(Paragraph))
+                {
+                    var inlines = ((Paragraph)block).Inlines;
+                    foreach (var inline in inlines)
+                    {
+                        Console.WriteLine(inline.GetType().ToString());
+                        if (inline.GetType() == typeof(InlineUIContainer))
+                        {
+                            var image = (Image)((InlineUIContainer)inline).Child;
+                            savePastedImage(image);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void savePastedImage(Image image)
+        {
+
+            var sourceStr = image.Source.ToString();
+
+            // When an image is pasted it starts with pack, so this is when it needs to be saved
+            if (!sourceStr.StartsWith("pack")) return;
+
+            var path = $"{Global.FilesPath}\\Images";
+            var fileName = path + $"\\{PostUId}_{Path.GetFileNameWithoutExtension(sourceStr)}.png";
+
+            // Convert image to byte array to save
+            MemoryStream stream = new MemoryStream();
+            var bitmap = (BitmapImage)image.Source;
+
+            byte[] b;
+
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            using (MemoryStream ms = new MemoryStream())
+            {
+                encoder.Save(ms);
+                b = ms.ToArray();
+            }
+
+            // Create the directory if it does not exist
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+
+            // Write the file
+            File.WriteAllBytes(fileName, b);
+
+            image.Source = new BitmapImage(new Uri(fileName));
+        }
+
+        private async void onPaste(object sender, DataObjectPastingEventArgs e)
+        {
+            // Only perform the task once the data is in the textbox
+            await Task.Delay(1);
+
+            var tr = new TextRange(EditorTextBox.Document.ContentStart, EditorTextBox.Document.ContentEnd);
+            tr.ApplyPropertyValue(FontFamilyProperty, EditorTextBox.FontFamily);
+            tr.ApplyPropertyValue(FontSizeProperty, EditorTextBox.FontSize);
+
+            // Save all pasted images
+
+            saveTextboxImages(EditorTextBox.Document);
         }
 
         private void editorTextBoxKeyUp(object sender, KeyEventArgs e)
@@ -486,53 +571,6 @@ namespace BlogSystemHSSC.CustomControls
                 {
                     if (EditorTextBox.Selection.Text.Length == 0)
                         checkSelection();
-                }
-
-                // On Paste
-                if (e.Key == Key.V)
-                {
-                    var tr = new TextRange(EditorTextBox.Document.ContentStart, EditorTextBox.Document.ContentEnd);
-                    tr.ApplyPropertyValue(FontFamilyProperty, EditorTextBox.FontFamily);
-
-                    // Save all pasted images
-                    foreach (var block in EditorTextBox.Document.Blocks)
-                    {
-                        if (block.GetType() == typeof(Paragraph))
-                        {
-                            var inlines = ((Paragraph)block).Inlines;
-                            foreach (var inline in inlines)
-                            {
-                                if (inline.GetType() == typeof(InlineUIContainer))
-                                {
-                                    var image = (Image)((InlineUIContainer)inline).Child;
-                                    var path = $"{Global.FilesPath}\\Images";
-                                    var fileName = path + $"\\{PostUId}_{Path.GetFileNameWithoutExtension(image.Source.ToString())}.png";
-
-                                    // Convert image to byte array to save
-                                    MemoryStream stream = new MemoryStream();
-                                    var bitmap = (BitmapImage)image.Source;
-
-                                    byte[] b;
-
-                                    PngBitmapEncoder encoder = new PngBitmapEncoder();
-                                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
-                                    using (MemoryStream ms = new MemoryStream())
-                                    {
-                                        encoder.Save(ms);
-                                        b = ms.ToArray();
-                                    }
-
-                                    // Create the directory if it does not exist
-                                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-
-                                    // Write the file
-                                    File.WriteAllBytes(fileName, b);
-
-                                    image.Source = new BitmapImage(new Uri(fileName));
-                                }
-                            }
-                        }
-                    }
                 }
 
                 return;

@@ -96,7 +96,7 @@ namespace BlogSystemHSSC.Blog
 
                 output.Dispose();
 
-                SaveStatusText = "All Changes saved";
+                SaveStatusText = "All Changes Saved";
 
                 return true;
             }
@@ -309,7 +309,7 @@ namespace BlogSystemHSSC.Blog
                 if (saveBlogCommand == null)
                 {
                     saveBlogCommand = new RelayCommand(param => saveBlog(),
-                        param => this.canExecute);
+                        param => !SaveStatusText.Equals("All Changes Saved"));
                 }
                 return saveBlogCommand;
             }
@@ -594,6 +594,130 @@ namespace BlogSystemHSSC.Blog
 
         private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null)
         {
+            List<BlogVariable> variables = findVariables(text, post, category);
+
+            // This is to temporarily store all the REGION declarators in the file for matching.
+            List<BlogVariable> regionDeclarators = new List<BlogVariable>();
+            // This is the final list of paired regions.
+            List<BlogVariable[]> pairedRegions = new List<BlogVariable[]>();
+
+            var sb = new StringBuilder(text);
+
+
+            // This is to replace all the root variables found within the text.
+            for (var i = 0; i < variables.Count(); i++)
+            {
+                var variable = variables[i];
+
+                string replacingText = "";
+
+                bool replacing = true;
+
+                switch (variable.Type)
+                {
+                    case BlogVariableType.GLOBAL:
+                        throw new NotImplementedException();
+                        break;
+                    case BlogVariableType.CATEGORY:
+                        throw new NotImplementedException();
+                        break;
+                    case BlogVariableType.POST:
+                        {
+                            replacingText = postVariableToText(variable, post);
+                        }
+                        break;
+                    case BlogVariableType.REGION:
+
+                        replacing = false;
+                        regionDeclarators.Add(variable);
+
+                        break;
+                    case BlogVariableType.ENDREGION:
+
+                        replacing = false;
+
+                        // Convert to array instead of collection to preserve memory
+                        var search = regionDeclarators.Where(d => d.VariableName.Equals(variable.VariableName)).ToArray();
+                        // This is if there was no match
+                        if (search.Length < 1) throw new Exception($"The REGION declarator {variable.VariableName} could not be found.");
+
+                        var partner = search[0];
+
+                        // Pair the two declarators.
+                        pairedRegions.Add(new BlogVariable[] { partner, variable });
+
+                        // Not implemented
+                        break;
+                }
+
+                // If the variable is a type that should be replaced.
+                if (replacing)
+                {
+                    sb.Remove(variable.StartPos, variable.EndPos - variable.StartPos);
+                    sb.Insert(variable.StartPos, replacingText);
+
+                    // When text is replaced, it will offset the position of the rest of the text.
+                    // Offsetting helps prevent that from happening.
+                    var offset = replacingText.Length - (variable.EndPos - variable.StartPos);
+
+                    for (var j = i; j < variables.Count(); j++)
+                    {
+                        // Only change the offset of variables after the one being changed.
+                        if (variables[j].StartPos > variable.EndPos)
+                        {
+                            variables[j].StartPos += offset;
+                            variables[j].EndPos += offset;
+                        }
+                    }
+                }  
+            }
+
+            var newText = sb.ToString();
+
+            // The code below is used to find all the regions in the text.
+
+            var regionOffset = 0;
+
+            // Handle any specific region cases
+            foreach (var region in pairedRegions)
+            {
+                // For this case, the region should be cleared if the header image is not set.
+                if (region[0].VariableName.Equals("HEADER_IMAGE"))
+                {
+                    // Only remove the region if a header image isn't set
+                    if (post.IsHeaderImageSet) continue;
+
+                    // EndPos and StartPos are respectively used to remove the first -->, second <!-- 
+                    // and everything in between, but not uncomment anything else that is actual code
+                    var index1 = region[0].EndPos + regionOffset;
+                    var index2 = region[1].StartPos + regionOffset;
+
+                    // This is the length of text being removed.
+                    // Order does not matter to keep the system robust.
+                    // ie. ENDREGION is accidentally put before REGION
+                    var length = Math.Abs(index1 - index2);
+
+                    var beginIndex = Math.Min(index1, index2);
+
+                    sb.Remove(beginIndex, length);
+                    // Remove from the offset as we are taking away text
+                    regionOffset -= length;
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Finds the variables in the form $(TYPE VARIABLE_NAME [args]) in a string.
+        /// </summary>
+        /// <param name="text">The text to search.</param>
+        /// <param name="post">The blog post the content comes from.</param>
+        /// <param name="category">The category the content comes from.</param>
+        /// <param name="findRegions">Whether or not to find regions only.</param>
+        /// <returns></returns>
+        private List<BlogVariable> findVariables(string text, BlogPost post = null, BlogCategory category = null)
+        {
             List<BlogVariable> variables = new List<BlogVariable>();
 
             var t = text.ToCharArray();
@@ -631,7 +755,7 @@ namespace BlogSystemHSSC.Blog
 
                 // Check for end.
                 // nestDepth must be greater than zero because otherwise any random closing parentheses could trigger this.
-                if (nestDepth > 0) 
+                if (nestDepth > 0)
                 {
                     if (t[i] == ')')
                     {
@@ -704,47 +828,9 @@ namespace BlogSystemHSSC.Blog
                 }
             }
 
-            var sb = new StringBuilder(text);
-
-            // When text is replaced, it will offset the position of the rest of the text.
-            // This variable helps prevent that from happening.
-            int offset = 0;
-
-            // This is to replace all the root variables found within the text.
-            foreach (var variable in variables)
-            {
-                string replacingText = "";
-
-                switch (variable.Type)
-                {
-                    case BlogVariableType.GLOBAL:
-                        throw new NotImplementedException();
-                        break;
-                    case BlogVariableType.CATEGORY:
-                        throw new NotImplementedException();
-                        break;
-                    case BlogVariableType.POST:
-                        {
-                            replacingText = postVariableToText(variable, post);
-                            sb.Remove(variable.StartPos + offset, variable.EndPos - variable.StartPos);
-                            sb.Insert(variable.StartPos + offset, replacingText);
-
-                            offset += replacingText.Length - (variable.EndPos - variable.StartPos);
-                        }
-                        break;
-                    case BlogVariableType.REGION:
-                        // Not implemented
-                        break;
-                    case BlogVariableType.ENDREGION:
-                        // Not implemented
-                        break;
-                }
-
-                //offset += replacingText.Length - (variable.EndPos - variable.StartPos);
-            }
-
-            return sb.ToString();
+            return variables;
         }
+
 
         private string globalVariableToText(BlogVariable v)
         {
@@ -835,6 +921,15 @@ namespace BlogSystemHSSC.Blog
 
                     html += $"</{tag}>";
                 }
+
+                // Image
+                else if (obj.GetType() == typeof(BlockUIContainer))
+                {
+                    var container = (BlockUIContainer)obj;
+                    var image = (Image)container.Child;
+
+                    html += imageToHtml(image, postUId);
+                }
             }
 
             return html;
@@ -877,7 +972,7 @@ namespace BlogSystemHSSC.Blog
 
             // TEXT DECORATIONS
             if (r.TextDecorations.Count > 0)
-                if (r.TextDecorations[0] == TextDecorations.Underline[0]) attributes += "text-decoration: underline; ";
+                if (r.TextDecorations[0].Location == TextDecorationLocation.Underline) attributes += "text-decoration: underline; ";
 
             attributes += "\"";
 
@@ -892,7 +987,7 @@ namespace BlogSystemHSSC.Blog
 
       
 
-        private string inlineToHtml(InlineCollection inlines, string postUID)
+        private string inlineToHtml(InlineCollection inlines, string postUId)
         {
             string html = "";
 
@@ -907,7 +1002,7 @@ namespace BlogSystemHSSC.Blog
                 else if (inline.GetType() == typeof(Hyperlink))
                 {
                     var link = (Hyperlink)inline;
-                    html += $"<a target=\"_blank\" href=\"{link.NavigateUri}\">{inlineToHtml(link.Inlines, postUID)}</a>";
+                    html += $"<a target=\"_blank\" href=\"{link.NavigateUri}\">{inlineToHtml(link.Inlines, postUId)}</a>";
                 }
 
                 // Image
@@ -915,19 +1010,25 @@ namespace BlogSystemHSSC.Blog
                 {
                     var container = (InlineUIContainer)inline;
                     var image = (Image)container.Child;
-                    var imageName = Path.GetFileName(image.Source.ToString());
 
-                    // Copy the image the folder.
-                    var fileName = $"\\{postUID}_{imageName}";
-                    if (!Directory.Exists(imagePath)) Directory.CreateDirectory(imagePath);
-                    File.Copy(
-                        image.Source.ToString().Replace("file:///", ""), imagePath + fileName, true);
-
-                    html += $"<img src=\"content/images/{fileName}\" />";
+                    html += imageToHtml(image, postUId);
                 }
             }
 
             return html;
+        }
+
+        private string imageToHtml(Image image, string postUId)
+        {
+            var imageName = Path.GetFileName(image.Source.ToString());
+
+            // Copy the image the folder.
+            var fileName = $"{postUId}_{imageName}";
+            if (!Directory.Exists(imagePath)) Directory.CreateDirectory(imagePath);
+            File.Copy(
+                image.Source.ToString().Replace("file:///", ""), $"{imagePath}\\{fileName}", true);
+
+            return  $"<img src=\"content/images/{fileName}\" />";
         }
 
         /// <summary>
