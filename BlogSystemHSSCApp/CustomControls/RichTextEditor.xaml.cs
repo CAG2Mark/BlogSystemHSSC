@@ -287,7 +287,7 @@ namespace BlogSystemHSSC.CustomControls
 
                 p.Inlines.Add(image);
 
-                image.Height = 250;
+                image.MaxWidth = 500;
 
                 // You have to use a try catch here as PreviousBlock.get returning null throws an exception even if it is never referenced
                 try
@@ -489,7 +489,6 @@ namespace BlogSystemHSSC.CustomControls
                     var inlines = ((Paragraph)block).Inlines;
                     foreach (var inline in inlines)
                     {
-                        Console.WriteLine(inline.GetType().ToString());
                         if (inline.GetType() == typeof(InlineUIContainer))
                         {
                             var image = (Image)((InlineUIContainer)inline).Child;
@@ -502,6 +501,7 @@ namespace BlogSystemHSSC.CustomControls
 
         private void savePastedImage(Image image)
         {
+            image.MaxWidth = 500;
 
             var sourceStr = image.Source.ToString();
 
@@ -524,6 +524,8 @@ namespace BlogSystemHSSC.CustomControls
                 encoder.Save(ms);
                 b = ms.ToArray();
             }
+
+
 
             // Create the directory if it does not exist
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);

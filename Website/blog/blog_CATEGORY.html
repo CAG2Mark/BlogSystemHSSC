@@ -5,15 +5,17 @@
 <!-- EMPTY PAGE FOR THE BLOG SYSTEM TO WORK WITH. -->
 
 <head>
+    <base href="../index.html" />
+    
     <meta name="selectedNavigationItem" content="BLOG">
+
     <link rel="stylesheet" type="text/css" href="./styles/global.css" />
+    <link rel="stylesheet" type="text/css" href="./styles/category.css">
 
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
 
-    <base href="index.html" />
-
-    <title>Blank Page</title>
+    <title>$(CATEGORY NAME) - HSSC</title>
 
     <!-- fonts -->
 
@@ -52,7 +54,7 @@
         <div id="topbar" class="top-desktop-hidden">
 
             <a href="index.html">
-                <img alt="HSSC Logo" class="mobileonly" id="topbar-hssc-logo" src="content/images/hsscLogo.png">
+                <img alt="HSSC Logo" class="mobileonly" id="topbar-hssc-logo" src="./content/images/hsscLogo.png">
             </a>
 
             <span class="mobileonly" id="hamburger-container">
@@ -84,8 +86,8 @@
             <header>
                 <a href="index.html">
                     <div id="logo-container">
-                        <img alt="HSSC Logo" class="no-select" src="content/images/hsscLogo.png" id="header-logo">
-                        <img class="noSelect" id="header-logo-text" src="content/images/hsscText.png">
+                        <img alt="HSSC Logo" class="no-select" src="./content/images/hsscLogo.png" id="header-logo">
+                        <img class="noSelect" id="header-logo-text" src="./content/images/hsscText.png">
                     </div>
                 </a>
                 <div id="date-container">
@@ -115,9 +117,49 @@
             <!-- ALL CONTENT GOES HERE -->
 
 
-            <!-- temp spacer -->
-            <div style="height: 2500px">
+            <div class="wide-area clearfix">
+                <h1>$(CATEGORY NAME)</h1>
+
+                <!-- $(REGION CATEGORY_POST_TEMPLATE) -->
+
+                <!-- Everything inside of this will be treated by the application as if it were a blog post page-->
+                <a class="category-link" href="./blog/$(POST FILENAME).html">
+                    <div class="category-post-container">
+
+                        <!-- $(REGION HEADER_IMAGE) -->
+                        <img src="./content/images/$(POST HEADER_IMAGE_NAME)">
+                        <!-- $(ENDREGION HEADER_IMAGE) -->
+
+                        <div class="category-post-details vertical-center">
+                            <h3 class="nopadding">$(POST TITLE)</h3>
+                            
+                            <div class="category-post-meta-container">
+                                <span>By </span>
+                                <span>$(POST AUTHOR)</span>
+                                <span class="dot"></span>
+                                <span>$(POST DATE)</span>
+                            </div>
+
+                            <!-- 100 specifies the maximum length of the preview -->
+                            <span class="category-post-content-preview">$(POST CONTENT_PREVIEW 85)</span>
+                        </div>
+
+                        <div class="separator-gray mobileonly" style="margin: 4px 0 12px 0;"></div>
+                    </div>
+                </a>
+                
+                <!-- $(ENDREGION CATEGORY_POST_TEMPLATE)-->
+
+                <!-- $(REGION CATEGORY_POST_AREA) -->
+
+                <!-- $(ENDREGION CATEGORY_POST_AREA) -->
+
             </div>
+
+            
+
+            
+
 
             <footer>
                 <div class="spacer"></div>
@@ -131,10 +173,11 @@
             <!-- scripts -->
             <script src="scripts/global.js"></script>
             <script src="scripts/dateDisplay.js"></script>
+            <script src="scripts/blog.js"></script>
 
         </div>
 
-        
+
         <footer id="footer-color-filler"></footer>
     </div>
 </body>

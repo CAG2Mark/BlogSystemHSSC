@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Markup;
@@ -44,6 +45,12 @@ namespace BlogSystemHSSC.Blog
         {
             get => title;
             set => Set(ref title, value);
+        }
+
+        public string GetHtmlFriendlyTitle()
+        {
+            var fileName = Regex.Replace(Title, "[^a-zA-Z0-9 -]", "");
+            return fileName.Replace(" ", "-").ToLower();
         }
 
         private DateTime publishTime = DateTime.Now;
@@ -170,6 +177,34 @@ namespace BlogSystemHSSC.Blog
                 var stream = new XmlTextReader(new StringReader(value));
                 Document = new LinkedRichDocument((FlowDocument)XamlReader.Load(stream));
             }
+        }
+
+        /// <summary>
+        /// Generates a preview of the blog post content.
+        /// </summary>
+        /// <param name="maxLength">The maximum length of the preview.</param>
+        /// <returns></returns>
+        public string GetPreview(int maxLength)
+        {
+            foreach (var block in Document.AssignedDocument.Blocks)
+            {
+                if (block.GetType() == typeof(Paragraph))
+                    foreach (var inline in ((Paragraph)block).Inlines)
+                    {
+                        if (inline.GetType() == typeof(Run))
+                        {
+
+                            var text = ((Run)inline).Text;
+                            if (text.Length < maxLength) return text;
+                            else
+                            {
+                                return text.Substring(0, maxLength) + "(...)";
+                            }
+                        }
+                    }
+            }
+
+            return "";
         }
     }
 }

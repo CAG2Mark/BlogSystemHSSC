@@ -5,7 +5,7 @@
 <!-- EMPTY PAGE FOR THE BLOG SYSTEM TO WORK WITH. -->
 
 <head>
-    <base href="index.html" />
+    <base href="../index.html" />
     
     <meta name="selectedNavigationItem" content="BLOG">
 
@@ -53,7 +53,9 @@
 
         <div id="topbar" class="top-desktop-hidden">
 
-            <img alt="HSSC Logo" class="mobileonly" id="topbar-hssc-logo" src="content/images/hsscLogo.png">
+            <a href="index.html">
+                <img alt="HSSC Logo" class="mobileonly" id="topbar-hssc-logo" src="./content/images/hsscLogo.png">
+            </a>
 
             <span class="mobileonly" id="hamburger-container">
                 <div class="hamburger-bar"></div>
@@ -82,12 +84,13 @@
 
         <div id="body-container">
             <header>
-                <div id="logo-container">
-                    <img alt="HSSC Logo" class="no-select" src="content/images/hsscLogo.png" id="header-logo">
-                    <img class="noSelect" id="header-logo-text" src="content/images/hsscText.png">
-                </div>
+                <a href="index.html">
+                    <div id="logo-container">
+                        <img alt="HSSC Logo" class="no-select" src="content/images/hsscLogo.png" id="header-logo">
+                        <img class="noSelect" id="header-logo-text" src="content/images/hsscText.png">
+                    </div>
+                </a>
                 <div id="date-container">
-                    Friday 10th Janurary, 2019
                 </div>
                 <div id="navigation">
                     <ul id="navigation-header" class="navigation-list">
@@ -113,7 +116,7 @@
 
             <!-- ALL CONTENT GOES HERE -->
 
-            <div class="blog-post-wide-area">
+            <div class="wide-area">
 
                 <h1 class="headline">$(POST TITLE)</h1>
 
@@ -138,11 +141,11 @@
                 <div class="separator"></div>
             </div>
 
-            <div class="blog-post-narrow-area" id="blog-post-content-area">
+            <div class="narrow-area" id="blog-post-content-area">
                 $(POST CONTENT)
             </div>
 
-            <div class="blog-post-wide-area">
+            <div class="wide-area">
 
                 <div class="separator"></div>
 

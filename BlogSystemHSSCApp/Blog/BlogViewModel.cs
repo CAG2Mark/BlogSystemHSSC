@@ -503,24 +503,34 @@ namespace BlogSystemHSSC.Blog
             var directory = new DirectoryInfo(websiteDirectory);
 
             // Find the template.
-            var searchPost = directory.GetFiles("blog_POST.html");
+            var searchPost = directory.GetFiles("blog\\blog_POST.html");
+            var searchCategory = directory.GetFiles("blog\\blog_CATEGORY.html");
+
             if (searchPost.Length == 0)
             {
                 BlogExported.Invoke(this, new BlogExportEventArgs(false, "The blog post template could not be found."));
             }
+            if (searchCategory.Length == 0)
+            {
+                BlogExported.Invoke(this, new BlogExportEventArgs(false, "The blog category template could not be found."));
+            }
+
             FileInfo blogTemplate = searchPost[0];
+            FileInfo categoryTemplate = searchCategory[0];
 
             // Read the template string
             string blogTemplateStr = File.ReadAllText(blogTemplate.FullName);
+            string categoryTemplateStr = File.ReadAllText(categoryTemplate.FullName);
 
+
+            if (!Directory.Exists(exportPath)) Directory.CreateDirectory(exportPath);
+
+            if (false)
             // Export every post file
             foreach (var post in Blog.BlogPosts)
             {
                 // Ignore drafted posts
                 if (post.IsDraft) continue;
-
-                var fileName = Regex.Replace(post.Title, "[^a-zA-Z0-9 -]", "");
-                fileName = fileName.Replace(" ", "-").ToLower();
 
                 // Populate the template's variables
                 string exported = replaceVariables(blogTemplateStr, post);
@@ -531,13 +541,15 @@ namespace BlogSystemHSSC.Blog
                     File.Copy(post.HeaderImageStr, $"{imagePath}\\{generateHeaderImageName(post)}", true);
                 }
 
-                // Set the root to the correct value
-                if (!Directory.Exists(exportPath)) Directory.CreateDirectory(exportPath);
-                exported = exported.Replace("index.html", "../index.html");
-
                 if (!Directory.Exists(exportPath + "\\blog")) Directory.CreateDirectory(exportPath + "\\blog");
                 // Export the page
-                File.WriteAllText(exportPath + $"\\blog\\{fileName}.html", exported);
+                File.WriteAllText(exportPath + $"\\blog\\{post.GetHtmlFriendlyTitle()}.html", exported);
+            }
+
+            {
+                var exported = replaceVariables(categoryTemplateStr, null, VisibleCategories[0], Blog.BlogPosts.ToList());
+                // Special case - export all and archived posts.
+                File.WriteAllText($"{exportPath}\\blog\\posts.html", exported);
             }
 
             // Copy the rest of the files over
@@ -592,7 +604,7 @@ namespace BlogSystemHSSC.Blog
         private static readonly string exportPath = Global.FilesPath + "\\Export";
         private static readonly string imagePath = exportPath + "\\content\\images";
 
-        private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null)
+        private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null, List<BlogPost> posts = null)
         {
             List<BlogVariable> variables = findVariables(text, post, category);
 
@@ -610,7 +622,6 @@ namespace BlogSystemHSSC.Blog
                 var variable = variables[i];
 
                 string replacingText = "";
-
                 bool replacing = true;
 
                 switch (variable.Type)
@@ -619,10 +630,14 @@ namespace BlogSystemHSSC.Blog
                         throw new NotImplementedException();
                         break;
                     case BlogVariableType.CATEGORY:
-                        throw new NotImplementedException();
+                        {
+                            if (category == null) throw new Exception("A CATEGORY variable is specified but no category is provided.");
+                            replacingText = categoryVariableToText(variable, category);
+                        }
                         break;
                     case BlogVariableType.POST:
                         {
+                            if (post == null) throw new Exception("A POST variable is specified but no blog post is provided.");
                             replacingText = postVariableToText(variable, post);
                         }
                         break;
@@ -650,17 +665,20 @@ namespace BlogSystemHSSC.Blog
                         break;
                 }
 
+                var offset = replacingText.Length - (variable.EndPos - variable.StartPos);
                 // If the variable is a type that should be replaced.
-                if (replacing)
+                if (replacing && replacingText != null)
                 {
+                    Console.WriteLine(variable.VariableName);
+
                     sb.Remove(variable.StartPos, variable.EndPos - variable.StartPos);
                     sb.Insert(variable.StartPos, replacingText);
 
                     // When text is replaced, it will offset the position of the rest of the text.
                     // Offsetting helps prevent that from happening.
-                    var offset = replacingText.Length - (variable.EndPos - variable.StartPos);
+                    //var offset = replacingText.Length - (variable.EndPos - variable.StartPos);
 
-                    for (var j = i; j < variables.Count(); j++)
+                    for (var j = i + 1 ; j < variables.Count(); j++)
                     {
                         // Only change the offset of variables after the one being changed.
                         if (variables[j].StartPos > variable.EndPos)
@@ -669,14 +687,20 @@ namespace BlogSystemHSSC.Blog
                             variables[j].EndPos += offset;
                         }
                     }
-                }  
+                }
+
+                var test = variables.Where(x => x.VariableName == "CATEGORY_POST_TEMPLATE").ToList();
+                foreach (var item in test) 
+                {
+                    Console.WriteLine($"The variable {item.VariableName}, type {item.Type} has start position {item.StartPos}, {item.EndPos}. Current offset is {offset}.");
+                }
             }
 
-            var newText = sb.ToString();
-
-            // The code below is used to find all the regions in the text.
+            // The code below is used to handle all the regions in the text.
 
             var regionOffset = 0;
+
+            string categoryTemplateText = "";
 
             // Handle any specific region cases
             foreach (var region in pairedRegions)
@@ -687,25 +711,72 @@ namespace BlogSystemHSSC.Blog
                     // Only remove the region if a header image isn't set
                     if (post.IsHeaderImageSet) continue;
 
-                    // EndPos and StartPos are respectively used to remove the first -->, second <!-- 
-                    // and everything in between, but not uncomment anything else that is actual code
-                    var index1 = region[0].EndPos + regionOffset;
-                    var index2 = region[1].StartPos + regionOffset;
+                    // Simultaneously remove text and modify the offset.
+                    regionOffset += removeRegion(region, sb, regionOffset);
+                }
 
-                    // This is the length of text being removed.
-                    // Order does not matter to keep the system robust.
-                    // ie. ENDREGION is accidentally put before REGION
-                    var length = Math.Abs(index1 - index2);
+                if (region[0].VariableName.Equals("CATEGORY_POST_TEMPLATE"))
+                {
+                    // Get the template
+                    categoryTemplateText = extractRegionContent(region, sb, regionOffset);
+                    // Remove the template text from the HTML as it is now useless
+                    regionOffset += removeRegion(region, sb, regionOffset);
 
-                    var beginIndex = Math.Min(index1, index2);
 
-                    sb.Remove(beginIndex, length);
-                    // Remove from the offset as we are taking away text
-                    regionOffset -= length;
+                }
+
+                if (region[0].VariableName.Equals("CATEGORY_POST_AREA"))
+                {
+                    int tempOffset = 0;
+
+                    foreach (BlogPost catPost in posts)
+                    {
+                        var replacedText = replaceVariables(categoryTemplateText, catPost);
+                        // + 4 is to make sure it's placed after the comment
+                        tempOffset += insertIntoRegion(region, replacedText, sb, regionOffset, 4);
+                    }
+
+                    regionOffset += tempOffset;
                 }
             }
 
             return sb.ToString();
+        }
+
+        private int insertIntoRegion(BlogVariable[] region, string textToInsert, StringBuilder sb, int regionOffset, int commentOffset)
+        {
+            sb.Insert(region[0].EndPos + regionOffset + commentOffset, textToInsert);
+            return textToInsert.Length;
+        }
+
+        // Returns the offset.
+        private int removeRegion(BlogVariable[] region, StringBuilder sb, int regionOffset)
+        {
+            // EndPos and StartPos are respectively used to remove the first -->, second <!-- 
+            // and everything in between, but not uncomment anything else that is actual code
+            var index1 = region[0].EndPos + regionOffset;
+            var index2 = region[1].StartPos + regionOffset;
+
+            // This is the length of text being removed.
+            // Order does not matter to keep the system robust.
+            // ie. ENDREGION is accidentally put before REGION
+            var length = Math.Abs(index1 - index2);
+
+            var beginIndex = Math.Min(index1, index2);
+
+            sb.Remove(beginIndex, length);
+            // Remove from the offset as we are taking away text
+            return -length;
+        }
+
+        private string extractRegionContent(BlogVariable[] region, StringBuilder sb, int regionOffset)
+        {
+            var str = sb.ToString().Substring(region[0].EndPos + regionOffset, region[1].StartPos - region[0].EndPos).Trim();
+            // remove residue comment tags
+            if (str.StartsWith("-->")) str = str.Substring(3);
+            if (str.EndsWith("<!--")) str = str.Substring(0, str.Length - 4);
+
+            return str;
         }
 
         /// <summary>
@@ -714,7 +785,6 @@ namespace BlogSystemHSSC.Blog
         /// <param name="text">The text to search.</param>
         /// <param name="post">The blog post the content comes from.</param>
         /// <param name="category">The category the content comes from.</param>
-        /// <param name="findRegions">Whether or not to find regions only.</param>
         /// <returns></returns>
         private List<BlogVariable> findVariables(string text, BlogPost post = null, BlogCategory category = null)
         {
@@ -724,6 +794,9 @@ namespace BlogSystemHSSC.Blog
             bool checkNextForParentheses = false;
 
             int nestDepth = 0;
+
+            bool inMuffledRegion = false;
+            string muffledRegionName = "";
 
             // This entire for loop is to get all the variables.
             for (int i = 0; i < t.Length; i++)
@@ -741,8 +814,8 @@ namespace BlogSystemHSSC.Blog
 
                         if (nestDepth == 0)
                         {
-
-                            // The StartPos and EndPos must include the entire variable string inside of the whole HTML.
+                            var str = text.Substring(i, 40);
+                            // The StartPos and EndPos must include the entire variable string.
                             variables.Add(new BlogVariable() { StartPos = i - 1 });
                         }
 
@@ -814,6 +887,32 @@ namespace BlogSystemHSSC.Blog
                             // Detect the variable name
                             variable.VariableName = parts[1];
 
+                            #region muffled regions
+
+                            // Muffled regions are regions where variables should not be detected
+
+                            // The check for muffled region comes after the response to a muffled region
+                            // so the muffled region declarator does not self-muffle.
+
+                            if (inMuffledRegion)
+                            {
+                                if (type != BlogVariableType.ENDREGION || !parts[1].Equals(muffledRegionName))
+                                {
+                                    // cancel adding the last variable
+                                    variables.RemoveAt(variables.Count() - 1);
+                                }
+                                // Exit muffled region if match.
+                                else inMuffledRegion = false;
+                            }
+
+                            if (type == BlogVariableType.REGION && isMuffledRegion(parts[1]))
+                            {
+                                inMuffledRegion = true;
+                                muffledRegionName = parts[1];
+                            }
+
+                            #endregion
+
                             // Detect the arguments
                             if (parts.Length > 2)
                             {
@@ -831,6 +930,16 @@ namespace BlogSystemHSSC.Blog
             return variables;
         }
 
+        private bool isMuffledRegion(string regionName)
+        {
+            switch(regionName)
+            {
+                case "CATEGORY_POST_TEMPLATE":
+                    return true;
+            }
+
+            return false;
+        }
 
         private string globalVariableToText(BlogVariable v)
         {
@@ -839,7 +948,14 @@ namespace BlogSystemHSSC.Blog
 
         private string categoryVariableToText(BlogVariable v, BlogCategory category)
         {
-            throw new NotImplementedException();
+            switch (v.VariableName.ToUpper())
+            {
+                case "NAME":
+                    if (category.Name.Equals("All")) return "All Posts";
+                    else return category.Name;
+                    break;
+            }
+            return null;
         }
 
         private string postVariableToText(BlogVariable v, BlogPost post)
@@ -871,12 +987,20 @@ namespace BlogSystemHSSC.Blog
                     return generateHeaderImageName(post);
                 case "HEADER_IMAGE_CAPTION":
                     return post.HeaderImageCaption;
+                case "FILENAME":
+                    return post.GetHtmlFriendlyTitle();
+                case "CONTENT_PREVIEW":
+                    var maxLength = Convert.ToInt32(v.Arguments[0]);
+                    return post.GetPreview(maxLength);
 
 
             }
 
-            throw new NotImplementedException();
+            return null;
+            //throw new NotImplementedException();
         }
+
+        #region document to html
 
         private string flowDocumentToHtml(FlowDocument document, string blogUId)
         {
@@ -985,8 +1109,6 @@ namespace BlogSystemHSSC.Blog
             return html;
         }
 
-      
-
         private string inlineToHtml(InlineCollection inlines, string postUId)
         {
             string html = "";
@@ -1053,6 +1175,8 @@ namespace BlogSystemHSSC.Blog
             // Keep dividing by 10 until one of the base cases is matched
             return generateSuffix(i % 10);
         }
+
+        #endregion
 
         public event EventHandler<BlogExportEventArgs> BlogExported;
 
