@@ -28,6 +28,7 @@ body, sub, sup {
     margin: 0 0 0 0;
     padding: 0;
     font: 20px acumin-pro, -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+    
     overflow-x: hidden;
 
     width: 100%;
@@ -381,6 +382,7 @@ footer {
 
     #body-container {
         margin-top: 56px;
+        overflow-x: hidden;
     }
 
     #nagiation-top {
@@ -393,10 +395,16 @@ footer {
         opacity: 1;
     }
 
+    #header-logo {
+        height: 100px;
+    }
+    
+
     #headerLogoText {
         display: none;
     }
 
+    
     #navigation {
         display: none;
     }

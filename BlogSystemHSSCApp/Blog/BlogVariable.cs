@@ -13,10 +13,13 @@ namespace BlogSystemHSSC.Blog
         CATEGORY = 1,
         POST = 2,
         REGION = 3,
-        ENDREGION = 4
+        ENDREGION = 4,
+        TEMPLATE = 5,
+        ENDTEMPLATE = 6,
+        PAGEIND = 7,
     }
 
-    class BlogVariable
+    internal class BlogVariable
     {
         public BlogVariable()
         {

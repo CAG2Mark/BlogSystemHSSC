@@ -6,7 +6,7 @@
 
 <head>
     <base href="../index.html" />
-    
+
     <meta name="selectedNavigationItem" content="BLOG">
 
     <link rel="stylesheet" type="text/css" href="./styles/global.css" />
@@ -120,19 +120,16 @@
             <div class="wide-area clearfix">
                 <h1>$(CATEGORY NAME)</h1>
 
-                <!-- $(REGION CATEGORY_POST_TEMPLATE) -->
+                <!-- $(TEMPLATE CATEGORY_POST_TEMPLATE) -->
 
                 <!-- Everything inside of this will be treated by the application as if it were a blog post page-->
                 <a class="category-link" href="./blog/$(POST FILENAME).html">
                     <div class="category-post-container">
 
-                        <!-- $(REGION HEADER_IMAGE) -->
-                        <img src="./content/images/$(POST HEADER_IMAGE_NAME)">
-                        <!-- $(ENDREGION HEADER_IMAGE) -->
-
-                        <div class="category-post-details vertical-center">
+                        <div
+                            class="category-post-details vertical-center $(POST BOOL_HAS_HEADER_IMAGE  category-post-left)">
                             <h3 class="nopadding">$(POST TITLE)</h3>
-                            
+
                             <div class="category-post-meta-container">
                                 <span>By </span>
                                 <span>$(POST AUTHOR)</span>
@@ -145,20 +142,56 @@
                         </div>
 
                         <div class="separator-gray mobileonly" style="margin: 4px 0 12px 0;"></div>
+
+                        <!-- $(REGION HEADER_IMAGE) -->
+                        <img src="./content/images/$(POST HEADER_IMAGE_NAME)">
+                        <!-- $(ENDREGION HEADER_IMAGE) -->
+
                     </div>
                 </a>
-                
-                <!-- $(ENDREGION CATEGORY_POST_TEMPLATE)-->
 
-                <!-- $(REGION CATEGORY_POST_AREA) -->
+                <!-- $(ENDTEMPLATE CATEGORY_POST_TEMPLATE)-->
+
+                <!-- Parameters: Post template name. -->
+
+                <!-- $(REGION CATEGORY_POST_AREA CATEGORY_POST_TEMPLATE) -->
 
                 <!-- $(ENDREGION CATEGORY_POST_AREA) -->
 
+                <div id="category-pages">
+
+
+                    <!-- $(TEMPLATE CATEGORY_PAGES_TEMPLATE_SELECTED) -->
+
+                    <div class="category-pages-indicator category-pages-indicator-selected">
+                        <span class="category-pages-indicator-text">$(PAGEIND PAGE_NO)</span>
+                    </div>
+
+                    <!-- $(ENDTEMPLATE CATEGORY_PAGES_TEMPLATE_SELECTED) -->
+
+
+                    <!-- $(TEMPLATE CATEGORY_PAGES_TEMPLATE) -->
+
+                    <a href="./blog/$(PAGEIND PAGE_FILENAME)" class="category-pages-indicator">
+                        <span class="category-pages-indicator-text">$(PAGEIND PAGE_NO)</a>
+                    </a>
+
+
+                    <!-- $(ENDTEMPLATE CATEGORY_PAGES_TEMPLATE) -->
+
+
+                    <!-- Parameters: Indicators to display, Indicator template name, selected indicator template name.-->
+
+                    <!-- $(REGION CATEGORY_PAGES_AREA 5 CATEGORY_PAGES_TEMPLATE CATEGORY_PAGES_TEMPLATE_SELECTED) -->
+
+                    <!-- $(ENDREGION CATEGORY_PAGES_AREA)-->
+                </div>
+
             </div>
 
-            
 
-            
+
+
 
 
             <footer>

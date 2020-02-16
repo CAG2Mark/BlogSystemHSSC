@@ -49,8 +49,7 @@ namespace BlogSystemHSSC.Blog
 
         public string GetHtmlFriendlyTitle()
         {
-            var fileName = Regex.Replace(Title, "[^a-zA-Z0-9 -]", "");
-            return fileName.Replace(" ", "-").ToLower();
+            return HtmlHelper.ToUrlFileName(title);
         }
 
         private DateTime publishTime = DateTime.Now;

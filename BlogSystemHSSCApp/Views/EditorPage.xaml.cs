@@ -50,7 +50,7 @@ namespace BlogSystemHSSC.Views
 
         public async void JumpToBlogPost(BlogPost post)
         {
-            await Task.Delay(10);
+            await Task.Delay(100);
             if (MasterTabControl.Items.Count >= 1)
             MasterTabControl.SelectedItem = post;
 

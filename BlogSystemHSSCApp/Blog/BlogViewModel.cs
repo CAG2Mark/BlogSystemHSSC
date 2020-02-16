@@ -13,12 +13,11 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Xml.Serialization;
 
+
 namespace BlogSystemHSSC.Blog
 {
-
-
     /// <summary>
-    /// Loads and links the blog posts with the view.
+    /// Loads and links the blog posts with the view and exports the blog.
     /// </summary>
     public class BlogViewModel : BindableBase
     {
@@ -453,6 +452,8 @@ namespace BlogSystemHSSC.Blog
         // temporary
         const string websiteDirectory = @"C:\Users\markn\source\repos\BlogSystemHSSC\Website";
 
+        static int postsPerPage = 10;
+
         private void exportBlog()
         {
             /*
@@ -522,44 +523,113 @@ namespace BlogSystemHSSC.Blog
             string blogTemplateStr = File.ReadAllText(blogTemplate.FullName);
             string categoryTemplateStr = File.ReadAllText(categoryTemplate.FullName);
 
-
-            if (!Directory.Exists(exportPath)) Directory.CreateDirectory(exportPath);
-
-            if (false)
-            // Export every post file
-            foreach (var post in Blog.BlogPosts)
+            try
             {
-                // Ignore drafted posts
-                if (post.IsDraft) continue;
+                if (!Directory.Exists(exportPath)) Directory.CreateDirectory(exportPath);
 
-                // Populate the template's variables
-                string exported = replaceVariables(blogTemplateStr, post);
-
-                if (!string.IsNullOrWhiteSpace(post.HeaderImageStr))
+                // Export every post file
+                foreach (var post in Blog.BlogPosts)
                 {
-                    // Export the header image
-                    File.Copy(post.HeaderImageStr, $"{imagePath}\\{generateHeaderImageName(post)}", true);
+                    // Ignore drafted posts
+                    if (post.IsDraft) continue;
+
+                    // Populate the template's variables
+                    string exported = replaceVariables(blogTemplateStr, post);
+
+                    if (!string.IsNullOrWhiteSpace(post.HeaderImageStr))
+                    {
+                        // Export the header image
+                        File.Copy(post.HeaderImageStr, $"{imagePath}\\{generateHeaderImageName(post)}", true);
+                    }
+
+                    if (!Directory.Exists(exportPath + "\\blog")) Directory.CreateDirectory(exportPath + "\\blog");
+                    // Export the page
+                    File.WriteAllText(exportPath + $"\\blog\\{post.GetHtmlFriendlyTitle()}.html", exported);
                 }
 
-                if (!Directory.Exists(exportPath + "\\blog")) Directory.CreateDirectory(exportPath + "\\blog");
-                // Export the page
-                File.WriteAllText(exportPath + $"\\blog\\{post.GetHtmlFriendlyTitle()}.html", exported);
-            }
 
+                foreach (var category in VisibleCategories)
+                {
+                    // Ignore drafts.
+                    IEnumerable<BlogPost> posts = Blog.BlogPosts.Where(p => !p.IsDraft);
+
+                    if (category.Name.Equals("All"))
+                    {
+                        // Ignore archived.
+                        posts = posts.Where(p => !p.IsArchived);
+                    }
+                    else if (category.Name.Equals("Archived"))
+                    {
+                        // Only archived.
+                        posts = blog.BlogPosts.Where(p => p.IsArchived);
+                    }
+                    else
+                    {
+                        // Find posts where the name of the category name string is equal to the curretly exported category
+                        // and ignore archived.
+                        posts = posts.Where(
+                        p => p.Categories.Where(
+                            c => c.Name.Equals(category.Name))
+                        .Count() > 0
+                        && !p.IsArchived);
+                    }
+
+                    // export the category pages so each page has 10 posts
+                    var splitPosts = SplitList(posts.ToList(), postsPerPage);
+
+                    for (var i = 0; i < splitPosts.Length; i++)
+                    {
+                        var exported = replaceVariables(categoryTemplateStr, null, category, splitPosts[i], i + 1, splitPosts.Count());
+                        // Special case - export all and archived posts.
+                        File.WriteAllText($"{exportPath}\\blog\\{generateCategoryPageName(category, i + 1)}", exported);
+                    }
+                }
+            }
+            catch (Exception ex)
             {
-                var exported = replaceVariables(categoryTemplateStr, null, VisibleCategories[0], Blog.BlogPosts.ToList());
-                // Special case - export all and archived posts.
-                File.WriteAllText($"{exportPath}\\blog\\posts.html", exported);
+                BlogExported.Invoke(this, new BlogExportEventArgs(false, ex.Message));
             }
 
             // Copy the rest of the files over
             DirectoryCopy(websiteDirectory, exportPath, true);
 
+            BlogExported.Invoke(this, new BlogExportEventArgs(true));
+
+        }
+
+        /// <summary>
+        /// Splits a into 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public List<T>[] SplitList<T>(List<T> list, int size)
+        {
+            if (size == 0) throw new DivideByZeroException();
+
+            // This ensures the list size is always rounded up. 
+            // Source: http://www.cs.nott.ac.uk/~psarb2/G51MPC/slides/NumberLogic.pdf
+            var length = (list.Count() + size - 1) / size;
+
+            List<T>[] listArr = new List<T>[length];
+
+            for (int i = 0, j = 0; i < list.Count(); i += size, j++)
+            {
+                // Get the range between i with length "size" or the number of items remaining, whichever is smaller
+                listArr[j] = list.GetRange(i, Math.Min(size, list.Count() - i));
+            }
+            return listArr;
         }
 
         private static string generateHeaderImageName(BlogPost post)
         {
-            return $"{post.UId}_HEADER{Path.GetExtension(post.HeaderImageStr)}";
+            return $"{post.UId}_HEADER{Path.GetExtension(post.HeaderImageStr)}.html";
+        }
+
+        private static string generateCategoryPageName(BlogCategory category, int pageNo)
+        {
+            return $"{HtmlHelper.ToUrlFileName($"{category.Name}-{pageNo}")}.html";
         }
 
         // Credit: https://docs.microsoft.com/en-us/dotnet/standard/io/how-to-copy-directories
@@ -604,7 +674,7 @@ namespace BlogSystemHSSC.Blog
         private static readonly string exportPath = Global.FilesPath + "\\Export";
         private static readonly string imagePath = exportPath + "\\content\\images";
 
-        private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null, List<BlogPost> posts = null)
+        private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null, IEnumerable<BlogPost> posts = null, int currentPage = -1, int pageCount = -1)
         {
             List<BlogVariable> variables = findVariables(text, post, category);
 
@@ -642,12 +712,14 @@ namespace BlogSystemHSSC.Blog
                         }
                         break;
                     case BlogVariableType.REGION:
+                    case BlogVariableType.TEMPLATE:
 
                         replacing = false;
                         regionDeclarators.Add(variable);
 
                         break;
                     case BlogVariableType.ENDREGION:
+                    case BlogVariableType.ENDTEMPLATE:
 
                         replacing = false;
 
@@ -656,12 +728,18 @@ namespace BlogSystemHSSC.Blog
                         // This is if there was no match
                         if (search.Length < 1) throw new Exception($"The REGION declarator {variable.VariableName} could not be found.");
 
-                        var partner = search[0];
+                        var partner = search[search.Length - 1];
 
                         // Pair the two declarators.
                         pairedRegions.Add(new BlogVariable[] { partner, variable });
 
                         // Not implemented
+                        break;
+                    case BlogVariableType.PAGEIND:
+
+                        if (currentPage == -1 || category == null) throw new Exception("A PAGEIND variable is specified but the page number and category are not provided.");
+                        replacingText = pageIndVariableToText(variable, category, currentPage);
+
                         break;
                 }
 
@@ -669,8 +747,6 @@ namespace BlogSystemHSSC.Blog
                 // If the variable is a type that should be replaced.
                 if (replacing && replacingText != null)
                 {
-                    Console.WriteLine(variable.VariableName);
-
                     sb.Remove(variable.StartPos, variable.EndPos - variable.StartPos);
                     sb.Insert(variable.StartPos, replacingText);
 
@@ -688,23 +764,34 @@ namespace BlogSystemHSSC.Blog
                         }
                     }
                 }
-
+                
+                /*
                 var test = variables.Where(x => x.VariableName == "CATEGORY_POST_TEMPLATE").ToList();
                 foreach (var item in test) 
                 {
                     Console.WriteLine($"The variable {item.VariableName}, type {item.Type} has start position {item.StartPos}, {item.EndPos}. Current offset is {offset}.");
                 }
+                */
             }
 
             // The code below is used to handle all the regions in the text.
 
             var regionOffset = 0;
 
-            string categoryTemplateText = "";
+            Dictionary<string, string> TemplateDictionary = new Dictionary<string, string>();
 
             // Handle any specific region cases
             foreach (var region in pairedRegions)
             {
+
+                if (region[0].Type == BlogVariableType.TEMPLATE)
+                {
+                    // Get the template
+                    TemplateDictionary.Add(region[0].VariableName, extractRegionContent(region, sb, regionOffset));
+                    // Remove the template text from the HTML as it is now useless
+                    regionOffset += removeRegion(region, sb, regionOffset);
+                }
+
                 // For this case, the region should be cleared if the header image is not set.
                 if (region[0].VariableName.Equals("HEADER_IMAGE"))
                 {
@@ -715,28 +802,147 @@ namespace BlogSystemHSSC.Blog
                     regionOffset += removeRegion(region, sb, regionOffset);
                 }
 
-                if (region[0].VariableName.Equals("CATEGORY_POST_TEMPLATE"))
-                {
-                    // Get the template
-                    categoryTemplateText = extractRegionContent(region, sb, regionOffset);
-                    // Remove the template text from the HTML as it is now useless
-                    regionOffset += removeRegion(region, sb, regionOffset);
-
-
-                }
-
                 if (region[0].VariableName.Equals("CATEGORY_POST_AREA"))
                 {
                     int tempOffset = 0;
 
-                    foreach (BlogPost catPost in posts)
+                    if (posts != null)
                     {
-                        var replacedText = replaceVariables(categoryTemplateText, catPost);
-                        // + 4 is to make sure it's placed after the comment
-                        tempOffset += insertIntoRegion(region, replacedText, sb, regionOffset, 4);
+                        foreach (BlogPost catPost in posts)
+                        {
+                            string template;
+                            if (TemplateDictionary.TryGetValue(region[0].Arguments[0], out template))
+                            {
+                                var replacedText = replaceVariables(template, catPost);
+                                // + 4 is to make sure it's placed after the comment
+                                tempOffset += insertIntoRegion(region, replacedText, sb, regionOffset, 5);
+                            }
+                            else
+                            {
+                                throw new Exception($"Could not find template of name {region[0].Arguments[0]}");
+                            }
+                        }
                     }
 
                     regionOffset += tempOffset;
+                }
+
+                if (region[0].VariableName.Equals("POST_CATEGORY_TAG_AREA"))
+                {
+                    int tempOffset = 0;
+
+                    if (post.Categories != null)
+                    {
+                        foreach (BlogCategory cat in post.Categories)
+                        {
+                            string template;
+                            if (TemplateDictionary.TryGetValue(region[0].Arguments[0], out template))
+                            {
+                                var replacedText = replaceVariables(template, null, cat);
+                                // + 4 is to make sure it's placed after the comment
+                                tempOffset += insertIntoRegion(region, replacedText, sb, regionOffset + tempOffset, 5);
+                            }
+                            else
+                            {
+                                throw new Exception($"Could not find template of name {region[0].Arguments[0]}");
+                            }
+                        }
+                    }
+
+                    regionOffset += tempOffset;
+                }
+
+                if (region[0].VariableName.Equals("CATEGORY_PAGES_AREA"))
+                {
+                    int requiredParameters = 3;
+
+                    if (region[0].Arguments.Length != requiredParameters)
+                    {
+                        throw new Exception($"Region {region[0].VariableName} requires {requiredParameters} parameters but {region[0].Arguments.Length} were provided.");
+                    }
+
+                    var indCount = Convert.ToInt32(region[0].Arguments[0]);
+                    indCount = Math.Min(pageCount, indCount);
+
+                    string template;
+                    string templateSelected;
+
+                    if (TemplateDictionary.TryGetValue(region[0].Arguments[1], out template) &&
+                        TemplateDictionary.TryGetValue(region[0].Arguments[2], out templateSelected))
+                    {
+
+                        // Generate the page numbers with the current page in the middle
+
+                        // get the midpoint, ensuring it is always rounded up
+                        var midpoint = (indCount + 1) / 2;
+
+                        var spaceToRight = indCount - midpoint;
+                        var spaceToLeft = indCount - spaceToRight - 1;
+
+                        int pageLocation = midpoint;
+
+                        if (currentPage <= spaceToLeft)
+                        {
+                            pageLocation = currentPage;
+                        }
+                        if (pageCount - currentPage < spaceToRight)
+                        {
+                            pageLocation = indCount - (pageCount - currentPage);
+                        }
+                       
+
+                        int?[] pages = new int?[indCount];
+
+                        int pageLocationIndex = pageLocation - 1;
+
+                        pages[pageLocationIndex] = currentPage;
+
+                        // Populate to the left
+                        for (int i = pageLocationIndex - 1, j = 1; 
+                            i >= 0; 
+                            i--, j++)
+                        {
+                            pages[i] = currentPage - j;
+                        }
+
+                        // Populate to the Right
+                        for (int i = pageLocationIndex + 1, j = 1;
+                            i < pages.Length; 
+                            i++, j++)
+                        {
+                            pages[i] = currentPage + j;
+                        }
+
+                        foreach (var page in pages)
+                        {
+                            if (page == null) throw new Exception("Page was null");
+
+                            if (page == currentPage)
+                            {
+                                regionOffset += insertIntoRegion(
+                                    region,
+                                    replaceVariables(templateSelected, null, category, null, currentPage, pageCount),
+                                    sb,
+                                    regionOffset,
+                                    5);
+                            }
+
+                            else
+                            {
+                                regionOffset += insertIntoRegion(
+                                    region,
+                                    replaceVariables(template, null, category, null, page.GetValueOrDefault(), pageCount),
+                                    sb,
+                                    regionOffset,
+                                    5);
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        throw new Exception("Could not find the specified indicator template.");
+                    }
                 }
             }
 
@@ -745,7 +951,9 @@ namespace BlogSystemHSSC.Blog
 
         private int insertIntoRegion(BlogVariable[] region, string textToInsert, StringBuilder sb, int regionOffset, int commentOffset)
         {
-            sb.Insert(region[0].EndPos + regionOffset + commentOffset, textToInsert);
+            var pos = region[1].StartPos + regionOffset - commentOffset;
+
+            sb.Insert(pos, textToInsert);
             return textToInsert.Length;
         }
 
@@ -877,6 +1085,15 @@ namespace BlogSystemHSSC.Blog
                                 case "ENDREGION":
                                     type = BlogVariableType.ENDREGION;
                                     break;
+                                case "TEMPLATE":
+                                    type = BlogVariableType.TEMPLATE;
+                                    break;
+                                case "ENDTEMPLATE":
+                                    type = BlogVariableType.ENDTEMPLATE;
+                                    break;
+                                case "PAGEIND":
+                                    type = BlogVariableType.PAGEIND;
+                                    break;
 
                                 default:
                                     throw new Exception("Could not identify variable type " + parts[0]);
@@ -896,7 +1113,7 @@ namespace BlogSystemHSSC.Blog
 
                             if (inMuffledRegion)
                             {
-                                if (type != BlogVariableType.ENDREGION || !parts[1].Equals(muffledRegionName))
+                                if ((type != BlogVariableType.ENDREGION || !parts[1].Equals(muffledRegionName)) && type != BlogVariableType.ENDTEMPLATE)
                                 {
                                     // cancel adding the last variable
                                     variables.RemoveAt(variables.Count() - 1);
@@ -905,7 +1122,7 @@ namespace BlogSystemHSSC.Blog
                                 else inMuffledRegion = false;
                             }
 
-                            if (type == BlogVariableType.REGION && isMuffledRegion(parts[1]))
+                            if ((type == BlogVariableType.REGION && isMuffledRegion(parts[1])) || type == BlogVariableType.TEMPLATE)
                             {
                                 inMuffledRegion = true;
                                 muffledRegionName = parts[1];
@@ -932,9 +1149,14 @@ namespace BlogSystemHSSC.Blog
 
         private bool isMuffledRegion(string regionName)
         {
+            // No longer used, residue code.
             switch(regionName)
             {
                 case "CATEGORY_POST_TEMPLATE":
+                    return true;
+                case "CATEGORY_PAGES_TEMPLATE_SELECTED":
+                    return true;
+                case "CATEGORY_PAGES_TEMPLATE":
                     return true;
             }
 
@@ -953,7 +1175,9 @@ namespace BlogSystemHSSC.Blog
                 case "NAME":
                     if (category.Name.Equals("All")) return "All Posts";
                     else return category.Name;
-                    break;
+                case "FILENAME":
+                    return generateCategoryPageName(category,  
+                        v.Arguments.Length > 0 ? Convert.ToInt32(v.Arguments[0]) : 1);
             }
             return null;
         }
@@ -992,12 +1216,26 @@ namespace BlogSystemHSSC.Blog
                 case "CONTENT_PREVIEW":
                     var maxLength = Convert.ToInt32(v.Arguments[0]);
                     return post.GetPreview(maxLength);
+                case "BOOL_HAS_HEADER_IMAGE":
+                    return post.IsHeaderImageSet ? v.Arguments[0] : v.Arguments[1];
 
 
             }
 
             return null;
             //throw new NotImplementedException();
+        }
+
+        private string pageIndVariableToText(BlogVariable v, BlogCategory category, int page)
+        {
+            switch (v.VariableName.ToUpper())
+            {
+                case "PAGE_NO":
+                    return page.ToString();
+                case "PAGE_FILENAME":
+                    return generateCategoryPageName(category, page);
+            }
+            return null;
         }
 
         #region document to html
@@ -1237,6 +1475,12 @@ namespace BlogSystemHSSC.Blog
     /// </summary>
     public class BlogExportEventArgs : EventArgs
     {
+
+        public BlogExportEventArgs(bool success)
+        {
+            Success = success;
+        }
+
         public BlogExportEventArgs(bool success, string errorMessage)
         {
             Success = success;
