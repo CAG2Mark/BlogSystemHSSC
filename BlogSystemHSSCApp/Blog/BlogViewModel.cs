@@ -12,6 +12,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 
 namespace BlogSystemHSSC.Blog
@@ -456,48 +457,8 @@ namespace BlogSystemHSSC.Blog
 
         private void exportBlog()
         {
-            /*
-             * STEPS
-             * 
-             * 1) Create the individual blog post files
-             * 2) Create the individual category files
-             * 3) Create the 'All posts' page
-             * 4) Populate the rest of the pages
-             * 
-             */
 
-            /*
-             * VARIABLES
-             * 
-             * Syntax: $(<Category> <Variable Name> [Arguments])
-             * 
-             * <Represents required parameters>
-             * [Represents optional parameters>
-             * 
-             * Blog post:
-             * $(POST TITLE)
-             * $(POST DATE)
-             * $(POST CONTENT)
-             * $(POST UID)
-             * 
-             * Category page:
-             * 
-             * where <index> is the index of the post descending by date.
-             * 
-             * $(CATEGORY POST_TITLE <index>)
-             * $(CATEGORY POST_DATE <index>)
-             * $(CATEGORY POST_AUTHOR <index>)
-             * $(CATEGORY POST_PREVIEW <index>)
-             * 
-             * Global:
-             * 
-             * $(GLOBAL POST_UID <index> [category-index]) // category index: 0 = All, 1 = Archived.
-             * $(GLOBAL POST_TITLE <post-uid>)
-             * $(GLOBAL POST_DATE <post-uid>)
-             * $(GLOBAL POST_CATEGORY <post-uid>)
-             * $(GLOBAL POST_AUTHOR <post-uid>)
-             * $(GLOBAL POST_PREVIEW <post-uid>)
-             */
+            #region pages
 
             // Get the blog template
 
@@ -523,12 +484,15 @@ namespace BlogSystemHSSC.Blog
             string blogTemplateStr = File.ReadAllText(blogTemplate.FullName);
             string categoryTemplateStr = File.ReadAllText(categoryTemplate.FullName);
 
+            // Ignore drafts.
+            IEnumerable<BlogPost> allPosts = Blog.BlogPosts.Where(p => !p.IsDraft);
+
             try
             {
                 if (!Directory.Exists(exportPath)) Directory.CreateDirectory(exportPath);
 
                 // Export every post file
-                foreach (var post in Blog.BlogPosts)
+                foreach (var post in allPosts)
                 {
                     // Ignore drafted posts
                     if (post.IsDraft) continue;
@@ -539,35 +503,34 @@ namespace BlogSystemHSSC.Blog
                     if (!string.IsNullOrWhiteSpace(post.HeaderImageStr))
                     {
                         // Export the header image
-                        File.Copy(post.HeaderImageStr, $"{imagePath}\\{generateHeaderImageName(post)}", true);
+                        File.Copy(post.HeaderImageStr, $"{imagePath}\\{post.HeaderImageName}", true);
                     }
 
                     if (!Directory.Exists(exportPath + "\\blog")) Directory.CreateDirectory(exportPath + "\\blog");
                     // Export the page
-                    File.WriteAllText(exportPath + $"\\blog\\{post.GetHtmlFriendlyTitle()}.html", exported);
+                    File.WriteAllText(exportPath + $"\\blog\\{post.HtmlFriendlyTitle}.html", exported);
                 }
 
 
                 foreach (var category in VisibleCategories)
                 {
-                    // Ignore drafts.
-                    IEnumerable<BlogPost> posts = Blog.BlogPosts.Where(p => !p.IsDraft);
+                    IEnumerable<BlogPost> posts;
 
                     if (category.Name.Equals("All"))
                     {
                         // Ignore archived.
-                        posts = posts.Where(p => !p.IsArchived);
+                        posts = allPosts.Where(p => !p.IsArchived);
                     }
                     else if (category.Name.Equals("Archived"))
                     {
                         // Only archived.
-                        posts = blog.BlogPosts.Where(p => p.IsArchived);
+                        posts = allPosts.Where(p => p.IsArchived);
                     }
                     else
                     {
                         // Find posts where the name of the category name string is equal to the curretly exported category
                         // and ignore archived.
-                        posts = posts.Where(
+                        posts = allPosts.Where(
                         p => p.Categories.Where(
                             c => c.Name.Equals(category.Name))
                         .Count() > 0
@@ -590,10 +553,16 @@ namespace BlogSystemHSSC.Blog
                 BlogExported.Invoke(this, new BlogExportEventArgs(false, ex.Message));
             }
 
+            #endregion
+            
+            string json = JsonConvert.SerializeObject(allPosts.ToList());
+            File.WriteAllText($"{exportPath}\\blog\\posts.json", json);
+
+
             // Copy the rest of the files over
             DirectoryCopy(websiteDirectory, exportPath, true);
 
-            BlogExported.Invoke(this, new BlogExportEventArgs(true));
+            BlogExported?.Invoke(this, new BlogExportEventArgs(true));
 
         }
 
@@ -620,11 +589,6 @@ namespace BlogSystemHSSC.Blog
                 listArr[j] = list.GetRange(i, Math.Min(size, list.Count() - i));
             }
             return listArr;
-        }
-
-        private static string generateHeaderImageName(BlogPost post)
-        {
-            return $"{post.UId}_HEADER{Path.GetExtension(post.HeaderImageStr)}.html";
         }
 
         private static string generateCategoryPageName(BlogCategory category, int pageNo)
@@ -1204,15 +1168,15 @@ namespace BlogSystemHSSC.Blog
                 case "AUTHOR":
                     return post.Author;
                 case "DATE":
-                    return post.PublishTime.ToString("MMMM") + " " + post.PublishTime.Day + generateSuffix(post.PublishTime.Day) + ", " + post.PublishTime.Year;
+                    return post.PublishTimeStr;
                 case "CONTENT":
                     return flowDocumentToHtml(post.Document.AssignedDocument, post.UId);
                 case "HEADER_IMAGE_NAME":
-                    return generateHeaderImageName(post);
+                    return post.HeaderImageName;
                 case "HEADER_IMAGE_CAPTION":
                     return post.HeaderImageCaption;
                 case "FILENAME":
-                    return post.GetHtmlFriendlyTitle();
+                    return post.HtmlFriendlyTitle;
                 case "CONTENT_PREVIEW":
                     var maxLength = Convert.ToInt32(v.Arguments[0]);
                     return post.GetPreview(maxLength);
@@ -1389,29 +1353,6 @@ namespace BlogSystemHSSC.Blog
                 image.Source.ToString().Replace("file:///", ""), $"{imagePath}\\{fileName}", true);
 
             return  $"<img src=\"content/images/{fileName}\" />";
-        }
-
-        /// <summary>
-        /// Generates the suffix for a day of the week between 0 and 31.
-        /// </summary>
-        /// <param name="i"></param>
-        /// <returns></returns>
-        private string generateSuffix(int i)
-        {
-            // there is no 11st, 12nd, 13rd.
-            if (10 < i && i < 20) return "th";
-
-            // when i reaches 0 - 9
-            if (i < 10)
-            {
-                if (i == 1) return "st";
-                if (i == 2) return "nd";
-                if (i == 3) return "rd";
-                return "th";
-            }
-
-            // Keep dividing by 10 until one of the base cases is matched
-            return generateSuffix(i % 10);
         }
 
         #endregion

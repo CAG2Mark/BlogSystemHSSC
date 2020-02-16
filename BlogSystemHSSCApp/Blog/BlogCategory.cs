@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlogSystemHSSC.Blog
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class BlogCategory : BindableBase
     {
         public BlogCategory()
@@ -19,6 +21,7 @@ namespace BlogSystemHSSC.Blog
         }
 
         private string name;
+        [JsonProperty]
         public string Name
         {
             get => name;

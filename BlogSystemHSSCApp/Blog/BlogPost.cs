@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -16,6 +17,7 @@ using System.Xml.Serialization;
 namespace BlogSystemHSSC.Blog
 {
 
+    [JsonObject(MemberSerialization.OptIn)]
     public class BlogPost : BindableBase
     {
         public BlogPost()
@@ -28,6 +30,7 @@ namespace BlogSystemHSSC.Blog
         }
 
         private string author = "";
+        [JsonProperty]
         /// <summary>
         /// The author of the post.
         /// </summary>
@@ -38,6 +41,7 @@ namespace BlogSystemHSSC.Blog
         }
 
         private string title = "New Post";
+        [JsonProperty]
         /// <summary>
         /// The title of the post.
         /// </summary>
@@ -47,12 +51,12 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref title, value);
         }
 
-        public string GetHtmlFriendlyTitle()
-        {
-            return HtmlHelper.ToUrlFileName(title);
-        }
+        [JsonProperty]
+        public string HtmlFriendlyTitle => HtmlHelper.ToUrlFileName(title);
 
         private DateTime publishTime = DateTime.Now;
+
+        [JsonIgnore]
         /// <summary>
         /// The DateTime of when the post was published.
         /// </summary>
@@ -62,8 +66,35 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref publishTime, value);
         }
 
+        [JsonProperty]
+        public string PublishTimeStr => PublishTime.ToString("MMMM") + " " + PublishTime.Day + generateSuffix(PublishTime.Day) + ", " + PublishTime.Year;
+
+        /// <summary>
+        /// Generates the suffix for a day of the week between 0 and 31.
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        static string generateSuffix(int i)
+        {
+            // there is no 11st, 12nd, 13rd.
+            if (10 < i && i < 20) return "th";
+
+            // when i reaches 0 - 9
+            if (i < 10)
+            {
+                if (i == 1) return "st";
+                if (i == 2) return "nd";
+                if (i == 3) return "rd";
+                return "th";
+            }
+
+            // Keep dividing by 10 until one of the base cases is matched
+            return generateSuffix(i % 10);
+        }
+
 
         private ObservableCollection<BlogCategory> categories = new ObservableCollection<BlogCategory>();
+        [JsonIgnore]
         /// <summary>
         /// The categories of the blog post.
         /// </summary>
@@ -73,7 +104,11 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref categories, value);
         }
 
+        [JsonProperty]
+        public List<BlogCategory> CategoriesList => Categories.ToList();
+
         private bool isArchived;
+        [JsonProperty]
         /// <summary>
         /// Whether or not the post is archived.
         /// </summary>
@@ -84,6 +119,7 @@ namespace BlogSystemHSSC.Blog
         }
 
         private bool isDraft = true;
+        [JsonIgnore]
         /// <summary>
         /// Whether or not the post is drafted.
         /// </summary>
@@ -93,11 +129,13 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref isDraft, value);
         }
 
+        [JsonProperty]
         /// <summary>
         /// The unique ID of this post for Disqus.
         /// </summary>
         public string UId { get; set; }
 
+        [JsonIgnore]
         [XmlIgnore]
         public ImageSource HeaderImageSource
         {
@@ -118,6 +156,7 @@ namespace BlogSystemHSSC.Blog
         }
 
         private string headerImageStr = "";
+        [JsonIgnore]
         public string HeaderImageStr
         {
             get => headerImageStr;
@@ -129,9 +168,11 @@ namespace BlogSystemHSSC.Blog
             }
         }
 
+        [JsonProperty]
         public bool IsHeaderImageSet => !string.IsNullOrWhiteSpace(HeaderImageStr);
 
         private string headerImageCaption = "";
+        [JsonIgnore]
         public string HeaderImageCaption
         {
             get => headerImageCaption;
@@ -142,12 +183,15 @@ namespace BlogSystemHSSC.Blog
             }
         }
 
+        [JsonProperty]
+        public string HeaderImageName => $"{UId}_HEADER{Path.GetExtension(HeaderImageStr)}";
+
 
         // The document is stored during runtime as a FlowDocument/LinkedRichDocument class, but must be stored as a string
         // because FlowDocument cannot be serialized. Therefore, the property DOcument is not serialiezd and instead
         // the DocumentStr property is what's serialized. It is converted back into a FlowDocument when the application starts.
         private LinkedRichDocument document = new LinkedRichDocument(new FlowDocument());
-        [XmlIgnore]
+        [XmlIgnore] [JsonIgnore]
         /// <summary>
         /// The document containing all of the post data.
         /// </summary>
@@ -157,6 +201,7 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref document, value);
         }
 
+        [JsonIgnore]
         public string DocumentStr
         {
             get
@@ -204,6 +249,36 @@ namespace BlogSystemHSSC.Blog
             }
 
             return "";
+        }
+
+        [JsonProperty]
+        /// <summary>
+        /// Generates the preview of the blog post using a length of 80.
+        /// </summary>
+        public string Preview
+        {
+            get
+            {
+                foreach (var block in Document.AssignedDocument.Blocks)
+                {
+                    if (block.GetType() == typeof(Paragraph))
+                        foreach (var inline in ((Paragraph)block).Inlines)
+                        {
+                            if (inline.GetType() == typeof(Run))
+                            {
+
+                                var text = ((Run)inline).Text;
+                                if (text.Length < 80) return text;
+                                else
+                                {
+                                    return text.Substring(0, 80) + "(...)";
+                                }
+                            }
+                        }
+                    return "";
+                }
+                return "";
+            }
         }
     }
 }
