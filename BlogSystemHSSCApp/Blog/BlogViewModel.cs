@@ -554,8 +554,10 @@ namespace BlogSystemHSSC.Blog
             }
 
             #endregion
-            
-            string json = JsonConvert.SerializeObject(allPosts.ToList());
+
+            //var postsDictionary = allPosts.ToDictionary(x => x.UId, x => x);
+
+            string json = JsonConvert.SerializeObject(allPosts);
             File.WriteAllText($"{exportPath}\\blog\\posts.json", json);
 
 
@@ -593,6 +595,7 @@ namespace BlogSystemHSSC.Blog
 
         private static string generateCategoryPageName(BlogCategory category, int pageNo)
         {
+            if (category.Name.Equals("All") && pageNo == 1) return "blog.html";
             return $"{HtmlHelper.ToUrlFileName($"{category.Name}-{pageNo}")}.html";
         }
 
@@ -635,7 +638,7 @@ namespace BlogSystemHSSC.Blog
             }
         }
 
-        private static readonly string exportPath = Global.FilesPath + "\\Export";
+        private static readonly string exportPath = Global.FilesPath + "\\Export\\BlogSystemOnlineTest";
         private static readonly string imagePath = exportPath + "\\content\\images";
 
         private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null, IEnumerable<BlogPost> posts = null, int currentPage = -1, int pageCount = -1)
@@ -779,7 +782,7 @@ namespace BlogSystemHSSC.Blog
                             {
                                 var replacedText = replaceVariables(template, catPost);
                                 // + 4 is to make sure it's placed after the comment
-                                tempOffset += insertIntoRegion(region, replacedText, sb, regionOffset, 5);
+                                tempOffset += insertIntoRegion(region, replacedText, sb, regionOffset + tempOffset, 5);
                             }
                             else
                             {

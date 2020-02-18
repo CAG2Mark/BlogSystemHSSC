@@ -1,0 +1,11 @@
+#notfound-text {
+    font-size: 80px;
+    padding: 0;
+    margin: 0 0 24px 0;
+}
+
+@media (max-width: 600px) {
+    #notfound-text {
+        font-size: 48px !important;
+    }
+}

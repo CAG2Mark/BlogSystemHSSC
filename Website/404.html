@@ -5,17 +5,16 @@
 <!-- EMPTY PAGE FOR THE BLOG SYSTEM TO WORK WITH. -->
 
 <head>
-    <base href="../index.html" />
     
-    <meta name="selectedNavigationItem" content="BLOG">
+    <base href="https://ngp16.github.io/BlogSystemOnlineTest/" />
 
+    <meta name="selectedNavigationItem" content="BLOG">
     <link rel="stylesheet" type="text/css" href="./styles/global.css" />
-    <link rel="stylesheet" type="text/css" href="./styles/blog.css">
+    <link rel="stylesheet" type="text/css" href="./styles/error-page.css" />
 
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-
-    <title>$(POST TITLE)</title>
+    <title>Blank Page</title>
 
     <!-- fonts -->
 
@@ -149,96 +148,16 @@
 
             <!-- ALL CONTENT GOES HERE -->
 
-            <div class="wide-area">
 
-                <div class="blog-categories-container">
-                    
-                <!-- $(TEMPLATE POST_CATEGORY_TAG) -->
-                    <a class="blog-category-tag" href="./blog/$(CATEGORY FILENAME 1)">
-                        $(CATEGORY NAME)
-                    </a>
-                <!-- $(ENDTEMPLATE POST_CATEGORY_TAG) -->
+            <!-- temp spacer -->
+            <div style="height: calc(100vh - 300px); text-align: center; position: relative">
 
-                <!-- $(REGION POST_CATEGORY_TAG_AREA POST_CATEGORY_TAG) --> 
-
-                <!-- $(ENDREGION POST_CATEGORY_TAG_AREA) -->
-
-                </div>
-
-                <h1 class="headline">$(POST TITLE)</h1>
-
-                <!-- $(REGION HEADER_IMAGE) -->
-                <img src="./content/images/$(POST HEADER_IMAGE_NAME)">
-                <p class="blog-post-image-caption">$(POST HEADER_IMAGE_CAPTION)</p>
-                <!-- $(ENDREGION HEADER_IMAGE) -->
-
-
-                <div class="blog-post-data-container" id="blog-post-author-container">
-                    <span>By </span>
-                    <span>$(POST AUTHOR)</span>
-                </div>
-
-                <div class="blog-post-data-container" id="blog-post-date-container">
-                    <span>Published on </span>
-                    <span>$(POST DATE)</span>
-                </div>
-
-                <div style="height: 6px"></div>
-
-                <div class="separator"></div>
-            </div>
-
-            <div class="narrow-area" id="blog-post-content-area">
-                $(POST CONTENT)
-
-                <div class="blog-categories-container" style="margin-top: 12px; margin-bottom: 12px;">
-
-                    <!-- $(REGION POST_CATEGORY_TAG_AREA POST_CATEGORY_TAG) -->
-    
-                    <!-- $(ENDREGION POST_CATEGORY_TAG_AREA) -->
-    
+                <div class="vertical-align-middle" style="width: 100%">
+                    <h1 id="notfound-text">Page not found</h1>
+                    <a href="./index.html" style="text-decoration: none; color: black">Return home</a>
                 </div>
             </div>
 
-            
-
-            <div class="wide-area">
-
-                <div class="separator"></div>
-
-                <div style="height: 8px"></div>
-
-                <!-- DISQUS AREA -->
-
-                <div id="disqus_thread"></div>
-                <script>
-                    /**
-                     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-                     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
-
-                    var disqus_config = function () {
-
-                        this.page.url = window.location.href; // Replace PAGE_URL with your page's canonical URL variable
-
-                        // TEST URL
-                        //this.page.url = "https://hsscstc.github.io/blog/test.html"; 
-                        
-                        this.page.identifier =
-                            "$(POST UID)"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
-                    };
-
-                    (function () { // DON'T EDIT BELOW THIS LINE
-                        var d = document,
-                            s = d.createElement('script');
-                        s.src = 'https://hssc-1.disqus.com/embed.js';
-                        s.setAttribute('data-timestamp', +new Date());
-                        (d.head || d.body).appendChild(s);
-                    })();
-                </script>
-                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments
-                        powered by Disqus.</a></noscript>
-            </div>
-            
             <footer>
                 <div class="spacer"></div>
 
@@ -249,13 +168,12 @@
             </footer>
 
             <!-- scripts -->
-            <script src="scripts/global.js"></script>
-            <script src="scripts/dateDisplay.js"></script>
-            <script src="scripts/blog.js"></script>
+            <script src="./scripts/global.js"></script>
+            <script src="./scripts/dateDisplay.js"></script>
 
         </div>
 
-
+        
         <footer id="footer-color-filler"></footer>
     </div>
 </body>

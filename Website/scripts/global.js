@@ -9,7 +9,9 @@ document.body.onscroll = (e) => {
     // desktop/tablet - if it scrolls past the nav bar
     var scroll = window.scrollY;
 
-    var navScrollPos = document.getElementById("navigation-header").offsetTop;
+    var navScrollPos = document.getElementById("navigation").offsetTop;
+
+    console.log(navScrollPos);
 
     if (scroll > navScrollPos) {
         var navTop = document.getElementById("topbar");
@@ -21,8 +23,6 @@ document.body.onscroll = (e) => {
         navTop.classList.add("top-desktop-hidden");
         navTop.classList.remove("top-desktop-visible");
     }
-
-    
 }
 
 var sideBarToggled = false;
@@ -53,5 +53,14 @@ document.getElementById("hamburger-container").onclick = (e) => {
 
     }
 }
-
 //#endregion
+
+var searchButtons = document.getElementsByClassName("navigation-search-button");
+
+Array.from(searchButtons).forEach((button) => {
+    button.addEventListener("click", () => showSearch(button.getAttribute("data-target")));
+});
+
+function showSearch(target) {
+    document.getElementById(target).focus();
+}

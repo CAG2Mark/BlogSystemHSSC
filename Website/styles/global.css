@@ -24,6 +24,16 @@
     display: none;
 }
 
+.hidden {
+    display: none;
+}
+
+.vertical-align-middle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 body, sub, sup {
     margin: 0 0 0 0;
     padding: 0;
@@ -140,6 +150,8 @@ header {
     margin: 0 auto;
 
     text-align: center;
+
+    position: relative;
 }
 
 .navigation-list {
@@ -185,6 +197,72 @@ header {
     border-width: 0 0 2px 0;
     border-color: black;
 }
+
+/* #region search */
+
+.navigation-search-button {
+    height: 36px;
+    width: 36px;
+    padding: 0;
+    margin-top: 7px;
+
+    float: right;
+
+    border: none;
+    background-color: transparent;
+
+    cursor: pointer;
+
+    outline: none;
+}
+
+.navigation-search-container {
+    width: 300px;
+    position: absolute;
+    right: 0;
+}
+
+#navigation-topbar-search-container {
+    right: 4px;
+    top: 3px;
+}
+
+.desktop-search-textbox {
+    transition: opacity 100ms;
+    
+    opacity: 0;
+    pointer-events: none;
+
+    font: 20px acumin-pro, -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+    line-height: 26px;
+
+    border-radius: 0;
+    border-width: 0 0 2px 0;
+    border-color: var(--accent-color);
+
+    margin: 11px 0 0 0;
+
+    background: transparent;
+}
+
+.desktop-search-textbox:focus {
+    opacity: 1;
+    pointer-events: auto;
+    outline: none;
+}
+
+.navigation-search-button img {
+    margin: 3px;
+
+    height: 30px;
+    width: 30px;
+}
+
+.navigation-search-form {
+    position: absolute;
+    right: 48px;
+}
+/* #endregion */
 
 /* #endregion */
 
@@ -464,7 +542,7 @@ footer {
     }
 
     #navigation-side {
-        margin-top: 8px;
+        margin-top: 42px;
     }
     
     .navigation-list li a:hover {

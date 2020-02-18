@@ -52,6 +52,10 @@
     vertical-align: middle;
 }
 
+#post-template {
+    display: none;
+}
+
 .category-link {
     color: var(--text-color);
 }
@@ -95,6 +99,10 @@
 
 .category-pages-indicator-selected span {
     color: white !important;
+}
+
+#search-results-container {
+    min-height: calc(100vh - 300px);
 }
 
 /* MOBILE */

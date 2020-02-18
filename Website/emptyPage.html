@@ -5,14 +5,14 @@
 <!-- EMPTY PAGE FOR THE BLOG SYSTEM TO WORK WITH. -->
 
 <head>
+    
+    <base href="index.html" />
+
     <meta name="selectedNavigationItem" content="BLOG">
     <link rel="stylesheet" type="text/css" href="./styles/global.css" />
 
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-
-    <base href="index.html" />
-
     <title>Blank Page</title>
 
     <!-- fonts -->
@@ -31,28 +31,39 @@
     <div id="sidebar" class="pushy-closed mobileonly">
         <ul id="navigation-side" class="navigation-list mobileonly">
             <li>
-                <a href="index.html">Home</a>
+                <a href="./index.html">Home</a>
                 <span class="nav-border"></span>
             </li>
             <li>
-                <a href="blog.html">Blog</a>
+                <a href="./blog/blog.html">Blog</a>
                 <span class="nav-border"></span>
             </li>
             <li>
-                <a href="about.html">About</a></li>
+                <a href="./about.html">About</a></li>
             <span class="nav-border"></span>
             <li>
-                <a href="contact.html">Contact</a>
+                <a href="./contact.html">Contact</a>
             </li>
         </ul>
+
+        <span class="navigation-search-container" id="navigation-topbar-search-container">
+            <button class="navigation-search-button" data-target="navigation-sidebar-search-textbox">
+                <img src="./content/icons/baseline_search_black_36dp.png" >
+            </button>
+
+            <form class="navigation-search-form" action="./search.html">
+                <input type="text" name="q" class="desktop-search-textbox" id="navigation-sidebar-search-textbox">
+                <input type="submit" class="hidden">
+            </form>
+        </span>
     </div>
 
     <div id="bodyarea">
 
         <div id="topbar" class="top-desktop-hidden">
 
-            <a href="index.html">
-                <img alt="HSSC Logo" class="mobileonly" id="topbar-hssc-logo" src="content/images/hsscLogo.png">
+            <a href="./index.html">
+                <img alt="HSSC Logo" class="mobileonly" id="topbar-hssc-logo" src="./content/images/hsscLogo.png">
             </a>
 
             <span class="mobileonly" id="hamburger-container">
@@ -64,19 +75,30 @@
             <ul id="topbar-nav" class="navigation-list desktoponly">
                 <li>
                     <span class="nav-border"></span>
-                    <a href="index.html">Home</a>
+                    <a href="./index.html">Home</a>
                 </li>
                 <li>
                     <span class="nav-border"></span>
-                    <a href="blog.html">Blog</a>
+                    <a href="./blog/blog.html">Blog</a>
                 </li>
                 <li>
                     <span class="nav-border"></span>
-                    <a href="about.html">About</a></li>
+                    <a href="./about.html">About</a></li>
                 <li>
-                    <a href="contact.html">Contact</a>
+                    <a href="./contact.html">Contact</a>
                 </li>
             </ul>
+
+            <span class="navigation-search-container desktoponly" id="navigation-topbar-search-container">
+                <button class="navigation-search-button" data-target="navigation-topbar-search-textbox">
+                    <img src="./content/icons/baseline_search_black_36dp.png" >
+                </button>
+
+                <form class="navigation-search-form" action="./search.html">
+                    <input type="text" name="q" class="desktop-search-textbox" id="navigation-topbar-search-textbox">
+                    <input type="submit" class="hidden">
+                </form>
+            </span>
 
         </div>
 
@@ -84,8 +106,8 @@
             <header>
                 <a href="index.html">
                     <div id="logo-container">
-                        <img alt="HSSC Logo" class="no-select" src="content/images/hsscLogo.png" id="header-logo">
-                        <img class="noSelect" id="header-logo-text" src="content/images/hsscText.png">
+                        <img alt="HSSC Logo" class="no-select" src="./content/images/hsscLogo.png" id="header-logo">
+                        <img class="noSelect" id="header-logo-text" src="./content/images/hsscText.png">
                     </div>
                 </a>
                 <div id="date-container">
@@ -94,19 +116,30 @@
                     <ul id="navigation-header" class="navigation-list">
                         <li>
                             <span class="nav-border"></span>
-                            <a href="index.html">Home</a>
+                            <a href="./index.html">Home</a>
                         </li>
                         <li>
                             <span class="nav-border"></span>
-                            <a href="blog.html">Blog</a>
+                            <a href="./blog/blog.html">Blog</a>
                         </li>
                         <li>
                             <span class="nav-border"></span>
-                            <a href="about.html">About</a></li>
+                            <a href="./about.html">About</a></li>
                         <li>
-                            <a href="contact.html">Contact</a>
+                            <a href="./contact.html">Contact</a>
                         </li>
                     </ul>
+
+                    <span class="navigation-search-container">
+                        <button class="navigation-search-button" data-target="navigation-header-search-textbox">
+                            <img src="./content/icons/baseline_search_black_36dp.png" >
+                        </button>
+
+                        <form class="navigation-search-form" action="./search.html">
+                            <input type="text" name="q" class="desktop-search-textbox" id="navigation-header-search-textbox">
+                            <input type="submit" class="hidden">
+                        </form>
+                    </span>
                 </div>
 
                 <div class="separator mobileonly"></div>
@@ -123,14 +156,14 @@
                 <div class="spacer"></div>
 
                 <span id="footer-logo-container">
-                    <img alt="HSSC Logo" id="footer-hssc-logo" src="content/images/hsscLogo.png">
+                    <img alt="HSSC Logo" id="footer-hssc-logo" src="./content/images/hsscLogo.png">
                     <span>Copyright © 2020 HSSC</span>
                 </span>
             </footer>
 
             <!-- scripts -->
-            <script src="scripts/global.js"></script>
-            <script src="scripts/dateDisplay.js"></script>
+            <script src="./scripts/global.js"></script>
+            <script src="./scripts/dateDisplay.js"></script>
 
         </div>
 
