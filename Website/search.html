@@ -1,8 +1,8 @@
+<!-- !BLOG IGNORE -->
+
 <!DOCTYPE html>
 
 <html lang="en" id="html">
-
-<!-- EMPTY PAGE FOR THE BLOG SYSTEM TO WORK WITH. -->
 
 <head>
 
@@ -10,6 +10,7 @@
 
     <meta name="selectedNavigationItem" content="BLOG">
     <link rel="stylesheet" type="text/css" href="./styles/global.css" />
+    <link rel="stylesheet" type="text/css" href="./styles/search.css" />
     <link rel="stylesheet" type="text/css" href="./styles/category.css" />
 
     <meta charset="UTF-8">
@@ -36,12 +37,17 @@
                 <span class="nav-border"></span>
             </li>
             <li>
-                <a href="./blog/blog.html">Blog</a>
+                <a href="./blog/blog.html">Articles</a>
                 <span class="nav-border"></span>
             </li>
             <li>
-                <a href="./about.html">About</a></li>
-            <span class="nav-border"></span>
+                <a href="./clubs/clubs.ht">Clubs</a>
+                <span class="nav-border"></span>
+            </li>
+            <li>
+                <a href="./about.html">About</a>
+                <span class="nav-border"></span>
+            </li>
             <li>
                 <a href="./contact.html">Contact</a>
             </li>
@@ -80,8 +86,12 @@
                 </li>
                 <li>
                     <span class="nav-border"></span>
-                    <a href="./blog/blog.html">Blog</a>
+                    <a href="./blog/blog.html">Articles</a>
                 </li>
+                <li>
+                    <span class="nav-border"></span>
+                    <a href="./clubs/clubs.ht">Clubs</a></li>
+                <li>
                 <li>
                     <span class="nav-border"></span>
                     <a href="./about.html">About</a></li>
@@ -121,8 +131,12 @@
                         </li>
                         <li>
                             <span class="nav-border"></span>
-                            <a href="./blog/blog.html">Blog</a>
+                            <a href="./blog/blog.html">Articles</a>
                         </li>
+                        <li>
+                            <span class="nav-border"></span>
+                            <a href="./clubs/clubs.ht">Clubs</a></li>
+                        <li>
                         <li>
                             <span class="nav-border"></span>
                             <a href="./about.html">About</a></li>
@@ -180,8 +194,15 @@
                 </div>
             </a>
 
-            <div class="wide-area clearfix" id="search-results-container">
+            <div class="wide-area">
+                <form class="navigation-search-form-big" action="./search.html">
+                    <input type="text" name="q" class="search-textbox-big" id="body-search-textbox">
+                    <input type="submit" class="hidden">
+                </form>
+            </div>
 
+            <div class="wide-area clearfix" id="search-results-container">
+                <div class="lds-dual-ring" id="loading-icon"></div>
             </div>
 
             <footer>

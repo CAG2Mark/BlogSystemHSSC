@@ -122,9 +122,25 @@
             </DockPanel>
         </Border>
 
-        <WindowsFormsHost x:Name="WfHost" Grid.Row="1" Grid.Column="1" Margin="0 0 3 3" Background="Transparent">
-        </WindowsFormsHost>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
 
-        <TextBlock  Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">Website Preview Area (Not done)</TextBlock>
+            <Border Grid.Column="1" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 0 2">
+                <DockPanel LastChildFill="False">
+                    <customcontrols:RoundedButton Margin="8 4 4 4" Click="browserGoBack">
+                        <Path Data="{StaticResource LeftArrowIcon}" Margin="6 8 8 8"></Path>
+                    </customcontrols:RoundedButton>
+                    <customcontrols:RoundedButton Margin="4"  Click="browserGoForward">
+                        <Path Data="{StaticResource RightArrowIcon}" Margin="8 8 6 8"></Path>
+                    </customcontrols:RoundedButton>
+                </DockPanel>
+            </Border>
+
+            <WindowsFormsHost x:Name="WfHost" Grid.Row="1" Margin="0 0 3 3" Background="Transparent">
+            </WindowsFormsHost>
+        </Grid>
     </Grid>
 </UserControl>

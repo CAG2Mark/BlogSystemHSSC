@@ -1,0 +1,85 @@
+#clubs-container {
+    text-align: center;
+}
+
+.club-container {
+    display: inline-block;
+    position: relative;
+    width: 270px;
+    height: 200px;
+
+    overflow: hidden;
+
+    margin: 8px;
+}
+
+.club-container-overlay {
+    transition: opacity 250ms;
+
+    opacity: 0.8;
+
+    height: 100%;
+    width: 100%;
+
+    position: absolute;
+
+    background-image: radial-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 1));
+
+    z-index: 2;
+}
+
+.club-container * {
+    position: absolute;
+}
+
+.club-title {
+    position: absolute;
+    width: 100%;
+    vertical-align: middle;
+    z-index: 3;
+    color: white;
+
+    margin: 0;
+    padding: 0;
+
+    top: 48%;
+    transform: translateY(-50%);
+    line-height: 42px;
+
+    font-size: 36px;
+}
+
+.club-container img {
+    transition: transform 250ms ease;
+
+    position: absolute;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+
+    left: 0;
+}
+
+.club-container:hover .club-container-overlay {
+    opacity: 1;
+}
+.club-container:hover img {
+    transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+    #goal-text {
+        font-size: 24px;
+    }
+
+    .club-container {
+        display: inline-block;
+        position: relative;
+        width: 270px;
+        height: 140px;
+    
+        overflow: hidden;
+    
+        margin: 8px;
+    }
+}

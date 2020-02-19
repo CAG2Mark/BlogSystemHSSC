@@ -1,8 +1,8 @@
+<!-- !BLOG IGNORE -->
+
 <!DOCTYPE html>
 
 <html lang="en" id="html">
-
-<!-- EMPTY PAGE FOR THE BLOG SYSTEM TO WORK WITH. -->
 
 <head>
     <base href="../index.html" />
@@ -37,12 +37,17 @@
                 <span class="nav-border"></span>
             </li>
             <li>
-                <a href="./blog/blog.html">Blog</a>
+                <a href="./blog/blog.html">Articles</a>
                 <span class="nav-border"></span>
             </li>
             <li>
-                <a href="./about.html">About</a></li>
-            <span class="nav-border"></span>
+                <a href="./clubs/clubs.html">Clubs</a>
+                <span class="nav-border"></span>
+            </li>
+            <li>
+                <a href="./about.html">About</a>
+                <span class="nav-border"></span>
+            </li>
             <li>
                 <a href="./contact.html">Contact</a>
             </li>
@@ -50,7 +55,7 @@
 
         <span class="navigation-search-container" id="navigation-topbar-search-container">
             <button class="navigation-search-button" data-target="navigation-sidebar-search-textbox">
-                <img src="./content/icons/baseline_search_black_36dp.png" >
+                <img src="./content/icons/baseline_search_black_36dp.png">
             </button>
 
             <form class="navigation-search-form" action="./search.html">
@@ -81,8 +86,12 @@
                 </li>
                 <li>
                     <span class="nav-border"></span>
-                    <a href="./blog/blog.html">Blog</a>
+                    <a href="./blog/blog.html">Articles</a>
                 </li>
+                <li>
+                    <span class="nav-border"></span>
+                    <a href="./clubs/clubs.html">Clubs</a></li>
+                <li>
                 <li>
                     <span class="nav-border"></span>
                     <a href="./about.html">About</a></li>
@@ -93,7 +102,7 @@
 
             <span class="navigation-search-container desktoponly" id="navigation-topbar-search-container">
                 <button class="navigation-search-button" data-target="navigation-topbar-search-textbox">
-                    <img src="./content/icons/baseline_search_black_36dp.png" >
+                    <img src="./content/icons/baseline_search_black_36dp.png">
                 </button>
 
                 <form class="navigation-search-form" action="./search.html">
@@ -122,8 +131,12 @@
                         </li>
                         <li>
                             <span class="nav-border"></span>
-                            <a href="./blog/blog.html">Blog</a>
+                            <a href="./blog/blog.html">Articles</a>
                         </li>
+                        <li>
+                            <span class="nav-border"></span>
+                            <a href="./clubs/clubs.html">Clubs</a></li>
+                        <li>
                         <li>
                             <span class="nav-border"></span>
                             <a href="./about.html">About</a></li>
@@ -134,11 +147,12 @@
 
                     <span class="navigation-search-container">
                         <button class="navigation-search-button" data-target="navigation-header-search-textbox">
-                            <img src="./content/icons/baseline_search_black_36dp.png" >
+                            <img src="./content/icons/baseline_search_black_36dp.png">
                         </button>
 
                         <form class="navigation-search-form" action="./search.html">
-                            <input type="text" name="q" class="desktop-search-textbox" id="navigation-header-search-textbox">
+                            <input type="text" name="q" class="desktop-search-textbox"
+                                id="navigation-header-search-textbox">
                             <input type="submit" class="hidden">
                         </form>
                     </span>
@@ -154,9 +168,7 @@
                 <div class="blog-categories-container">
                     
                 <!-- $(TEMPLATE POST_CATEGORY_TAG) -->
-                    <a class="blog-category-tag" href="./blog/$(CATEGORY FILENAME 1)">
-                        $(CATEGORY NAME)
-                    </a>
+                    <a class="blog-category-tag" href="./blog/$(CATEGORY FILENAME 1)">$(CATEGORY NAME)</a>
                 <!-- $(ENDTEMPLATE POST_CATEGORY_TAG) -->
 
                 <!-- $(REGION POST_CATEGORY_TAG_AREA POST_CATEGORY_TAG) --> 
@@ -188,7 +200,7 @@
                 <div class="separator"></div>
             </div>
 
-            <div class="narrow-area" id="blog-post-content-area">
+            <div class="narrow-area-left" id="blog-post-content-area">
                 $(POST CONTENT)
 
                 <div class="blog-categories-container" style="margin-top: 12px; margin-bottom: 12px;">

@@ -455,6 +455,8 @@ namespace BlogSystemHSSC.Blog
 
         static int postsPerPage = 10;
 
+        const string ignoreFlag = "<!-- !BLOG IGNORE -->";
+
         private void exportBlog()
         {
 
@@ -560,12 +562,53 @@ namespace BlogSystemHSSC.Blog
             string json = JsonConvert.SerializeObject(allPosts);
             File.WriteAllText($"{exportPath}\\blog\\posts.json", json);
 
+            
 
             // Copy the rest of the files over
             DirectoryCopy(websiteDirectory, exportPath, true);
 
+            // Populate the rest of the posts
+
+            replaceVariablesInDirectory(exportPath, allPosts);
+
             BlogExported?.Invoke(this, new BlogExportEventArgs(true));
 
+        }
+
+        private void replaceVariablesInDirectory(string path, IEnumerable<BlogPost> allPosts)
+        {
+            replaceVariablesInDirectory(new DirectoryInfo(path), allPosts);
+        }
+
+
+        // Ignore these directories. They have nothing that needs replacing and should be ignored for performance
+        string[] ignoredDirectories = { "content", "styles", "scripts", ".git" };
+
+        private void replaceVariablesInDirectory(DirectoryInfo directory, IEnumerable<BlogPost> allPosts)
+        {
+            foreach (var file in directory.GetFiles())
+            {
+                // remove templates
+                if (file.Name.Equals("blog_POST.html")) file.Delete();
+                else if (file.Name.Equals("blog_CATEGORY.html")) file.Delete();
+                else
+                {
+                    if (!file.Extension.Contains("html")) continue;
+
+                    var text = File.ReadAllText(file.FullName);
+                    if (text.StartsWith(ignoreFlag)) continue;
+
+                    var exportedText = ignoreFlag + replaceVariables(text, null, null, allPosts);
+
+                    File.WriteAllText(file.FullName, exportedText);
+                }
+            }
+
+            foreach (var subDir in directory.GetDirectories())
+            {
+                if (!ignoredDirectories.Contains(subDir.Name))
+                    replaceVariablesInDirectory(subDir, allPosts);
+            }
         }
 
         /// <summary>
@@ -595,7 +638,7 @@ namespace BlogSystemHSSC.Blog
 
         private static string generateCategoryPageName(BlogCategory category, int pageNo)
         {
-            if (category.Name.Equals("All") && pageNo == 1) return "blog.html";
+            if (pageNo == 1) return $"{HtmlHelper.ToUrlFileName(category.Name)}.html";
             return $"{HtmlHelper.ToUrlFileName($"{category.Name}-{pageNo}")}.html";
         }
 
@@ -638,11 +681,12 @@ namespace BlogSystemHSSC.Blog
             }
         }
 
-        private static readonly string exportPath = Global.FilesPath + "\\Export\\BlogSystemOnlineTest";
+        private static readonly string exportPath = Global.ExportPath;
         private static readonly string imagePath = exportPath + "\\content\\images";
 
         private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null, IEnumerable<BlogPost> posts = null, int currentPage = -1, int pageCount = -1)
         {
+
             List<BlogVariable> variables = findVariables(text, post, category);
 
             // This is to temporarily store all the REGION declarators in the file for matching.
@@ -664,7 +708,7 @@ namespace BlogSystemHSSC.Blog
                 switch (variable.Type)
                 {
                     case BlogVariableType.GLOBAL:
-                        throw new NotImplementedException();
+                        replacingText = globalVariableToText(variable);
                         break;
                     case BlogVariableType.CATEGORY:
                         {
@@ -745,7 +789,7 @@ namespace BlogSystemHSSC.Blog
 
             var regionOffset = 0;
 
-            Dictionary<string, string> TemplateDictionary = new Dictionary<string, string>();
+            Dictionary<string, string> templateDictionary = new Dictionary<string, string>();
 
             // Handle any specific region cases
             foreach (var region in pairedRegions)
@@ -754,7 +798,7 @@ namespace BlogSystemHSSC.Blog
                 if (region[0].Type == BlogVariableType.TEMPLATE)
                 {
                     // Get the template
-                    TemplateDictionary.Add(region[0].VariableName, extractRegionContent(region, sb, regionOffset));
+                    templateDictionary.Add(region[0].VariableName, extractRegionContent(region, sb, regionOffset));
                     // Remove the template text from the HTML as it is now useless
                     regionOffset += removeRegion(region, sb, regionOffset);
                 }
@@ -771,27 +815,32 @@ namespace BlogSystemHSSC.Blog
 
                 if (region[0].VariableName.Equals("CATEGORY_POST_AREA"))
                 {
-                    int tempOffset = 0;
+                    regionOffset += populateCategoryPostArea(posts, region, regionOffset, sb, templateDictionary);
+                }
 
-                    if (posts != null)
+                if (region[0].VariableName.Equals("FOREIGN_CATEGORY_CONTAINER"))
+                {
+                    // extract arguments
+                    var categoryIndex = Convert.ToInt32(region[0].Arguments[1]);
+                    var length = region[0].Arguments[2];
+
+                    // first get categories
+                    // special cases: 0 = all, 1 = archived.
+
+                    IEnumerable<BlogPost> newPosts;
+
+                    // create a copy
+                    if (categoryIndex == 0) newPosts = posts.Where(x => true);
+                    else if (categoryIndex == 1) newPosts = posts.Where(x => x.IsArchived);
+                    else
                     {
-                        foreach (BlogPost catPost in posts)
-                        {
-                            string template;
-                            if (TemplateDictionary.TryGetValue(region[0].Arguments[0], out template))
-                            {
-                                var replacedText = replaceVariables(template, catPost);
-                                // + 4 is to make sure it's placed after the comment
-                                tempOffset += insertIntoRegion(region, replacedText, sb, regionOffset + tempOffset, 5);
-                            }
-                            else
-                            {
-                                throw new Exception($"Could not find template of name {region[0].Arguments[0]}");
-                            }
-                        }
+                        newPosts = posts.Where(
+                            x => x.Categories.Where(
+                                y => y.Name.Equals(Blog.Categories[categoryIndex].Name)).Count() > 0
+                                );
                     }
-
-                    regionOffset += tempOffset;
+                    
+                    regionOffset += populateCategoryPostArea(newPosts, region, regionOffset, sb, templateDictionary);
                 }
 
                 if (region[0].VariableName.Equals("POST_CATEGORY_TAG_AREA"))
@@ -803,7 +852,7 @@ namespace BlogSystemHSSC.Blog
                         foreach (BlogCategory cat in post.Categories)
                         {
                             string template;
-                            if (TemplateDictionary.TryGetValue(region[0].Arguments[0], out template))
+                            if (templateDictionary.TryGetValue(region[0].Arguments[0], out template))
                             {
                                 var replacedText = replaceVariables(template, null, cat);
                                 // + 4 is to make sure it's placed after the comment
@@ -834,8 +883,8 @@ namespace BlogSystemHSSC.Blog
                     string template;
                     string templateSelected;
 
-                    if (TemplateDictionary.TryGetValue(region[0].Arguments[1], out template) &&
-                        TemplateDictionary.TryGetValue(region[0].Arguments[2], out templateSelected))
+                    if (templateDictionary.TryGetValue(region[0].Arguments[1], out template) &&
+                        templateDictionary.TryGetValue(region[0].Arguments[2], out templateSelected))
                     {
 
                         // Generate the page numbers with the current page in the middle
@@ -916,6 +965,31 @@ namespace BlogSystemHSSC.Blog
             return sb.ToString();
         }
 
+        private int populateCategoryPostArea(IEnumerable<BlogPost> posts, BlogVariable[] region, int regionOffset, StringBuilder sb, Dictionary<string, string> templateDictionary)
+        {
+            int tempOffset = 0;
+
+            if (posts != null)
+            {
+                foreach (BlogPost catPost in posts)
+                {
+                    string template;
+                    if (templateDictionary.TryGetValue(region[0].Arguments[0], out template))
+                    {
+                        var replacedText = replaceVariables(template, catPost);
+                        // + 4 is to make sure it's placed after the comment
+                        tempOffset += insertIntoRegion(region, replacedText, sb, regionOffset + tempOffset, 5);
+                    }
+                    else
+                    {
+                        throw new Exception($"Could not find template of name {region[0].Arguments[0]}");
+                    }
+                }
+            }
+
+            return tempOffset;
+        }
+
         private int insertIntoRegion(BlogVariable[] region, string textToInsert, StringBuilder sb, int regionOffset, int commentOffset)
         {
             var pos = region[1].StartPos + regionOffset - commentOffset;
@@ -989,7 +1063,6 @@ namespace BlogSystemHSSC.Blog
 
                         if (nestDepth == 0)
                         {
-                            var str = text.Substring(i, 40);
                             // The StartPos and EndPos must include the entire variable string.
                             variables.Add(new BlogVariable() { StartPos = i - 1 });
                         }
@@ -1080,16 +1153,23 @@ namespace BlogSystemHSSC.Blog
 
                             if (inMuffledRegion)
                             {
-                                if ((type != BlogVariableType.ENDREGION || !parts[1].Equals(muffledRegionName)) && type != BlogVariableType.ENDTEMPLATE)
+                                if ((type == BlogVariableType.ENDREGION || type == BlogVariableType.ENDTEMPLATE) && parts[1].Equals(muffledRegionName))
+                                {
+                                    if (text.Contains("Articles - HSSC"))
+                                    {
+                                        Console.WriteLine("test");
+                                    }
+                                    // Exit muffled region if match.
+                                    inMuffledRegion = false;
+                                }
+                                else
                                 {
                                     // cancel adding the last variable
-                                    variables.RemoveAt(variables.Count() - 1);
+                                    variables.Remove(variable);
                                 }
-                                // Exit muffled region if match.
-                                else inMuffledRegion = false;
                             }
 
-                            if ((type == BlogVariableType.REGION && isMuffledRegion(parts[1])) || type == BlogVariableType.TEMPLATE)
+                            if (!inMuffledRegion && ((type == BlogVariableType.REGION && isMuffledRegion(parts[1])) || type == BlogVariableType.TEMPLATE))
                             {
                                 inMuffledRegion = true;
                                 muffledRegionName = parts[1];

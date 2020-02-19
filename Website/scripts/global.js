@@ -11,8 +11,6 @@ document.body.onscroll = (e) => {
 
     var navScrollPos = document.getElementById("navigation").offsetTop;
 
-    console.log(navScrollPos);
-
     if (scroll > navScrollPos) {
         var navTop = document.getElementById("topbar");
         navTop.classList.add("top-desktop-visible");

@@ -1,21 +1,23 @@
+<!-- !BLOG IGNORE -->
+
 <!DOCTYPE html>
 
 <html lang="en" id="html">
 
+
 <head>
-    
-    <base href="index.html" />
+
+    <base href="../index.html" />
 
     <meta name="selectedNavigationItem" content="BLOG">
     <link rel="stylesheet" type="text/css" href="./styles/global.css" />
     <link rel="stylesheet" type="text/css" href="./styles/gallery.css" />
-    <link rel="stylesheet" type="text/css" href="./styles/home.css" />
-    <link rel="stylesheet" type="text/css" href="./styles/category.css" />
+    <link rel="stylesheet" type="text/css" href="./styles/clubs.css" />
     <link rel="shortcut icon" href="./icon.ico" />
 
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <title>HSSC</title>
+    <title>Debate Club - HSSC</title>
 
     <!-- fonts -->
 
@@ -163,25 +165,26 @@
 
             <!-- ALL CONTENT GOES HERE -->
 
-            <h1 class="text-center">We are the HSSC.</h1>
-            <div class="gallery">
+            <h1 class="text-center">Debate Club</h1>
+
+            <div class="gallery" id="gallery">
                 <div class="gallery-container">
-                    <img src="./content/images/galleries/home/1.jpg">
+                    <img src="./content/images/clubs/debate-pics/1.jpg">
                 </div>
                 <div class="gallery-container">
-                    <img src="./content/images/galleries/home/2.jpg">
+                    <img src="./content/images/clubs/debate-pics/2.jpg">
                 </div>
                 <div class="gallery-container">
-                    <img src="./content/images/galleries/home/3.jpg">
+                    <img src="./content/images/clubs/debate-pics/3.jpg">
                 </div>
                 <div class="gallery-container">
-                    <img src="./content/images/galleries/home/4.jpg">
+                    <img src="./content/images/clubs/debate-pics/4.jpg">
                 </div>
                 <div class="gallery-container">
-                    <img src="./content/images/galleries/home/5.jpg">
+                    <img src="./content/images/clubs/debate-pics/5.jpg">
                 </div>
                 <div class="gallery-container">
-                    <img src="./content/images/galleries/home/6.jpg">
+                    <img src="./content/images/clubs/debate-pics/6.jpg">
                 </div>
 
                 <div class="gallery-overlay">
@@ -192,92 +195,31 @@
             </div>
 
             <div class="wide-area">
-                <h2 class="text-center" id="goal-text">Our goal is to strengthen the standing of humanities and social science disciplines at Sha Tin College.</h2>
+                <p>Given the rise of social and political polarization, rampant sensationalism and misinformation, a
+                    critical-thinking mind has become a highly sought out commodity. To this end, debate challenges
+                    preconceived notions by placing you on a side - an argumentative position - that you may not
+                    necessarily agree with personally. It allows one to free themselves from the fetters of a
+                    self-validating echo chamber instead, participate in civil discourse. Fundamentally, debate is
+                    analytical, critical and respectful.
+                </p>
+                <p>Furthermore, It consolidates general knowledge and awareness of current affairs. Debate intermixes
+                    the discussion of fundamental 'paradigms' and perspectives with contemporary issues, thus remaining
+                    ever-relevant. It emphasizes research skills, yet also - to succeed - one must have a strong passion
+                    for learning and argumentation. Yet, all of this information has to be articulated in a succinct,
+                    yet effective manner, cultivating face-to-face communicative abilities.
+                </p>
+                <p>Debate itself is a fundamental skill - let us revivify an age-old tradition to its former glory,
+                    promoting it not only as an extracurricular, but as a tool for education. It is an activity needed
+                    in our divisive world.
+                </p>
+                <p>With over 60 members, Debate at Sha Tin College is thriving. We conduct practice debates,
+                    training/theory sessions for interested students of all abilities, with many entering competitions
+                    such as JSD1, Senior BP, SDC, Sing Tao, ESF Debate Competition and overseas events.</p>
             </div>
 
-            <!-- MUN -->
-            <div class="wide-area" id="clubs-container">
-                <a class="club-container" href="./clubs/mun.html">
-                    <h1 class="text-center club-title no-select">MODEL UNITED NATIONS</h1>
-                    <div class="club-container-overlay">
-                    </div>
-                    <img src="./content/images/clubs/mun.jpg" alt="Model United Nations">
-                </a>
-                <a class="club-container" href="./clubs/psychology.html">
-                    <h1 class="text-center club-title no-select">PSYCHOLOGY CLUB</h1>
-                    <div class="club-container-overlay">
-                    </div>
-                    <img src="./content/images/clubs/psychology.jpg" alt="Psychology Club">
-                </a>
-                <a class="club-container" href="./clubs/mocktrial.html">
-                    <h1 class="text-center club-title no-select">MOCK TRIAL</h1>
-                    <div class="club-container-overlay">
-                    </div>
-                    <img src="./content/images/clubs/mocktrial.jpg" alt="Mock Trial">
-                </a>
-                <a class="club-container" href="./clubs/unitedmag.html">
-                    <h1 class="text-center club-title no-select">UNITED MAGAZINE</h1>
-                    <div class="club-container-overlay">
-                    </div>
-                    <img src="./content/images/clubs/united.jpg" alt="">
-                </a>
-                <a class="club-container" href="./clubs/debate.html">
-                    <h1 class="text-center club-title no-select">DEBATE CLUB</h1>
-                    <div class="club-container-overlay">
-                    </div>
-                    <img src="./content/images/clubs/debate.jpg" alt="">
-                </a>
-            </div>
-
-            <h1 class="text-center">Read our Student Articles</h1>
-
-            <div class="wide-area">
-
-                <!-- $(TEMPLATE CATEGORY_POST_TEMPLATE_HOME) -->
-
-                <!-- Everything inside of this will be treated by the application as if it were a blog post page-->
-                <a class="category-link" href="./blog/$(POST FILENAME).html">
-                    <div class="category-post-container">
-
-                        <!-- $(REGION HEADER_IMAGE) -->
-                        <img class="mobileonly" src="./content/images/$(POST HEADER_IMAGE_NAME)">
-                        <!-- $(ENDREGION HEADER_IMAGE) -->
-
-                        <div
-                            class="category-post-details vertical-center $(POST BOOL_HAS_HEADER_IMAGE  category-post-left)">
-                            <h3 class="nopadding">$(POST TITLE)</h3>
-
-                            <div class="category-post-meta-container">
-                                <span>By </span>
-                                <span>$(POST AUTHOR)</span>
-                                <span class="dot"></span>
-                                <span>$(POST DATE)</span>
-                            </div>
-
-                            <!-- 100 specifies the maximum length of the preview -->
-                            <span class="category-post-content-preview">$(POST CONTENT_PREVIEW 85)</span>
-                        </div>
-
-                        <div class="separator-gray mobileonly" style="margin: 4px 0 12px 0;"></div>
-
-                        <!-- $(REGION HEADER_IMAGE) -->
-                        <img class="desktoponly" src="./content/images/$(POST HEADER_IMAGE_NAME)">
-                        <!-- $(ENDREGION HEADER_IMAGE) -->
-
-                    </div>
-                </a>
-
-                <!-- $(ENDTEMPLATE CATEGORY_POST_TEMPLATE_HOME)-->
-
-                <!-- Parameters: template name, category index, number of posts to display.-->
-                <!-- $(REGION FOREIGN_CATEGORY_CONTAINER CATEGORY_POST_TEMPLATE_HOME 0 5) -->
-
-                <!-- $(ENDREGION FOREIGN_CATEGORY_CONTAINER) -->
-
-                <a class="linkfix" href="./blog/blog.html">
-                    <h3>VIEW ALL OF OUR ARTICLES</h3>
-                </a>
-            </div>
+            <a href="./clubs/clubs.html" class="linkfix text-center">
+                <h3>Return to clubs</h3>
+            </a>
 
             <footer>
                 <div class="spacer"></div>
@@ -293,9 +235,10 @@
             <script src="./scripts/dateDisplay.js"></script>
             <script src="./scripts/gallery.js"></script>
 
+
         </div>
 
-        
+
         <footer id="footer-color-filler"></footer>
     </div>
 </body>

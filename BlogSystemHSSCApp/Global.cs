@@ -11,5 +11,6 @@ namespace BlogSystemHSSC
     {
         public static readonly string FilesPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
             @"\Blog System Files";
+        public static readonly string ExportPath = FilesPath + "\\Export\\BlogSystemOnlineTest";
     }
 }

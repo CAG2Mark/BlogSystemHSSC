@@ -43,15 +43,6 @@
     font-size: 18px;
 }
 
-.dot {
-    height: 6px;
-    width: 6px;
-    background-color: var(--text-color-light);
-    border-radius: 50%;
-    display: inline-block;
-    vertical-align: middle;
-}
-
 #post-template {
     display: none;
 }
@@ -79,9 +70,7 @@
     width: 42px;
     height: 42px;
     margin: 2px;
-    text-decoration: none;
 
-    color: var(--text-color);
 }
 .category-pages-indicator:hover {
     color: white;

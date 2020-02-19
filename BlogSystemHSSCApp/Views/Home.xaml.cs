@@ -40,8 +40,8 @@ namespace BlogSystemHSSC.Views
 
             InitializeComponent();
 
-            //browser = new ChromiumWebBrowser("https://google.com");
-            //WfHost.Child = browser;
+            browser = new ChromiumWebBrowser(Global.ExportPath + "\\index.html");
+            WfHost.Child = browser;
         }
 
         public event EventHandler<BlogPostEventArgs> RequestOpenPost;
@@ -114,6 +114,18 @@ namespace BlogSystemHSSC.Views
         }
 
         #endregion
+
+        private void browserGoBack(object sender, RoutedEventArgs e)
+        {
+            if (browser.CanGoBack)
+                browser.Back();
+        }
+
+        private void browserGoForward(object sender, RoutedEventArgs e)
+        {
+            if (browser.CanGoForward)
+                browser.Forward();
+        }
     }
 
     public static class Extensions
