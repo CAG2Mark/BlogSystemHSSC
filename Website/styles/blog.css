@@ -37,6 +37,17 @@
     color: white;
 }
 
+#blog-navigation {
+    text-align: center;
+    border-style: solid;
+    border-width: 2px 0;
+    border-color: var(--accent-color);
+}
+
+.navigation-list li:last-child .nav-border {
+    display: none;
+}
+
 .gallery-container-background {
     position: absolute;
     bottom: 0;
@@ -156,5 +167,13 @@
     #gallery {
         margin: 32px 0;
         height: 400px;
+    }
+
+    .navigation-list li:first-child .blog-categories-item {
+        display: none;
+    }
+
+    .navigation-list li:last-child .nav-border {
+        display: block;
     }
 }

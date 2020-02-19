@@ -843,29 +843,25 @@ namespace BlogSystemHSSC.Blog
                     regionOffset += populateCategoryPostArea(newPosts, region, regionOffset, sb, templateDictionary);
                 }
 
+                if (region[0].VariableName.Equals("FOREIGN_CATEGORIES_CONTAINER"))
+                {
+                    int length;
+                    if (region[0].Arguments.Length == 0)
+                    {
+                        length = Convert.ToInt32(region[0].Arguments[1]);
+                    }
+                    else
+                    {
+                        length = VisibleCategories.Count();
+                    }
+                    var categories = VisibleCategories.ToList().GetRange(0, length);
+
+                    regionOffset += populateCategoriesArea(categories, region, regionOffset, sb, templateDictionary);
+                }
+
                 if (region[0].VariableName.Equals("POST_CATEGORY_TAG_AREA"))
                 {
-                    int tempOffset = 0;
-
-                    if (post.Categories != null)
-                    {
-                        foreach (BlogCategory cat in post.Categories)
-                        {
-                            string template;
-                            if (templateDictionary.TryGetValue(region[0].Arguments[0], out template))
-                            {
-                                var replacedText = replaceVariables(template, null, cat);
-                                // + 4 is to make sure it's placed after the comment
-                                tempOffset += insertIntoRegion(region, replacedText, sb, regionOffset + tempOffset, 5);
-                            }
-                            else
-                            {
-                                throw new Exception($"Could not find template of name {region[0].Arguments[0]}");
-                            }
-                        }
-                    }
-
-                    regionOffset += tempOffset;
+                    regionOffset += populateCategoriesArea(post.Categories, region, regionOffset, sb, templateDictionary);
                 }
 
                 if (region[0].VariableName.Equals("CATEGORY_PAGES_AREA"))
@@ -963,6 +959,31 @@ namespace BlogSystemHSSC.Blog
             }
 
             return sb.ToString();
+        }
+
+        private int populateCategoriesArea(IEnumerable<BlogCategory> categories, BlogVariable[] region, int regionOffset, StringBuilder sb, Dictionary<string, string> templateDictionary)
+        { 
+            int tempOffset = 0;
+
+            if (categories != null)
+            {
+                foreach (BlogCategory cat in categories)
+                {
+                    string template;
+                    if (templateDictionary.TryGetValue(region[0].Arguments[0], out template))
+                    {
+                        var replacedText = replaceVariables(template, null, cat);
+                        // + 4 is to make sure it's placed after the comment
+                        tempOffset += insertIntoRegion(region, replacedText, sb, regionOffset + tempOffset, 5);
+                    }
+                    else
+                    {
+                        throw new Exception($"Could not find template of name {region[0].Arguments[0]}");
+                    }
+                }
+            }
+
+            return tempOffset;
         }
 
         private int populateCategoryPostArea(IEnumerable<BlogPost> posts, BlogVariable[] region, int regionOffset, StringBuilder sb, Dictionary<string, string> templateDictionary)

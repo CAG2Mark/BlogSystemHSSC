@@ -3,27 +3,30 @@ var url = new URL(urlStr);
 
 var searchQuery = url.searchParams.get("q");
 
-//if (searchQuery == "") return;
+if (!searchQuery) {
+    document.getElementById("loading-icon").classList.add("hidden");
+} else {
 
-document.getElementById("body-search-textbox").value = searchQuery;
+    document.getElementById("body-search-textbox").value = searchQuery;
 
-//var postsLink = new URL("../blog/posts.json", document.baseURI).href;
-var postsLink = "https://ngp16.github.io/BlogSystemOnlineTest/blog/posts.json";
+    var postsLink = new URL("../blog/posts.json", document.baseURI).href;
+    //var postsLink = "https://ngp16.github.io/BlogSystemOnlineTest/blog/posts.json";
 
-postsLink = encodeURIComponent(postsLink);
+    postsLink = encodeURIComponent(postsLink);
 
-var requestLink = `https://hssc-search-system.glitch.me/?q=${searchQuery}&postsLink=${postsLink}`;
+    var requestLink = `https://hssc-search-system.glitch.me/?q=${searchQuery}&postsLink=${postsLink}`;
 
-var template = document.getElementById("post-template");
+    var template = document.getElementById("post-template");
 
-getData();
+    getData();
+}
 
 function getData() {
-    
+
     fetch(requestLink, {
             mode: 'cors'
         })
-        .then (response => {
+        .then(response => {
             if (!response.ok) {
                 throw Error(response.statusText);
             }
@@ -31,10 +34,10 @@ function getData() {
         })
         .then(
             (response) => {
-                
+
                 // clear loading icon
                 document.getElementById("loading-icon").classList.add("hidden");
-                
+
                 var json = JSON.parse(response);
 
                 for (var i = 0; i < json.length; i++) {
@@ -55,7 +58,7 @@ function getData() {
 
                     newItem.setAttribute("href", `./blog/${post.HtmlFriendlyTitle}.html`);
                 }
-                
+
 
             }
         )
