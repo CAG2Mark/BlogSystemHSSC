@@ -1,23 +1,22 @@
+<!-- !BLOG IGNORE -->
+
 <!DOCTYPE html>
 
 <html lang="en" id="html">
 
 
 <head>
-
-    <base href="../index.html" />
+    
+    <base href="index.html" />
 
     <meta name="selectedNavigationItem" content="BLOG">
     <link rel="stylesheet" type="text/css" href="./styles/global.css" />
-    <link rel="stylesheet" type="text/css" href="./styles/gallery.css" />
-    <link rel="stylesheet" type="text/css" href="./styles/category.css" />
-    <link rel="stylesheet" type="text/css" href="./styles/blog.css" />
-
+    <link rel="stylesheet" type="text/css" href="./styles/contact.css" />
     <link rel="shortcut icon" href="./icon.ico" />
 
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <title>Articles - HSSC</title>
+    <title>Contact - HSSC</title>
 
     <!-- fonts -->
 
@@ -165,125 +164,17 @@
 
             <!-- ALL CONTENT GOES HERE -->
 
-            <div class="gallery" id="gallery">
-
-                <!-- $(TEMPLATE CATEGORY_POST_TEMPLATE_GALLERY) -->
-
-                <div class="gallery-container">
-                    <a href="./blog/$(POST FILENAME).html" class="linkfix blog-gallery-container">
-                        <div class="blog-gallery-image-container">
-                            <!-- $(REGION HEADER_IMAGE) -->
-                            <img src="./content/images/$(POST HEADER_IMAGE_NAME)">
-                            <!-- $(ENDREGION HEADER_IMAGE) -->
-                        </div>
-
-                        <div class="details-container">
-                            <span class="blog-gallery-categories-container">
-
-                                <!-- $(TEMPLATE POST_CATEGORY_TAG_GALLERY) -->
-                                <span>$(CATEGORY NAME)</span>
-
-                                <!-- $(ENDTEMPLATE POST_CATEGORY_TAG_GALLERY) -->
-
-                                <!-- $(REGION POST_CATEGORY_TAG_AREA POST_CATEGORY_TAG_GALLERY) -->
-
-                                <!-- $(ENDREGION POST_CATEGORY_TAG_AREA) -->
-                            </span>
-
-                            <h1 class="blog-gallery-title">$(POST TITLE)</h1>
-
-                            <div class="blog-post-data-container ongallery desktoponly">
-                                <span>$(POST AUTHOR)</span>
-                                <span class="dot white"></span>
-                                <span>$(POST DATE)</span>
-                            </div>
-                        </div>
-
-                        <div class="gallery-container-background"></div>
-                    </a>
-                </div>
-
-                <!-- $(ENDTEMPLATE CATEGORY_POST_TEMPLATE_GALLERY) -->
-
-                <!-- Parameters: template name, category index, number of posts to display.-->
-                <!-- $(REGION FOREIGN_CATEGORY_CONTAINER CATEGORY_POST_TEMPLATE_GALLERY 0 5) -->
-
-                <!-- $(ENDREGION FOREIGN_CATEGORY_CONTAINER) -->
-
-                <div class="gallery-overlay">
-                    <span class="gallery-overlay-indicator-container no-select region-indicators">
-                        <span class="indicator template template-indicator"></span>
-                    </span>
-                </div>
-
-            </div>
-
-            <div class="wide-area">
-                <div id="blog-navigation">
-                    <ul class="navigation-list">
-
-                        <!-- $(TEMPLATE BLOG_NAVIGATION_TEMPLATE) -->
-                        <li>
-                            <span class="nav-border blog-categories-item"></span>
-                            <a href="./blog/$(CATEGORY FILENAME 1)">$(CATEGORY NAME)</a>
-                        </li>
-                        <!-- $(ENDTEMPLATE BLOG_NAVIGATION_TEMPLATE) -->
-
-                        <!-- $(REGION FOREIGN_CATEGORIES_CONTAINER BLOG_NAVIGATION_TEMPLATE) -->
-
-                        <!-- $(ENDREGION FOREIGN_CATEGORIES_CONTAINER BLOG_NAVIGATION_TEMPLATE) -->
-                    </ul>
-                </div>
-            </div>
-
             <div class="wide-area">
 
-                <h1>Latest Posts</h1>
+                <h1 class="text-center">Contact us</h1>
 
-                <!-- $(TEMPLATE CATEGORY_POST_TEMPLATE_HOME) -->
+                <iframe id="maps-frame" height="450" frameborder="0" style="border:0"
+                    src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJF_anrLUHBDQR6Odt-ACIh4o&key=AIzaSyAGV7651R-8T3Oql_2tOfl4gm7fPM6USGA" allowfullscreen></iframe>
 
-                <!-- Everything inside of this will be treated by the application as if it were a blog post page-->
-                <a class="category-link" href="./blog/$(POST FILENAME).html">
-                    <div class="category-post-container">
+                    <p>Director: Reese Wong <br/>
+                    E-mail: <a id="email">Loading...</a></p>
 
-                        <!-- $(REGION HEADER_IMAGE) -->
-                        <img class="mobileonly" src="./content/images/$(POST HEADER_IMAGE_NAME)">
-                        <!-- $(ENDREGION HEADER_IMAGE) -->
-
-                        <div
-                            class="category-post-details vertical-center $(POST BOOL_HAS_HEADER_IMAGE  category-post-left)">
-                            <h3 class="nopadding">$(POST TITLE)</h3>
-
-                            <div class="category-post-meta-container">
-                                <span>By </span>
-                                <span>$(POST AUTHOR)</span>
-                                <span class="dot"></span>
-                                <span>$(POST DATE)</span>
-                            </div>
-
-                            <!-- 100 specifies the maximum length of the preview -->
-                            <span class="category-post-content-preview">$(POST CONTENT_PREVIEW 85)</span>
-                        </div>
-
-                        <div class="separator-gray mobileonly" style="margin: 4px 0 12px 0;"></div>
-
-                        <!-- $(REGION HEADER_IMAGE) -->
-                        <img class="desktoponly" src="./content/images/$(POST HEADER_IMAGE_NAME)">
-                        <!-- $(ENDREGION HEADER_IMAGE) -->
-
-                    </div>
-                </a>
-
-                <!-- $(ENDTEMPLATE CATEGORY_POST_TEMPLATE_HOME)-->
-
-                <!-- Parameters: template name, category index, number of posts to display.-->
-                <!-- $(REGION FOREIGN_CATEGORY_CONTAINER CATEGORY_POST_TEMPLATE_HOME 0 5) -->
-
-                <!-- $(ENDREGION FOREIGN_CATEGORY_CONTAINER) -->
-
-                <a class="linkfix" href="./blog/all.html">
-                    <h3>VIEW ALL OF OUR ARTICLES</h3>
-                </a>
+                    <script src="./scripts/contact.js"></script>
             </div>
 
             <footer>
@@ -295,17 +186,14 @@
                 </span>
             </footer>
 
+            <!-- scripts -->
+            <script src="./scripts/global.js"></script>
+            <script src="./scripts/dateDisplay.js"></script>
+
         </div>
 
-
-        <!-- scripts -->
-        <script src="./scripts/global.js"></script>
-        <script src="./scripts/dateDisplay.js"></script>
-        <script src="./scripts/gallery.js"></script>
-
-
+        
         <footer id="footer-color-filler"></footer>
-
     </div>
 </body>
 

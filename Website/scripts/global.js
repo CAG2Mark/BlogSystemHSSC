@@ -62,7 +62,7 @@ Array.from(searchButtons).forEach((button) => {
 function showSearch(target) {
     document.getElementById(target).focus();
     // only show if there is enough width to show it
-    if (document.body.offsetWidth >= 1238) {
+    if (600 >= document.body.offsetWidth || document.body.offsetWidth >= 1238) {
         document.getElementById(target).focus();
     }
     else {

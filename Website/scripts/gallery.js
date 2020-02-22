@@ -49,7 +49,7 @@ class Gallery {
 
 
         this.nextPageInterval = setInterval(() => {
-            //this.nextPage();
+            this.nextPage();
         }, 7000);
     }
 
@@ -124,7 +124,7 @@ class Gallery {
         }, 700);
 
         this.nextPageInterval = setInterval(() => {
-            //this.nextPage();
+            this.nextPage();
         }, 7000);
 
     }

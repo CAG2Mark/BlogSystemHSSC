@@ -134,6 +134,10 @@
     word-wrap: break-word;
 }
 
+#blog-post-content-area img {
+    max-width: 100%;
+}
+
 
 #blog-post-author-container span {
     font-weight: bold;

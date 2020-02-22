@@ -512,7 +512,6 @@ namespace BlogSystemHSSC.CustomControls
             var fileName = path + $"\\{PostUId}_{Path.GetFileNameWithoutExtension(sourceStr)}.png";
 
             // Convert image to byte array to save
-            MemoryStream stream = new MemoryStream();
             var bitmap = (BitmapImage)image.Source;
 
             byte[] b;
