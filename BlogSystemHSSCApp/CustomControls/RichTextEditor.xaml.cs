@@ -281,7 +281,12 @@ namespace BlogSystemHSSC.CustomControls
 
             try
             {
-                var bitmap = new BitmapImage(new Uri(dialog.FileName));
+                
+                var src = $"{imagePath}\\{PostUId}_{Path.GetFileName(dialog.FileName)}";
+
+                File.Copy(dialog.FileName, src);
+
+                var bitmap = new BitmapImage(new Uri(src));
                 var image = new Image();
                 image.Source = bitmap;
 
@@ -499,6 +504,8 @@ namespace BlogSystemHSSC.CustomControls
             }
         }
 
+        private readonly string imagePath = $"{Global.FilesPath}\\Images";
+
         private void savePastedImage(Image image)
         {
             image.MaxWidth = 500;
@@ -508,8 +515,7 @@ namespace BlogSystemHSSC.CustomControls
             // When an image is pasted it starts with pack, so this is when it needs to be saved
             if (!sourceStr.StartsWith("pack")) return;
 
-            var path = $"{Global.FilesPath}\\Images";
-            var fileName = path + $"\\{PostUId}_{Path.GetFileNameWithoutExtension(sourceStr)}.png";
+            var fileName = imagePath + $"\\{PostUId}_{Path.GetFileNameWithoutExtension(sourceStr)}.png";
 
             // Convert image to byte array to save
             var bitmap = (BitmapImage)image.Source;
@@ -527,7 +533,7 @@ namespace BlogSystemHSSC.CustomControls
 
 
             // Create the directory if it does not exist
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            if (!Directory.Exists(imagePath)) Directory.CreateDirectory(imagePath);
 
             // Write the file
             File.WriteAllBytes(fileName, b);
