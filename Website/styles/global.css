@@ -453,6 +453,15 @@ footer {
 
 }
 
+/* when the search cannot show correctly because of size */
+@media (max-width: 1238px) {
+    .navigation-search-container {
+        width: 30px;
+    }
+    .navigation-search-form {
+        display: none;
+    }
+}
 
 /* when it is not wide enough to display the hssc text */
 

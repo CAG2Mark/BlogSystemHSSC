@@ -126,6 +126,11 @@ namespace BlogSystemHSSC.Views
             if (browser.CanGoForward)
                 browser.Forward();
         }
+
+        private void browserRefresh(object sender, RoutedEventArgs e)
+        {
+            browser.Reload();
+        }
     }
 
     public static class Extensions

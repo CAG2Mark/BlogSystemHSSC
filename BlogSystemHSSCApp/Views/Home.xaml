@@ -118,7 +118,8 @@
         <Border Grid.Column="1" Background="{StaticResource Light2Brush}" BorderBrush="{StaticResource BorderColorBrush}" BorderThickness="0 0 0 2">
             <DockPanel LastChildFill="False">
                 <Button Width="140" Margin="10 0">Blog Settings</Button>
-                <Button DockPanel.Dock="Right" Margin="10 0" Width="140" Command="{Binding ExportBlogCommand}">Export Website</Button>
+                <Button Width="140" Margin="0 0 10 0">Generate Email</Button>
+                <Button DockPanel.Dock="Right" Margin="10 0" Width="140" Command="{Binding ExportBlogCommand}" Click="browserRefresh">Export Website</Button>
             </DockPanel>
         </Border>
 
@@ -135,6 +136,9 @@
                     </customcontrols:RoundedButton>
                     <customcontrols:RoundedButton Margin="4"  Click="browserGoForward">
                         <Path Data="{StaticResource RightArrowIcon}" Margin="8 8 6 8"></Path>
+                    </customcontrols:RoundedButton>
+                    <customcontrols:RoundedButton Margin="4"  Click="browserRefresh">
+                        <Path Data="{StaticResource RefreshIcon}" Margin="8 8 6 8"></Path>
                     </customcontrols:RoundedButton>
                 </DockPanel>
             </Border>
