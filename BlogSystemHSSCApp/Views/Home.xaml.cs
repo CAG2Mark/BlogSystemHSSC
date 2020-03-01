@@ -131,6 +131,16 @@ namespace BlogSystemHSSC.Views
         {
             browser.Reload();
         }
+
+        private void showBlogSettings(object sender, RoutedEventArgs e)
+        {
+            new BlogSettingsDialog().ShowDialog();
+        }
+
+        private void showGenerateEmail(object sender, RoutedEventArgs e)
+        {
+            new GenerateEmailDialog().ShowDialog();
+        }
     }
 
     public static class Extensions

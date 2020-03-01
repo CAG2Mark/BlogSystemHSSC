@@ -2,7 +2,9 @@
 
 
 :root {
-    --accent-color: #0070BA;
+    /*--accent-color: #0070BA;*/
+    --accent-color: #6A1A33;
+
     --lightGray: #EEEEEE;
 
     --text-color: rgb(10, 10, 10);
@@ -46,6 +48,7 @@ body, sub, sup {
     height: auto;
 
     color: var(--text-color);
+    
 }
 
 p {

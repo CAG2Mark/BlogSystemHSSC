@@ -210,7 +210,42 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
+    <Style TargetType="CheckBox" x:Key="AlternateCheckboxStyle">
+        <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+        <Setter Property="Height" Value="28"/>
+        <Setter Property="Foreground" Value="{StaticResource Dark0Brush}"/>
+        <Setter Property="OverridesDefaultStyle"
+                            Value="true" />
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontFamily" Value="{StaticResource SourceSansProRegular}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CheckBox">
+                    <BulletDecorator Background="Transparent" VerticalAlignment="Center">
+                        <BulletDecorator.Bullet>
+                            <Border VerticalAlignment="Center" x:Name="Border" ClipToBounds="True" Height="24" Width="24" Background="Transparent" CornerRadius="4">
+                                <Path x:Name="CheckMark" Data="M6,8.7L3.2,6L2.3,6.9L6,10.6l7.8-7.8l-0.9-0.9L6,8.7z" Stroke="Gray" StrokeThickness="1.3" Height="12" Width="16"></Path>
+                            </Border>
+                        </BulletDecorator.Bullet>
+                        <ContentPresenter VerticalAlignment="Center" RecognizesAccessKey="True" Margin="8 1 0 4"></ContentPresenter>
+                    </BulletDecorator>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter Property="Visibility" TargetName="CheckMark" Value="Collapsed"></Setter>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="Border" Value="#13000000" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" TargetName="Border" Value="#1A000000" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!--#region  Combobox -->
     <!-- Combobox-related styles are adapted from online sources. -->
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">

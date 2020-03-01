@@ -34,11 +34,20 @@ namespace BlogSystemHSSC.Blog
             set => Set(ref blogPosts, value);
         }
 
+
+        // Redundant, no longer used
         private PostSortMode sortMode = PostSortMode.ByDate;
         public PostSortMode SortMode
         {
             get => sortMode;
             set => Set(ref sortMode, value);
+        }
+
+        private string websiteUrl = "";
+        public string WebsiteUrl
+        {
+            get => websiteUrl;
+            set => Set(ref websiteUrl, value);
         }
     }
 }

@@ -452,6 +452,8 @@ namespace BlogSystemHSSC.Blog
 
         // temporary
         const string websiteDirectory = @"C:\Users\markn\source\repos\BlogSystemHSSC\Website";
+        // temporary
+        const string emailDirectory = @"C:\Users\markn\source\repos\BlogSystemHSSC\Email Template";
 
         static int postsPerPage = 10;
 
@@ -573,6 +575,22 @@ namespace BlogSystemHSSC.Blog
 
             BlogExported?.Invoke(this, new BlogExportEventArgs(true));
 
+        }
+
+        public string generateEmail(object param)
+        {
+            // single blog post
+            if (param.GetType() == typeof(BlogPost))
+            {
+                var template = File.ReadAllText($"{emailDirectory}\\post.html");
+                return replaceVariables(template, (BlogPost)param);
+            }
+            // multiple blog posts
+            else
+            {
+                var template = File.ReadAllText($"{emailDirectory}\\articlelist.html");
+                return replaceVariables(template, null, null, (IEnumerable<BlogPost>)param);
+            }
         }
 
         private void replaceVariablesInDirectory(string path, IEnumerable<BlogPost> allPosts)
@@ -813,7 +831,7 @@ namespace BlogSystemHSSC.Blog
                     regionOffset += removeRegion(region, sb, regionOffset);
                 }
 
-                if (region[0].VariableName.Equals("CATEGORY_POST_AREA"))
+                if (region[0].VariableName.Equals("CATEGORY_POST_AREA") || region[0].VariableName.Equals("FOREIGN_POSTS_CONTAINER"))
                 {
                     regionOffset += populateCategoryPostArea(posts, region, regionOffset, sb, templateDictionary);
                 }
@@ -842,6 +860,8 @@ namespace BlogSystemHSSC.Blog
                     
                     regionOffset += populateCategoryPostArea(newPosts, region, regionOffset, sb, templateDictionary);
                 }
+
+
 
                 if (region[0].VariableName.Equals("FOREIGN_CATEGORIES_CONTAINER"))
                 {
@@ -1233,7 +1253,12 @@ namespace BlogSystemHSSC.Blog
 
         private string globalVariableToText(BlogVariable v)
         {
-            throw new NotImplementedException();
+            switch (v.VariableName.ToUpper())
+            {
+                case "WEBSITE_URL":
+                    return Blog.WebsiteUrl;
+            }
+            return null;
         }
 
         private string categoryVariableToText(BlogVariable v, BlogCategory category)

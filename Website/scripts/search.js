@@ -1,5 +1,6 @@
 var urlStr = window.location.href;
 var url = new URL(urlStr);
+var requestLink;
 
 var searchQuery = url.searchParams.get("q");
 
@@ -14,7 +15,7 @@ if (!searchQuery) {
 
     postsLink = encodeURIComponent(postsLink);
 
-    var requestLink = `https://hssc-search-system.glitch.me/?q=${searchQuery}&postsLink=${postsLink}`;
+    requestLink = `https://hssc-search-system.glitch.me/?q=${searchQuery}&postsLink=${postsLink}`;
 
     var template = document.getElementById("post-template");
 
