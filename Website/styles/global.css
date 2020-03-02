@@ -457,7 +457,7 @@ footer {
 }
 
 /* when the search cannot show correctly because of size */
-@media (max-width: 1238px) {
+@media (max-width: 1238px) and (min-width: 600px) {
     .navigation-search-container {
         width: 30px;
     }

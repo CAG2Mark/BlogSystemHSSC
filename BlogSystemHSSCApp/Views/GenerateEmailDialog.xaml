@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlogSystemHSSC.Views"
         xmlns:customcontrols="clr-namespace:BlogSystemHSSC.CustomControls"
-        mc:Ignorable="d"
-        Title="GenerateEmailDialog" Height="400" Width="400" DataContext="{StaticResource BlogViewModel}" Background="{StaticResource Light0Brush}">
+        mc:Ignorable="d" x:Name="Window"
+        Title="Generate Email" Height="400" Width="400" DataContext="{StaticResource BlogViewModel}" Background="{StaticResource Light0Brush}">
 
     <WindowChrome.WindowChrome>
         <WindowChrome ResizeBorderThickness="5" GlassFrameThickness="0,0.1,0,0" CaptionHeight="40"/>
@@ -24,7 +24,7 @@
                 <TextBlock FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" Foreground="White"
                            VerticalAlignment="Center" Margin="8" Text="{Binding ElementName=Window, Path=Title}"/>
 
-                <Button Click="nextPage" Style="{StaticResource NavbarButtonStyle}" ToolTip="Close" DockPanel.Dock="Right" Height="28" Width="28" HorizontalAlignment="Right" Margin="2 2 6 2">
+                <Button Click="ClickClose" Style="{StaticResource NavbarButtonStyle}" ToolTip="Close" DockPanel.Dock="Right" Height="28" Width="28" HorizontalAlignment="Right" Margin="2 2 6 2">
                     <Path Stretch="Fill" Height="20" Width="20" Data="M28.45,25.86L18.59,16l9.86-9.86c0.73-0.73,0.73-1.93,0-2.66v0c-0.73-0.73-1.93-0.73-2.66,0l-9.86,9.86           L6.21,3.62c-0.73-0.73-1.93-0.73-2.66,0v0c-0.73,0.73-0.73,1.93,0,2.66L13.26,16l-9.72,9.72c-0.73,0.73-0.73,1.93,0,2.66           s1.93,0.73,2.66,0l9.72-9.72l9.86,9.86c0.73,0.73,1.93,0.73,2.66,0C29.18,27.79,29.18,26.59,28.45,25.86z" Fill="White"/>
                 </Button>
                 
@@ -61,28 +61,34 @@
                 <TabItem.Resources>
                     <local:SelectMultipleConverter x:Key="SelectionModeConverter"></local:SelectMultipleConverter>
                 </TabItem.Resources>
-                
-                <customcontrols:RoundedListBox Margin="16" ItemsSource="{Binding Blog.BlogPosts}" x:Name="SelectPostsListBox"
-                                               SelectionMode=
-                                               "{Binding 
-                                                RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=IsSelectingMultiplePosts,
-                                                Converter={StaticResource SelectionModeConverter}}"
-                                               >
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                        </Style>
-                    </ListBox.ItemContainerStyle>
 
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <DockPanel>
-                                <CheckBox IsChecked="{Binding IsSelected}" Style="{StaticResource AlternateCheckboxStyle}"></CheckBox>
-                                <TextBlock VerticalAlignment="Center" Text="{Binding Title}" FontSize="18" FontFamily="{StaticResource SourceSansProRegular}"></TextBlock>
-                            </DockPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </customcontrols:RoundedListBox>
+                <DockPanel Margin="16">
+
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <TextBlock>Please select the blog post</TextBlock>
+                        <TextBlock Visibility=
+                                   "{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, 
+                            Path=IsSelectingMultiplePosts, Converter={StaticResource BoolVisibilityConverter}}">s</TextBlock>
+                        <TextBlock Margin="3 0 0 0">to be included.</TextBlock>
+                    </StackPanel>
+                    <customcontrols:RoundedListBox Margin="0 8 0 0"
+                                                   ItemsSource="{Binding Blog.BlogPosts}" x:Name="SelectPostsListBox"
+                                                   SelectionMode=
+                                                   "{Binding 
+                                                    RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=IsSelectingMultiplePosts,
+                                                    Converter={StaticResource SelectionModeConverter}}"
+                                                   >
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <DockPanel>
+                                    <CheckBox IsChecked="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}, AncestorLevel=1}, Path=IsSelected}" Style="{StaticResource AlternateCheckboxStyle}"></CheckBox>
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Title}" FontSize="18" FontFamily="{StaticResource SourceSansProRegular}"></TextBlock>
+                                </DockPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </customcontrols:RoundedListBox>
+                </DockPanel>
             </TabItem>
 
             <TabItem>
@@ -91,7 +97,6 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="38"></RowDefinition>
                     </Grid.RowDefinitions>
-
 
                     <TextBox x:Name="GeneratedEmailTextbox" Margin="16 16 16 8" TextWrapping="Wrap" AcceptsReturn="True" IsReadOnly="True" Height="Auto"
                               Text="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, Path=GeneratedEmail}"></TextBox>
@@ -104,8 +109,12 @@
 
         <Border Grid.Row="2" Background="{StaticResource Light4Brush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                <Button Width="80" Margin="0 0 8 0" Click="prevPage">Back</Button>
-                <Button Width="80" Margin="0 0 8 0" Click="nextPage">Next</Button>
+                <Button Width="80" Margin="0 0 8 0" Click="prevPage" Visibility=
+                        "{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, 
+                    Path=HasPrevPage, Converter={StaticResource BoolVisibilityConverter}}">Back</Button>
+                <Button Width="80" Margin="0 0 8 0" Click="nextPage" Visibility=
+                        "{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor}, 
+                    Path=HasNextPage, Converter={StaticResource BoolVisibilityConverter}}">Next</Button>
             </StackPanel>
         </Border>
     </Grid>

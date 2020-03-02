@@ -38,9 +38,21 @@ namespace BlogSystemHSSC.Views
             set => Set(ref generatedEmail, value);
         }
 
+        public bool HasNextPage
+        {
+            get => MasterTabControl.SelectedIndex != MasterTabControl.Items.Count - 1;
+        }
+
+        public bool HasPrevPage
+        {
+            get => MasterTabControl.SelectedIndex != 0;
+        }
+
+
         public GenerateEmailDialog()
         {
             InitializeComponent();
+            MasterTabControl.Loaded += (o, e) => OnPropertyChanged(nameof(HasPrevPage));
         }
 
         private void ClickClose(object sender, RoutedEventArgs e)
@@ -61,12 +73,18 @@ namespace BlogSystemHSSC.Views
                 else MasterTabControl.SelectedIndex++;
             }
             if (MasterTabControl.SelectedIndex == 2) requestEmailGeneration();
+
+            OnPropertyChanged(nameof(HasNextPage));
+            OnPropertyChanged(nameof(HasPrevPage));
         }
 
         private void prevPage(object sender, RoutedEventArgs e)
         {
             if (MasterTabControl.SelectedIndex > 0)
                 MasterTabControl.SelectedIndex--;
+
+            OnPropertyChanged(nameof(HasNextPage));
+            OnPropertyChanged(nameof(HasPrevPage));
         }
 
         private void requestEmailGeneration()

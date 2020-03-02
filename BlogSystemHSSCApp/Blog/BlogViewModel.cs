@@ -461,6 +461,7 @@ namespace BlogSystemHSSC.Blog
 
         private void exportBlog()
         {
+            isExportingBlog = true;
 
             #region pages
 
@@ -579,17 +580,18 @@ namespace BlogSystemHSSC.Blog
 
         public string generateEmail(object param)
         {
+            isExportingBlog = false;
             // single blog post
             if (param.GetType() == typeof(BlogPost))
             {
                 var template = File.ReadAllText($"{emailDirectory}\\post.html");
-                return replaceVariables(template, (BlogPost)param);
+                return replaceVariables(template, (BlogPost)param, null, null, -1, -1);
             }
             // multiple blog posts
             else
             {
                 var template = File.ReadAllText($"{emailDirectory}\\articlelist.html");
-                return replaceVariables(template, null, null, (IEnumerable<BlogPost>)param);
+                return replaceVariables(template, null, null, (IEnumerable<BlogPost>)param, -1, -1);
             }
         }
 
@@ -702,6 +704,7 @@ namespace BlogSystemHSSC.Blog
         private static readonly string exportPath = Global.ExportPath;
         private static readonly string imagePath = exportPath + "\\content\\images";
 
+        private bool isExportingBlog = true;
         private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null, IEnumerable<BlogPost> posts = null, int currentPage = -1, int pageCount = -1)
         {
 
@@ -1417,8 +1420,12 @@ namespace BlogSystemHSSC.Blog
             // Ignore font size for subscripts and superscripts.
             // The font size is multipled by 20/18 as the default font size in the editor is 18 but on the webpage it is 20.
             if (r.BaselineAlignment == BaselineAlignment.Baseline)
-                attributes += $"font-size: { Math.Round(r.FontSize * 20.0 / 18.0, 1) }px; ";
-            
+                // Font size for the e-mail is smaller
+                attributes += $"font-size: {(isExportingBlog ? Math.Round(r.FontSize * 20.0 / 18.0, 1) : r.FontSize)}px; ";
+
+            if (!isExportingBlog)
+                attributes += "word-wrap: break-word; ";
+
             // FONT STYLE
             if (r.FontStyle == FontStyles.Italic) attributes += "font-style: italic; ";
 
@@ -1481,7 +1488,7 @@ namespace BlogSystemHSSC.Blog
             File.Copy(
                 image.Source.ToString().Replace("file:///", ""), $"{imagePath}\\{fileName}", true);
 
-            return  $"<img src=\"content/images/{fileName}\" />";
+            return  $"<img style=\"max-width: 100%\" src=\"{(isExportingBlog ? "" : Blog.WebsiteUrl)}content/images/{fileName}\" />";
         }
 
         #endregion

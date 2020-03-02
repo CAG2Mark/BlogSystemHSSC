@@ -27,6 +27,14 @@ namespace BlogSystemHSSC.Views
 
         private void ClickOK(object sender, RoutedEventArgs e)
         {
+            var vm = (BlogViewModel)DataContext;
+
+            if (vm.BlogEditedCommand.CanExecute(null))
+                vm.BlogEditedCommand.Execute(null);
+
+            if (vm.SaveBlogCommand.CanExecute(null))
+                vm.SaveBlogCommand.Execute(null);
+
             DialogResult = true;
         }
     }
