@@ -12,6 +12,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Xml.Serialization;
+using BlogSystemHSSC.CustomControls;
 using Newtonsoft.Json;
 
 
@@ -1384,9 +1385,17 @@ namespace BlogSystemHSSC.Blog
                 else if (obj.GetType() == typeof(BlockUIContainer))
                 {
                     var container = (BlockUIContainer)obj;
-                    var image = (Image)container.Child;
 
-                    html += imageToHtml(image, postUId);
+                    if (container.Child.GetType() == typeof(Image))
+                    {
+                        var image = (Image)container.Child;
+                        html += imageToHtml(image, postUId);
+                    }
+                    else if (container.Child.GetType() == typeof(EmbedContainer))
+                    {
+                        var embed = (EmbedContainer)container.Child;
+                        html += embed.IFrameCode;
+                    }
                 }
             }
 

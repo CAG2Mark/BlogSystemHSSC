@@ -116,7 +116,7 @@
 
                     <Border Style="{StaticResource Separator}"></Border>
 
-                    <ToggleButton x:Name="ToggleAlignLeftButton" IsChecked="True" 
+                    <ToggleButton x:Name="ToggleAlignLeftButton" IsChecked="True"  ToolTip="Align left"
                                   Command="EditingCommands.AlignLeft" 
                                   CommandTarget="{Binding RichDocument.AssignedTextBox}" 
                                   Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="alignClicked">
@@ -125,7 +125,7 @@
                         
                     </ToggleButton>
 
-                    <ToggleButton x:Name="ToggleAlignCenterButton" 
+                    <ToggleButton x:Name="ToggleAlignCenterButton" ToolTip="Align middle"
                                   Command="EditingCommands.AlignCenter" 
                                   CommandTarget="{Binding RichDocument.AssignedTextBox}" 
                                   Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="alignClicked">
@@ -135,7 +135,7 @@
                         
                     </ToggleButton>
 
-                    <ToggleButton x:Name="ToggleAlignRightButton" 
+                    <ToggleButton x:Name="ToggleAlignRightButton" ToolTip="Align right"
                                   Command="EditingCommands.AlignRight"  
                                   CommandTarget="{Binding RichDocument.AssignedTextBox}" 
                                   Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="alignClicked">
@@ -145,7 +145,7 @@
                         
                     </ToggleButton>
 
-                    <ToggleButton x:Name="ToggleAlignJustifyButton"  
+                    <ToggleButton x:Name="ToggleAlignJustifyButton"  ToolTip="Justify"
                                   Command="EditingCommands.AlignJustify"  
                                   CommandTarget="{Binding RichDocument.AssignedTextBox}" 
                                   Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="alignClicked">
@@ -157,7 +157,7 @@
 
                     <Border Style="{StaticResource Separator}"></Border>
 
-                    <Button Style="{StaticResource EditorButton}" x:Name="AddUlButton"  
+                    <Button Style="{StaticResource EditorButton}" x:Name="AddUlButton"  ToolTip="Bullet list"
                             Command="EditingCommands.ToggleBullets"  
                             CommandTarget="{Binding RichDocument.AssignedTextBox}" 
                             Click="addListButtonClicked"
@@ -168,7 +168,7 @@
 
                     </Button>
 
-                    <Button Style="{StaticResource EditorButton}" x:Name="AddOlButton"  
+                    <Button Style="{StaticResource EditorButton}" x:Name="AddOlButton"   ToolTip="Numbered list"
                             Command="EditingCommands.ToggleNumbering"  
                             CommandTarget="{Binding RichDocument.AssignedTextBox}" 
                             Click="addListButtonClicked"
@@ -181,7 +181,7 @@
 
                     <Border Style="{StaticResource Separator}"></Border>
 
-                    <Button Style="{StaticResource EditorButton}" x:Name="DecreaseIndentButton"  
+                    <Button Style="{StaticResource EditorButton}" x:Name="DecreaseIndentButton" ToolTip="Indent left" 
                             Command="EditingCommands.DecreaseIndentation"  
                             CommandTarget="{Binding RichDocument.AssignedTextBox}" 
                             Click="addListButtonClicked"
@@ -192,7 +192,7 @@
 
                     </Button>
 
-                    <Button Style="{StaticResource EditorButton}" x:Name="IncreaseIndentButton"  
+                    <Button Style="{StaticResource EditorButton}" x:Name="IncreaseIndentButton"  ToolTip="Indent right"
                             Command="EditingCommands.IncreaseIndentation"  
                             CommandTarget="{Binding RichDocument.AssignedTextBox}" 
                             Click="addListButtonClicked"
@@ -205,7 +205,7 @@
 
                     <Border Style="{StaticResource Separator}"></Border>
 
-                    <ToggleButton x:Name="ToggleSubscriptButton"
+                    <ToggleButton x:Name="ToggleSubscriptButton" ToolTip="Subscript"
                                   Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="subscriptClicked"
                                   IsChecked="{Binding IsSubscript, Mode=TwoWay}"
                                   >
@@ -215,7 +215,7 @@
 
                     </ToggleButton>
 
-                    <ToggleButton x:Name="ToggleSuperscriptButton"
+                    <ToggleButton x:Name="ToggleSuperscriptButton" ToolTip="Superscript"
                                   Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}" Click="superscriptClicked"
                                   IsChecked="{Binding IsSuperscript, Mode=TwoWay}">
                         
@@ -226,7 +226,7 @@
 
                     <Border Style="{StaticResource Separator}"></Border>
 
-                    <Button Style="{StaticResource EditorButton}" x:Name="HyperlinkButton"  
+                    <Button Style="{StaticResource EditorButton}" x:Name="HyperlinkButton"  ToolTip="Hyperlink" 
                             Click="addHyperlinkButtonClicked"
                             Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}">
                         <Path Data="{StaticResource LinkIcon}"
@@ -235,10 +235,19 @@
 
                     </Button>
 
+                    <Button Style="{StaticResource EditorButton}" x:Name="EmbedButton"  ToolTip="Embed"
+                            Click="addEmbedButtonClicked"
+                            Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}">
+                        <Path Data="{StaticResource EmbedIcon}"
+                              
+                              Width="20" Stretch="Uniform" Fill="Gray"></Path>
+
+                    </Button>
+
                     <Border Style="{StaticResource Separator}"></Border>
 
 
-                    <Button Style="{StaticResource EditorButton}" x:Name="AddImageButton"  
+                    <Button Style="{StaticResource EditorButton}" x:Name="AddImageButton"  ToolTip="Image" 
                             Click="addImageButtonClicked"
                             Margin="{StaticResource ButtonMargin}" Width="{StaticResource ButtonWidth}" Height="{StaticResource ButtonHeight}">
                         <Path Data="{StaticResource AddImageIcon}"

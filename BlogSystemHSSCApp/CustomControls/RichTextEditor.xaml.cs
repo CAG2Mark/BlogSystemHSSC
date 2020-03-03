@@ -359,7 +359,27 @@ namespace BlogSystemHSSC.CustomControls
             link.RequestNavigate += new RequestNavigateEventHandler(link_RequestNavigate);
         }
 
-        private bool isUrl(string text)
+        private void addEmbedButtonClicked(object sender, RoutedEventArgs e)
+        {
+            var embedContainer = new EmbedContainer();
+            var uiContainer = new BlockUIContainer(embedContainer);
+            
+            //embedContainer.Height = 80;
+
+            // You have to use a try catch here as PreviousBlock.get returning null throws an exception even if it is never referenced
+            try
+            {
+                RichDocument.AssignedDocument.Blocks.InsertAfter(EditorTextBox.CaretPosition.Paragraph.PreviousBlock, uiContainer);
+            }
+            catch (Exception)
+            {
+                // This is when the blog post is empty and the user wants to add it
+                RichDocument.AssignedDocument.Blocks.Add(uiContainer);
+            }
+
+        }
+
+            private bool isUrl(string text)
         {
             // Regex credit: https://urlregex.com/
 
@@ -485,6 +505,7 @@ namespace BlogSystemHSSC.CustomControls
             {
                 if (block.GetType() == typeof(BlockUIContainer))
                 {
+                    if (((BlockUIContainer)block).Child.GetType() != typeof(Image)) continue;
                     var image = (Image)((BlockUIContainer)block).Child;
                     savePastedImage(image);
                 }
@@ -496,6 +517,7 @@ namespace BlogSystemHSSC.CustomControls
                     {
                         if (inline.GetType() == typeof(InlineUIContainer))
                         {
+                            if (((InlineUIContainer)inline).Child.GetType() != typeof(Image)) continue;
                             var image = (Image)((InlineUIContainer)inline).Child;
                             savePastedImage(image);
                         }
