@@ -1,3 +1,5 @@
+
+
 .wide-area img {
     width: 100%;
 }
@@ -73,7 +75,7 @@
     width: 100%;
 }
 
-.blog-gallery-categories-container span:not(:last-child):after {
+.categories-container span:not(:last-child):after {
     content: ', ';
 }
 
@@ -150,7 +152,6 @@
 #blog-post-share-button {
     margin-top: 4px;
 }
-
 
 
 @media (max-width: 600px) {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -460,7 +461,7 @@ namespace BlogSystemHSSC.Blog
 
         const string ignoreFlag = "<!-- !BLOG IGNORE -->";
 
-        private void exportBlog()
+        private async void exportBlog()
         {
             isExportingBlog = true;
 
@@ -556,7 +557,7 @@ namespace BlogSystemHSSC.Blog
             }
             catch (Exception ex)
             {
-                BlogExported.Invoke(this, new BlogExportEventArgs(false, ex.Message));
+                BlogExported?.Invoke(this, new BlogExportEventArgs(false, ex.Message));
             }
 
             #endregion
@@ -575,6 +576,7 @@ namespace BlogSystemHSSC.Blog
 
             replaceVariablesInDirectory(exportPath, allPosts);
 
+            await Task.Delay(500);
             BlogExported?.Invoke(this, new BlogExportEventArgs(true));
 
         }
@@ -706,7 +708,18 @@ namespace BlogSystemHSSC.Blog
         private static readonly string imagePath = exportPath + "\\content\\images";
 
         private bool isExportingBlog = true;
-        private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null, IEnumerable<BlogPost> posts = null, int currentPage = -1, int pageCount = -1)
+        /// <summary>
+        /// Replaces the variables in a string.
+        /// </summary>
+        /// <param name="text">The text with the variables that need replacing.</param>
+        /// <param name="post">The blog post containing the needed data.</param>
+        /// <param name="category">The category containing the needed data.</param>
+        /// <param name="posts">The list of posts containing the needed data.</param>
+        /// <param name="currentPage">The current page number.</param>
+        /// <param name="pageCount">The total number of pages.</param>
+        /// <param name="canIgnoreMissingData">Whether missing data can safely be ignored.</param>
+        /// <returns>The text with the variables replaced.</returns>
+        private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null, IEnumerable<BlogPost> posts = null, int currentPage = -1, int pageCount = -1, bool canIgnoreMissingData = false)
         {
 
             List<BlogVariable> variables = findVariables(text, post, category);
@@ -734,14 +747,22 @@ namespace BlogSystemHSSC.Blog
                         break;
                     case BlogVariableType.CATEGORY:
                         {
-                            if (category == null) throw new Exception("A CATEGORY variable is specified but no category is provided.");
-                            replacingText = categoryVariableToText(variable, category);
+                            if (category == null)
+                            {
+                                if (!canIgnoreMissingData) throw new Exception("A CATEGORY variable is specified but no category is provided.");
+                            }
+                            else
+                                replacingText = categoryVariableToText(variable, category);
                         }
                         break;
                     case BlogVariableType.POST:
                         {
-                            if (post == null) throw new Exception("A POST variable is specified but no blog post is provided.");
-                            replacingText = postVariableToText(variable, post);
+                            if (post == null)
+                            {
+                                if (!canIgnoreMissingData) throw new Exception("A POST variable is specified but no blog post is provided.");
+                            }
+                            else
+                                replacingText = postVariableToText(variable, post);
                         }
                         break;
                     case BlogVariableType.REGION:
@@ -766,7 +787,6 @@ namespace BlogSystemHSSC.Blog
                         // Pair the two declarators.
                         pairedRegions.Add(new BlogVariable[] { partner, variable });
 
-                        // Not implemented
                         break;
                     case BlogVariableType.PAGEIND:
 
@@ -835,12 +855,12 @@ namespace BlogSystemHSSC.Blog
                     regionOffset += removeRegion(region, sb, regionOffset);
                 }
 
-                if (region[0].VariableName.Equals("CATEGORY_POST_AREA") || region[0].VariableName.Equals("FOREIGN_POSTS_CONTAINER"))
+                else if (region[0].VariableName.Equals("CATEGORY_POST_AREA") || region[0].VariableName.Equals("FOREIGN_POSTS_CONTAINER"))
                 {
                     regionOffset += populateCategoryPostArea(posts, region, regionOffset, sb, templateDictionary);
                 }
 
-                if (region[0].VariableName.Equals("FOREIGN_CATEGORY_CONTAINER"))
+                else if (region[0].VariableName.Equals("FOREIGN_CATEGORY_CONTAINER"))
                 {
                     // extract arguments
                     var categoryIndex = Convert.ToInt32(region[0].Arguments[1]);
@@ -865,9 +885,7 @@ namespace BlogSystemHSSC.Blog
                     regionOffset += populateCategoryPostArea(newPosts, region, regionOffset, sb, templateDictionary);
                 }
 
-
-
-                if (region[0].VariableName.Equals("FOREIGN_CATEGORIES_CONTAINER"))
+                else if (region[0].VariableName.Equals("FOREIGN_CATEGORIES_CONTAINER"))
                 {
                     int length;
                     if (region[0].Arguments.Length == 0)
@@ -883,12 +901,12 @@ namespace BlogSystemHSSC.Blog
                     regionOffset += populateCategoriesArea(categories, region, regionOffset, sb, templateDictionary);
                 }
 
-                if (region[0].VariableName.Equals("POST_CATEGORY_TAG_AREA"))
+                else if (region[0].VariableName.Equals("POST_CATEGORY_TAG_AREA"))
                 {
                     regionOffset += populateCategoriesArea(post.Categories, region, regionOffset, sb, templateDictionary);
                 }
 
-                if (region[0].VariableName.Equals("CATEGORY_PAGES_AREA"))
+                else if (region[0].VariableName.Equals("CATEGORY_PAGES_AREA"))
                 {
                     int requiredParameters = 3;
 
@@ -980,6 +998,29 @@ namespace BlogSystemHSSC.Blog
                         throw new Exception("Could not find the specified indicator template.");
                     }
                 }
+
+                else if (region[0].VariableName.Equals("POST_AREA"))
+                {
+                    string uid = region[0].Arguments[0];
+                    // if the UID cannot be found
+                    if (uid == null) {
+                        regionOffset += removeRegion(region, sb, regionOffset);
+                    }
+                    else
+                    {
+                        // extract content then remove
+                        var content = extractRegionContent(region, sb, regionOffset);
+                        regionOffset += removeRegion(region, sb, regionOffset, 4, 5);
+
+                        var postToInsert = Blog.BlogPosts.FirstOrDefault(p => p.UId.Equals(uid));
+                        // check for null, don't populate if cannot find post
+                        if (postToInsert != null)
+                        {
+                            var replaced = replaceVariables(content, postToInsert);
+                            regionOffset += insertIntoRegion(region, replaced, sb, regionOffset, 5);
+                        }
+                    }
+                }
             }
 
             return sb.ToString();
@@ -1035,7 +1076,7 @@ namespace BlogSystemHSSC.Blog
             return tempOffset;
         }
 
-        private int insertIntoRegion(BlogVariable[] region, string textToInsert, StringBuilder sb, int regionOffset, int commentOffset)
+        private int insertIntoRegion(BlogVariable[] region, string textToInsert, StringBuilder sb, int regionOffset, int commentOffset = 4)
         {
             var pos = region[1].StartPos + regionOffset - commentOffset;
 
@@ -1043,13 +1084,12 @@ namespace BlogSystemHSSC.Blog
             return textToInsert.Length;
         }
 
-        // Returns the offset.
-        private int removeRegion(BlogVariable[] region, StringBuilder sb, int regionOffset)
+        private int removeRegion(BlogVariable[] region, StringBuilder sb, int regionOffset, int commentOffsetStart, int commentOffsetEnd)
         {
             // EndPos and StartPos are respectively used to remove the first -->, second <!-- 
             // and everything in between, but not uncomment anything else that is actual code
-            var index1 = region[0].EndPos + regionOffset;
-            var index2 = region[1].StartPos + regionOffset;
+            var index1 = region[0].EndPos + regionOffset + commentOffsetStart;
+            var index2 = region[1].StartPos + regionOffset - commentOffsetEnd;
 
             // This is the length of text being removed.
             // Order does not matter to keep the system robust.
@@ -1063,8 +1103,17 @@ namespace BlogSystemHSSC.Blog
             return -length;
         }
 
+        // Returns the offset.
+        private int removeRegion(BlogVariable[] region, StringBuilder sb, int regionOffset)
+        {
+            return removeRegion(region, sb, regionOffset, 0, 0);
+        }
+
+
+
         private string extractRegionContent(BlogVariable[] region, StringBuilder sb, int regionOffset)
         {
+            // trim to remove excess whitespace for better comment detection
             var str = sb.ToString().Substring(region[0].EndPos + regionOffset, region[1].StartPos - region[0].EndPos).Trim();
             // remove residue comment tags
             if (str.StartsWith("-->")) str = str.Substring(3);
@@ -1142,9 +1191,10 @@ namespace BlogSystemHSSC.Blog
 
                             // The variable text excluding the parentheses and dollar sign
                             string variableText = text.Substring(variable.StartPos + 2, variable.EndPos - 1 - (variable.StartPos + 2));
+                            variable.rawVariable = variableText;
 
                             // Populate any variables inside of the variable text by recursion.
-                            variableText = replaceVariables(variableText, post, category);
+                            variableText = replaceVariables(variableText, post, category, null, -1, -1, true);
 
                             // Split the variable into its individual parts
                             string[] parts = variableText.Split(new char[] { ' ' }, 3);
@@ -1241,14 +1291,12 @@ namespace BlogSystemHSSC.Blog
 
         private bool isMuffledRegion(string regionName)
         {
-            // No longer used, residue code.
             switch(regionName)
             {
                 case "CATEGORY_POST_TEMPLATE":
-                    return true;
                 case "CATEGORY_PAGES_TEMPLATE_SELECTED":
-                    return true;
                 case "CATEGORY_PAGES_TEMPLATE":
+                case "POST_AREA":
                     return true;
             }
 
@@ -1261,8 +1309,51 @@ namespace BlogSystemHSSC.Blog
             {
                 case "WEBSITE_URL":
                     return Blog.WebsiteUrl;
+                case "POST_UID":
+                    {
+                        return uIdFromVariable(v);
+                    }
             }
             return null;
+        }
+
+        // syntax must be in the form:
+        // arg 1 = post index
+        // arg 2 = category index
+        private string uIdFromVariable(BlogVariable v)
+        {
+            int postIndex = Convert.ToInt32(v.Arguments[0]);
+
+            int categoryIndex;
+            if (v.Arguments.Length < 2) categoryIndex = 0;
+            else categoryIndex = Convert.ToInt32(v.Arguments[1]);
+
+            // 0 = all
+            // 1 = archived
+            BlogCategory category = VisibleCategories[categoryIndex];
+
+            try
+            {
+                List<BlogPost> matches;
+                if (categoryIndex == 0)
+                {
+                    matches = blog.BlogPosts.ToList();
+                }
+                else if (categoryIndex == 1)
+                {
+                    matches = blog.BlogPosts.Where(x => x.IsArchived).ToList();
+                }
+                else
+                {
+                    matches = Blog.BlogPosts.Where(x => x.Categories.Contains(category)).ToList();
+                }
+
+                return matches[postIndex].UId;
+            }
+            catch (Exception)
+            {
+                return "";
+            }
         }
 
         private string categoryVariableToText(BlogVariable v, BlogCategory category)
@@ -1323,6 +1414,13 @@ namespace BlogSystemHSSC.Blog
             //throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Converts a page indicator type variable to HTML.
+        /// </summary>
+        /// <param name="v">The variable to be converted</param>
+        /// <param name="category">The category of the page of the page indicator</param>
+        /// <param name="page">The page number</param>
+        /// <returns></returns>
         private string pageIndVariableToText(BlogVariable v, BlogCategory category, int page)
         {
             switch (v.VariableName.ToUpper())
@@ -1337,23 +1435,35 @@ namespace BlogSystemHSSC.Blog
 
         #region document to html
 
-        private string flowDocumentToHtml(FlowDocument document, string blogUId)
+        /// <summary>
+        /// Converts a flow document to HTML.
+        /// </summary>
+        /// <param name="document">The document to be converted</param>
+        /// <param name="postUId">The UId of the post.</param>
+        /// <returns></returns>
+        private string flowDocumentToHtml(FlowDocument document, string postUId)
         {
-            // throw new NotImplementedException();
-
             string html = "";
 
-            html += blocksToHtml(document.Blocks, blogUId);
+            html += blocksToHtml(document.Blocks, postUId);
             
             return html;
         }
 
+        /// <summary>
+        /// Converts a collection of blocks into HTML>
+        /// </summary>
+        /// <param name="blocks">The collection of blocks.</param>
+        /// <param name="postUId">The UId of the post.</param>
+        /// <returns></returns>
         private string blocksToHtml(BlockCollection blocks, string postUId)
         {
             string html = "";
 
             foreach (var obj in blocks)
             {
+                // Here you check what type of block it is
+
                 var type = obj.GetType();
                 if (type == typeof(Paragraph))
                 {

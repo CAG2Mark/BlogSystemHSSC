@@ -1,6 +1,6 @@
 .category-post-container {
     position: relative;
-    height: 200px;
+    height: 240px;
 }
 
 .category-post-container img {
@@ -15,10 +15,6 @@
     transform: translateY(-50%);
 
     right: 0;
-}
-
-.category-post-container .separator-gray {
-    display: none;
 }
 
 
@@ -104,10 +100,6 @@
     .category-post-container {
         position: inherit;
         height: auto;
-    }
-
-    .category-post-container .separator-gray {
-        display: block;
     }
 
     .category-post-container .category-post-details {

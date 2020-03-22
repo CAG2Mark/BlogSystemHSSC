@@ -12,6 +12,7 @@
     <link rel="stylesheet" type="text/css" href="./styles/gallery.css" />
     <link rel="stylesheet" type="text/css" href="./styles/category.css" />
     <link rel="stylesheet" type="text/css" href="./styles/blog.css" />
+    <link rel="stylesheet" type="text/css" href="./styles/blogLayout.css" />
 
     <link rel="shortcut icon" href="./icon.ico" />
 
@@ -178,7 +179,7 @@
                         </div>
 
                         <div class="details-container">
-                            <span class="blog-gallery-categories-container">
+                            <span class="blog-gallery-categories-container categories-container">
 
                                 <!-- $(TEMPLATE POST_CATEGORY_TAG_GALLERY) -->
                                 <span>$(CATEGORY NAME)</span>
@@ -236,13 +237,233 @@
                 </div>
             </div>
 
-            <div class="wide-area">
+            <!-- DESKTOP GRID LAYOUT -->
+
+            <!-- Syntax for POST_UID: arg 1 = index, arg 2 = category index where 0 is all, and 1 is archived-->
+            <div class="desktoponly" id="blog-grid-area">
+
+                <!-- $(REGION POST_AREA $(GLOBAL POST_UID 0 0)) -->
+
+                <a class="$(POST BOOL_HAS_HEADER_IMAGE large-reel-large-teaser large-reel-large-teaser-noimg) row-1 linkfix grid-sep-bottom childhover-parent"
+                    href="./blog/$(POST FILENAME).html">
+
+                    <div class="vertical-align-middle">
+
+                        <span class="categories-container">
+                            <!-- $(TEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+                            <span class="grid-category-text">$(CATEGORY NAME)</span>
+
+                            <!-- $(ENDTEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(REGION POST_CATEGORY_TAG_AREA POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(ENDREGION POST_CATEGORY_TAG_AREA) -->
+                        </span>
+
+                        <h1 style="margin-top: 2px; margin-bottom: 8px;" class="childhover-target resizeable-headline">
+                            $(POST TITLE)</h1>
+
+                        <span>$(POST CONTENT_PREVIEW $(POST BOOL_HAS_HEADER_IMAGE 130 230))</span>
+                    </div>
+                </a>
+
+                <!-- $(REGION HEADER_IMAGE) -->
+                <a href="./blog/$(POST FILENAME).html" class="large-reel-large-image row-1 grid-sep-bottom">
+                    <img class="grid-image" src="./content/images/$(POST HEADER_IMAGE_NAME)" alt="">
+                </a>
+                <!-- $(ENDREGION HEADER_IMAGE) -->
+
+                <!-- $(ENDREGION POST_AREA) -->
+
+                <!-- $(REGION POST_AREA $(GLOBAL POST_UID 1 0)) -->
+
+                <a class="large-reel-small-teaser row-1 linkfix grid-sep-bottom grid-sep-left childhover-parent"
+                    href="./blog/$(POST FILENAME).html">
+
+                    <div class="vertical-align-middle">
+
+                        <span class="categories-container">
+                            <!-- $(TEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+                            <span class="grid-category-text">$(CATEGORY NAME)</span>
+
+                            <!-- $(ENDTEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(REGION POST_CATEGORY_TAG_AREA POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(ENDREGION POST_CATEGORY_TAG_AREA) -->
+                        </span>
+
+                        <h3 style="margin-top: 2px; margin-bottom: 8px; line-height: 30px;" class="childhover-target">
+                            $(POST TITLE)</h3>
+
+                        <span>$(POST CONTENT_PREVIEW 85)</span>
+                    </div>
+                </a>
+
+                <!-- $(ENDREGION POST_AREA) -->
+
+                <!-- $(REGION POST_AREA $(GLOBAL POST_UID 2 0)) -->
+
+                <a class="small-reel-small-teaser-1 row-2 linkfix grid-sep-bottom childhover-parent"
+                    href="./blog/$(POST FILENAME).html">
+
+                    <div class="vertical-align-middle">
+
+                        <span class="categories-container">
+                            <!-- $(TEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+                            <span class="grid-category-text">$(CATEGORY NAME)</span>
+
+                            <!-- $(ENDTEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(REGION POST_CATEGORY_TAG_AREA POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(ENDREGION POST_CATEGORY_TAG_AREA) -->
+                        </span>
+
+                        <h3 style="margin-top: 2px; margin-bottom: 8px; line-height: 30px;" class="childhover-target">
+                            $(POST TITLE)</h3>
+
+                        <span>$(POST CONTENT_PREVIEW 60)</span>
+                    </div>
+                </a>
+
+                <!-- $(ENDREGION POST_AREA) -->
+
+
+                <!-- $(REGION POST_AREA $(GLOBAL POST_UID 3 0)) -->
+
+                <a class="$(POST BOOL_HAS_HEADER_IMAGE small-reel-small-teaser-2 small-reel-small-teaser-2-noimg) row-2 linkfix grid-sep-bottom grid-sep-left childhover-parent"
+                    href="./blog/$(POST FILENAME).html">
+
+                    <div class="vertical-align-middle">
+
+                        <span class="categories-container">
+                            <!-- $(TEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+                            <span class="grid-category-text">$(CATEGORY NAME)</span>
+
+                            <!-- $(ENDTEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(REGION POST_CATEGORY_TAG_AREA POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(ENDREGION POST_CATEGORY_TAG_AREA) -->
+                        </span>
+
+                        <h3 style="margin-top: 2px; margin-bottom: 8px; line-height: 30px;" class="childhover-target">
+                            $(POST TITLE)</h3>
+
+                        <span>$(POST CONTENT_PREVIEW $(POST BOOL_HAS_HEADER_IMAGE 60 130))</span>
+                    </div>
+                </a>
+
+
+                <!-- $(REGION HEADER_IMAGE) -->
+                <a href="./blog/$(POST FILENAME).html " class="small-reel-image row-2 grid-sep-bottom">
+                    <img class="grid-image" src="./content/images/$(POST HEADER_IMAGE_NAME)" alt="">
+                </a>
+                <!-- $(ENDREGION HEADER_IMAGE) -->
+
+                <!-- $(ENDREGION POST_AREA) -->
+
+
+                <!-- $(REGION POST_AREA $(GLOBAL POST_UID 4 0)) -->
+
+                <a class="small-reel-small-teaser-3 row-2 linkfix grid-sep-bottom grid-sep-left childhover-parent"
+                    href="./blog/$(POST FILENAME).html">
+
+                    <div class="vertical-align-middle">
+
+                        <span class="categories-container">
+                            <!-- $(TEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+                            <span class="grid-category-text">$(CATEGORY NAME)</span>
+
+                            <!-- $(ENDTEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(REGION POST_CATEGORY_TAG_AREA POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(ENDREGION POST_CATEGORY_TAG_AREA) -->
+                        </span>
+
+                        <h3 style="margin-top: 2px; margin-bottom: 8px; line-height: 30px;" class="childhover-target">
+                            $(POST TITLE)</h3>
+
+                        <span>$(POST CONTENT_PREVIEW 60)</span>
+                    </div>
+                </a>
+
+                <!-- $(ENDREGION POST_AREA) -->
+
+
+                <!-- $(REGION POST_AREA $(GLOBAL POST_UID 5 0)) -->
+
+                <a class="large-reel-small-teaser-alt row-3 linkfix grid-sep-bottom grid-sep-right childhover-parent"
+                    href="./blog/$(POST FILENAME).html">
+
+                    <div class="vertical-align-middle">
+
+                        <span class="categories-container">
+                            <!-- $(TEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+                            <span class="grid-category-text">$(CATEGORY NAME)</span>
+
+                            <!-- $(ENDTEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(REGION POST_CATEGORY_TAG_AREA POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(ENDREGION POST_CATEGORY_TAG_AREA) -->
+                        </span>
+
+                        <h3 style="margin-top: 2px; margin-bottom: 8px; line-height: 30px;" class="childhover-target">
+                            $(POST TITLE)</h3>
+
+                        <span>$(POST CONTENT_PREVIEW 85)</span>
+                    </div>
+                </a>
+
+                <!-- $(ENDREGION POST_AREA) -->
+
+
+
+                <!-- $(REGION POST_AREA $(GLOBAL POST_UID 6 0)) -->
+
+                <!-- $(REGION HEADER_IMAGE) -->
+
+                <a href="./blog/$(POST FILENAME).html " class="large-reel-large-image-alt row-3 grid-sep-bottom">
+                    <img class="grid-image" src="./content/images/$(POST HEADER_IMAGE_NAME)" alt="">
+                </a>
+                <!-- $(ENDREGION HEADER_IMAGE) -->
+
+                <a class="$(POST BOOL_HAS_HEADER_IMAGE large-reel-large-teaser-alt large-reel-large-teaser-noimg-alt) row-3 linkfix grid-sep-bottom"
+                    href="./blog/$(POST FILENAME).html">
+
+                    <div class="vertical-align-middle">
+
+                        <span class="categories-container">
+                            <!-- $(TEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+                            <span class="grid-category-text">$(CATEGORY NAME)</span>
+
+                            <!-- $(ENDTEMPLATE POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(REGION POST_CATEGORY_TAG_AREA POST_CATEGORY_TAG_GALLERY) -->
+
+                            <!-- $(ENDREGION POST_CATEGORY_TAG_AREA) -->
+                        </span>
+
+                        <h2 style="margin-top: 2px; margin-bottom: 8px;" class="childhover-target">$(POST TITLE)</h2>
+
+                        <span>$(POST CONTENT_PREVIEW $(POST BOOL_HAS_HEADER_IMAGE 130 230))</span>
+                    </div>
+                </a>
+
+                <!-- $(ENDREGION POST_AREA) -->
+
+            </div>
+
+            <!-- MOBILE LIST LAYOUT -->
+            <div class="wide-area" id="blog-list-area">
 
                 <h1>Latest Posts</h1>
 
                 <!-- $(TEMPLATE CATEGORY_POST_TEMPLATE_HOME) -->
 
-                <!-- Everything inside of this will be treated by the application as if it were a blog post page-->
                 <a class="category-link" href="./blog/$(POST FILENAME).html">
                     <div class="category-post-container">
 
@@ -273,6 +494,8 @@
 
                     </div>
                 </a>
+
+                <div class="separator-gray desktoponly" style="margin: 4px 0 12px 0;"></div>
 
                 <!-- $(ENDTEMPLATE CATEGORY_POST_TEMPLATE_HOME)-->
 

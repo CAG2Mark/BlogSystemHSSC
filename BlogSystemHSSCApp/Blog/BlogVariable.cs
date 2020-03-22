@@ -30,5 +30,8 @@ namespace BlogSystemHSSC.Blog
         public string[] Arguments { get; set; }
         public int StartPos { get; set; }
         public int EndPos { get; set; }
+
+        // for testing purposes
+        public string rawVariable { get; set; }
     }
 }

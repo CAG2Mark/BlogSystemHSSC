@@ -10,6 +10,23 @@ namespace BlogSystemHSSC.Blog
     [JsonObject(MemberSerialization.OptIn)]
     public class BlogCategory : BindableBase
     {
+        public override bool Equals(object obj)
+        {
+            try
+            {
+                return Name.Equals(((BlogCategory)obj).Name);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
+
         public BlogCategory()
         {
             // Paramaterless Constructor for Serialization

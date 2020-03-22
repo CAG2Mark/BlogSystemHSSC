@@ -12,6 +12,8 @@
     --text-color-light: rgb(119, 119, 119);
 
     --leftNavShiftAmount: 75vw;
+
+    --border-color: #CCCCCC;
 }
 
 .clearfix {
