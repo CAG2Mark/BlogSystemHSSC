@@ -537,8 +537,6 @@ namespace BlogSystemHSSC.CustomControls
             // When an image is pasted it starts with pack, so this is when it needs to be saved
             if (!sourceStr.StartsWith("pack")) return;
 
-            var fileName = imagePath + $"\\{PostUId}_{Path.GetFileNameWithoutExtension(sourceStr)}.png";
-
             // Convert image to byte array to save
             var bitmap = (BitmapImage)image.Source;
 
@@ -546,21 +544,41 @@ namespace BlogSystemHSSC.CustomControls
 
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(bitmap));
+
             using (MemoryStream ms = new MemoryStream())
             {
                 encoder.Save(ms);
                 b = ms.ToArray();
             }
 
-
-
             // Create the directory if it does not exist
             if (!Directory.Exists(imagePath)) Directory.CreateDirectory(imagePath);
 
-            // Write the file
-            File.WriteAllBytes(fileName, b);
 
-            image.Source = new BitmapImage(new Uri(fileName));
+            // the below code is to make sure the file can be saved even if the file is in use
+            bool flag = false;
+            var i = 0;
+
+            var fileNamePart = imagePath + $"\\{PostUId}_{Path.GetFileNameWithoutExtension(sourceStr)}-";
+
+            while (!flag)
+            {
+                try
+                {
+                    // creates unique file name until it can write the file
+                    var fileName = $"{fileNamePart}{i}.png";
+                    // Write the file
+                    File.WriteAllBytes(fileName, b);
+                    flag = true;
+                }
+                catch (IOException)
+                {
+                    i++;
+                }
+            }
+            
+
+            image.Source = new BitmapImage(new Uri($"{fileNamePart}{i}.png"));
         }
 
         private async void onPaste(object sender, DataObjectPastingEventArgs e)

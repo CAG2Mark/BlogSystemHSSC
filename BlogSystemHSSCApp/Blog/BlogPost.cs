@@ -29,6 +29,9 @@ namespace BlogSystemHSSC.Blog
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
+        [XmlIgnore] [JsonIgnore]
+        public bool HasBeenModified { get; set; } = false;
+
         private string author = "";
         [JsonProperty]
         /// <summary>

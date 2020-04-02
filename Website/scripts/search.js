@@ -22,6 +22,8 @@ if (!searchQuery) {
     getData();
 }
 
+var retryCount = 4;
+
 function getData() {
 
     fetch(requestLink, {
@@ -63,7 +65,12 @@ function getData() {
         )
         .catch(
             (error) => {
-                alert(error.toString());
+                if (retryCount == 0) {
+                    alert(error.toString());
+                    return;
+                }
+                retryCount--;
+                getData();
                 return;
             }
         );

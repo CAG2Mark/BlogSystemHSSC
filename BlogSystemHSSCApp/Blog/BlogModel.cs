@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace BlogSystemHSSC.Blog
 {
@@ -25,8 +26,10 @@ namespace BlogSystemHSSC.Blog
         }
 
         private ObservableCollection<BlogPost> blogPosts = new ObservableCollection<BlogPost>();
+        [XmlIgnore]
         /// <summary>
         /// All the blog posts the user has saved.
+        /// NOTE: This is not serialized directly. The posts will be serialized into a different folder.
         /// </summary>
         public ObservableCollection<BlogPost> BlogPosts
         {

@@ -27,7 +27,13 @@ namespace BlogSystemHSSC.Blog
 
         public BlogViewModel()
         {
-            if (!loadBlog()) MessageBox.Show("Could not load the blog file");
+            if (!loadBlog())
+            {
+                MessageBox.Show("Could not load the blog file");
+            }
+
+            Blog.BlogPosts = getSavedPosts();
+
             loadCategories();
         }
 
@@ -47,22 +53,119 @@ namespace BlogSystemHSSC.Blog
                 return saveBlog();
             }
 
+            // Load blog file.
+
+            XmlSerializer serializer =
+                new XmlSerializer(typeof(BlogModel));
+
             try
             {
-                XmlSerializer serializer =
-                    new XmlSerializer(typeof(BlogModel));
+                using (var fs = new FileStream($"{FilesPath}\\blog.xml", FileMode.Open))
+                {
+                    // load the file and save to the Blog property
+                    Blog = (BlogModel)serializer.Deserialize(fs);
+                }
 
-                // load the file and save to the Blog property
-                var fs = new FileStream(FilesPath + @"\blog.xml", FileMode.Open);
-                Blog = (BlogModel)serializer.Deserialize(fs);
+                // save backup file
+                // this backup will always be valid since the backup is only saved when the blog has been read without errors.
+                try
+                {
+                    File.Copy($"{FilesPath}\\blog.xml", $"{FilesPath}\\blog.xml.bak");
+                }
+                catch (IOException)
+                {
+                }
 
                 return true;
             }
             catch (Exception)
             {
-                return false;
+                try
+                {
+                    MessageBox.Show("The blog file has been corrupted and the system is now reading from a backup file.");
+                    using (var fs = new FileStream($"{FilesPath}\\blog.xml.bak", FileMode.Open))
+                    {
+                        // load the file and save to the Blog property
+                        Blog = (BlogModel)serializer.Deserialize(fs);
+                    }
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+                return true;
             }
 
+        }
+
+
+        /// <summary>
+        /// Loads the blog posts.
+        /// </summary>
+        /// <returns>Whether the load was successful.</returns>
+        private static ObservableCollection<BlogPost> getSavedPosts()
+        {
+            var posts = new ObservableCollection<BlogPost>();
+
+            XmlSerializer postSerializer =
+                new XmlSerializer(typeof(BlogPost));
+
+
+            // get the posts directory
+            var directoryStr = $"{FilesPath}\\Articles";
+
+            // check if it exists
+            if (!Directory.Exists(directoryStr)) return posts;
+
+            var dir = new DirectoryInfo(directoryStr);
+
+            // read all files in the directory
+            foreach (var file in dir.GetFiles())
+            {
+                if (!file.Extension.Contains("xml")) continue;
+
+                try
+                {
+                    using (var fs = new FileStream(file.FullName, FileMode.Open))
+                    {
+                        // deserialize
+                        var post = (BlogPost)postSerializer.Deserialize(fs);
+                        posts.Add(post);
+                    }
+
+                    // on successful read, copy to backup
+                    try
+                    {
+                        File.Copy(file.FullName, $"{file.FullName}.bak");
+                    }
+                    catch (IOException)
+                    {
+
+                    }
+                }
+                catch (Exception)
+                {
+                    // try read from backup location
+                    try
+                    {
+                        using (var fs = new FileStream($"{file.FullName}.bak", FileMode.Open))
+                        {
+                            // deserialize
+                            var post = (BlogPost)postSerializer.Deserialize(fs);
+                            posts.Add(post);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        // not implemented
+                    }
+                }
+            }
+
+            // sort the collection
+            posts = new ObservableCollection<BlogPost>(posts.OrderByDescending(x => x.PublishTime.Ticks));
+
+            return posts;
         }
 
         private void loadCategories()
@@ -90,21 +193,35 @@ namespace BlogSystemHSSC.Blog
             {
                 // create the directory in case it doesn't exist
                 Directory.CreateDirectory(FilesPath);
+                Directory.CreateDirectory($"{FilesPath}\\Articles");
 
-                // write the file
-                var output = File.Create(FilesPath + @"\blog.xml");
-                XmlSerializer formatter = new XmlSerializer(typeof(BlogModel));
-                formatter.Serialize(output, Blog);
+                // write the main blog file
+                using (var output = File.Create(FilesPath + @"\blog.xml"))
+                {
+                    XmlSerializer formatter = new XmlSerializer(typeof(BlogModel));
+                    formatter.Serialize(output, Blog);
+                };
 
-                output.Dispose();
+                foreach (var post in Blog.BlogPosts)
+                {
+                    if (!post.HasBeenModified) continue;
 
-                SaveStatusText = "All Changes Saved";
+                    using (var output = File.Create(FilesPath + $"\\Articles\\{post.HtmlFriendlyTitle}.xml"))
+                    {
+                        XmlSerializer formatter = new XmlSerializer(typeof(BlogPost));
+                        formatter.Serialize(output, post);
+                    };
+
+                    post.HasBeenModified = false;
+                }
+
+                IsSaved = true;
 
                 return true;
             }
             catch (Exception)
             {
-                SaveStatusText = "Failed to Save Blog";
+                MessageBox.Show("Could not save the blog file.");
                 return false;
             }
         }
@@ -311,7 +428,7 @@ namespace BlogSystemHSSC.Blog
                 if (saveBlogCommand == null)
                 {
                     saveBlogCommand = new RelayCommand(param => saveBlog(),
-                        param => !SaveStatusText.Equals("All Changes Saved"));
+                        param => !isSaved);
                 }
                 return saveBlogCommand;
             }
@@ -369,12 +486,17 @@ namespace BlogSystemHSSC.Blog
             OpenBlogPosts.Remove(post);
         }
 
-        private string saveStatusText = "All Changes Saved";
-        public string SaveStatusText
+        private bool isSaved = true;
+        public bool IsSaved
         {
-            get => saveStatusText;
-            set => Set(ref saveStatusText, value);
+            get => isSaved;
+            set {
+                Set(ref isSaved, value);
+                OnPropertyChanged(nameof(SaveStatusText));
+            }
         }
+
+        public string SaveStatusText => IsSaved ? "All Changes Saved" : "Save Changes";
 
         /// <summary>
         /// Contains the code to run when the blog has been edited.
@@ -388,7 +510,7 @@ namespace BlogSystemHSSC.Blog
             OnPropertyChanged(nameof(VisibleBlogPosts));
 
             //saveBlog();
-            SaveStatusText = "Save Changes";
+            IsSaved = false;
         }
 
 
@@ -564,6 +686,7 @@ namespace BlogSystemHSSC.Blog
 
             //var postsDictionary = allPosts.ToDictionary(x => x.UId, x => x);
 
+            if (!Directory.Exists(exportPath + "\\blog")) Directory.CreateDirectory(exportPath + "\\blog");
             string json = JsonConvert.SerializeObject(allPosts);
             File.WriteAllText($"{exportPath}\\blog\\posts.json", json);
 

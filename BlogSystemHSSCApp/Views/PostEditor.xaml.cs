@@ -102,6 +102,7 @@ namespace BlogSystemHSSC.Views
         private void InvokePostChange()
         {
             PostChanged?.Invoke(this, new EventArgs());
+            BlogPost.HasBeenModified = true;
         }
 
         private void editorLostFocus(object sender, RoutedEventArgs e)
