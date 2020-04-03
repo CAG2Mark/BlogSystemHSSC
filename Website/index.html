@@ -3,7 +3,7 @@
 <html lang="en" id="html">
 
 <head>
-    
+
     <base href="index.html" />
 
     <meta name="selectedNavigationItem" content="BLOG">
@@ -23,6 +23,10 @@
 
     <!-- Acumin via. typekit -->
     <link rel="stylesheet" href="https://use.typekit.net/idx8cma.css">
+
+    <!-- Merriweather via. google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
 
 
 </head>
@@ -192,7 +196,8 @@
             </div>
 
             <div class="wide-area">
-                <h2 class="text-center" id="goal-text">Our goal is to strengthen the standing of humanities and social science disciplines at Sha Tin College.</h2>
+                <h2 class="text-center" id="goal-text">Our goal is to strengthen the standing of humanities and social
+                    science disciplines at Sha Tin College.</h2>
             </div>
 
             <!-- MUN -->
@@ -231,12 +236,11 @@
 
             <h1 class="text-center">Read our Student Articles</h1>
 
-            <div class="wide-area">
+            <div class="wide-area serif-area">
 
                 <!-- $(TEMPLATE CATEGORY_POST_TEMPLATE_HOME) -->
-
                 <!-- Everything inside of this will be treated by the application as if it were a blog post page-->
-                <a class="category-link" href="./blog/$(POST FILENAME).html">
+                <a class="category-link linkfix" href="./blog/$(POST FILENAME).html">
                     <div class="category-post-container">
 
                         <!-- $(REGION HEADER_IMAGE) -->
@@ -265,6 +269,8 @@
                         <!-- $(ENDREGION HEADER_IMAGE) -->
 
                     </div>
+
+                    <div class="separator-gray desktoponly" style="margin: 4px 0 12px 0;"></div>
                 </a>
 
                 <!-- $(ENDTEMPLATE CATEGORY_POST_TEMPLATE_HOME)-->
@@ -295,7 +301,7 @@
 
         </div>
 
-        
+
         <footer id="footer-color-filler"></footer>
     </div>
 </body>

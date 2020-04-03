@@ -26,6 +26,9 @@
 
     <!-- Acumin via. typekit -->
     <link rel="stylesheet" href="https://use.typekit.net/idx8cma.css">
+    <!-- Merriweather via. google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
 
 
 </head>
@@ -166,7 +169,7 @@
 
             <!-- ALL CONTENT GOES HERE -->
 
-            <div class="gallery" id="gallery">
+            <div class="gallery serif-area" id="gallery">
 
                 <!-- $(TEMPLATE CATEGORY_POST_TEMPLATE_GALLERY) -->
 
@@ -219,28 +222,28 @@
 
             </div>
 
-            <div class="wide-area">
-                <div id="blog-navigation">
-                    <ul class="navigation-list">
 
-                        <!-- $(TEMPLATE BLOG_NAVIGATION_TEMPLATE) -->
-                        <li>
-                            <span class="nav-border blog-categories-item"></span>
-                            <a href="./blog/$(CATEGORY FILENAME 1)">$(CATEGORY NAME)</a>
-                        </li>
-                        <!-- $(ENDTEMPLATE BLOG_NAVIGATION_TEMPLATE) -->
+            <div id="blog-navigation">
+                <ul class="navigation-list">
 
-                        <!-- $(REGION FOREIGN_CATEGORIES_CONTAINER BLOG_NAVIGATION_TEMPLATE) -->
+                    <!-- $(TEMPLATE BLOG_NAVIGATION_TEMPLATE) -->
+                    <li>
+                        <span class="nav-border blog-categories-item"></span>
+                        <a href="./blog/$(CATEGORY FILENAME 1)">$(CATEGORY NAME)</a>
+                    </li>
+                    <!-- $(ENDTEMPLATE BLOG_NAVIGATION_TEMPLATE) -->
 
-                        <!-- $(ENDREGION FOREIGN_CATEGORIES_CONTAINER BLOG_NAVIGATION_TEMPLATE) -->
-                    </ul>
-                </div>
+                    <!-- $(REGION FOREIGN_CATEGORIES_CONTAINER BLOG_NAVIGATION_TEMPLATE) -->
+
+                    <!-- $(ENDREGION FOREIGN_CATEGORIES_CONTAINER BLOG_NAVIGATION_TEMPLATE) -->
+                </ul>
             </div>
+
 
             <!-- DESKTOP GRID LAYOUT -->
 
             <!-- Syntax for POST_UID: arg 1 = index, arg 2 = category index where 0 is all, and 1 is archived-->
-            <div class="desktoponly" id="blog-grid-area">
+            <div class="desktoponly serif-area" id="blog-grid-area">
 
                 <!-- $(REGION POST_AREA $(GLOBAL POST_UID 0 0)) -->
 
@@ -414,7 +417,7 @@
                         <h3 style="margin-top: 2px; margin-bottom: 8px; line-height: 30px;" class="childhover-target">
                             $(POST TITLE)</h3>
 
-                        <span>$(POST CONTENT_PREVIEW 85)</span>
+                        <span>$(POST CONTENT_PREVIEW 60)</span>
                     </div>
                 </a>
 
@@ -431,7 +434,7 @@
                 </a>
                 <!-- $(ENDREGION HEADER_IMAGE) -->
 
-                <a class="$(POST BOOL_HAS_HEADER_IMAGE large-reel-large-teaser-alt large-reel-large-teaser-noimg-alt) row-3 linkfix grid-sep-bottom"
+                <a class="$(POST BOOL_HAS_HEADER_IMAGE large-reel-large-teaser-alt large-reel-large-teaser-noimg-alt) row-3 linkfix grid-sep-bottom childhover-parent"
                     href="./blog/$(POST FILENAME).html">
 
                     <div class="vertical-align-middle">

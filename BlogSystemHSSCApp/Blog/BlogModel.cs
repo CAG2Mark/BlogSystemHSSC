@@ -52,5 +52,12 @@ namespace BlogSystemHSSC.Blog
             get => websiteUrl;
             set => Set(ref websiteUrl, value);
         }
+
+        private int articleFontSize = 18;
+        public int ArticleFontSize
+        {
+            get => articleFontSize;
+            set => Set(ref articleFontSize, value);
+        }
     }
 }

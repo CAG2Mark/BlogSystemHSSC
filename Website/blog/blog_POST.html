@@ -12,6 +12,8 @@
     <link rel="stylesheet" type="text/css" href="./styles/global.css" />
     <link rel="stylesheet" type="text/css" href="./styles/blog.css">
 
+    <link rel="shortcut icon" href="./icon.ico" />
+
 
     <!-- SOCIAL EMBEDS -->
     <meta name="description" content="$(POST CONTENT_PREVIEW 140)">
@@ -36,6 +38,10 @@
 
     <!-- Acumin via. typekit -->
     <link rel="stylesheet" href="https://use.typekit.net/idx8cma.css">
+
+    <!-- Merriweather via. google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        rel="stylesheet">
 
 
 </head>
@@ -190,30 +196,34 @@
 
                 </div>
 
-                <h1 class="headline">$(POST TITLE)</h1>
+                <span class="serif-area">
 
-                <!-- $(REGION HEADER_IMAGE) -->
-                <img src="./content/images/$(POST HEADER_IMAGE_NAME)">
-                <p class="blog-post-image-caption">$(POST HEADER_IMAGE_CAPTION)</p>
-                <!-- $(ENDREGION HEADER_IMAGE) -->
+                    <h1 class="headline">$(POST TITLE)</h1>
+
+                    <!-- $(REGION HEADER_IMAGE) -->
+                    <img src="./content/images/$(POST HEADER_IMAGE_NAME)">
+                    <p class="blog-post-image-caption">$(POST HEADER_IMAGE_CAPTION)</p>
+                    <!-- $(ENDREGION HEADER_IMAGE) -->
 
 
-                <div class="blog-post-data-container" id="blog-post-author-container">
-                    <span>By </span>
-                    <span>$(POST AUTHOR)</span>
-                </div>
+                    <div class="blog-post-data-container" id="blog-post-author-container">
+                        <span>By </span>
+                        <span>$(POST AUTHOR)</span>
+                    </div>
 
-                <div class="blog-post-data-container" id="blog-post-date-container">
-                    <span>Published on </span>
-                    <span>$(POST DATE)</span>
-                </div>
+                    <div class="blog-post-data-container" id="blog-post-date-container">
+                        <span>Published on </span>
+                        <span>$(POST DATE)</span>
+                    </div>
 
-                <div style="height: 6px"></div>
+                    <div style="height: 6px"></div>
 
-                <div class="separator"></div>
+                    <div class="separator"></div>
+
+                </span>
             </div>
 
-            <div class="narrow-area-left" id="blog-post-content-area">
+            <div class="narrow-area-left serif-area" id="blog-post-content-area">
                 $(POST CONTENT)
 
                 <div class="blog-categories-container" style="margin-top: 12px; margin-bottom: 12px;">
@@ -244,7 +254,7 @@
                     var disqus_config = function () {
 
                         this.page.url = window.location
-                        .href; // Replace PAGE_URL with your page's canonical URL variable
+                            .href; // Replace PAGE_URL with your page's canonical URL variable
 
                         // TEST URL
                         //this.page.url = "https://hsscstc.github.io/blog/test.html"; 

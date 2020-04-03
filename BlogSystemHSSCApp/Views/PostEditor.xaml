@@ -128,7 +128,7 @@
             <Button Width="170" VerticalAlignment="Center" Margin="0 0 0 4" Click="setHeaderImage">Set Header Image</Button>
         </StackPanel>
 
-        <customcontrols:RichTextEditor x:Name="Editor"  Grid.Row="3" LostFocus="editorLostFocus" RichDocument="{Binding BlogPost.Document}"></customcontrols:RichTextEditor>
+        <customcontrols:RichTextEditor x:Name="Editor" Grid.Row="3" LostFocus="editorLostFocus" RichDocument="{Binding BlogPost.Document}"></customcontrols:RichTextEditor>
 
     </Grid>
 </UserControl>

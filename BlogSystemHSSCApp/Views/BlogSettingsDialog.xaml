@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlogSystemHSSC.Views"
+        xmlns:customcontrols="clr-namespace:BlogSystemHSSC.CustomControls"
         mc:Ignorable="d" x:Name="Window"
         Title="Blog Settings" Height="217" Width="400" DataContext="{StaticResource BlogViewModel}" Background="{StaticResource Light0Brush}">
 
@@ -33,6 +34,7 @@
         <Grid Grid.Row="1" x:Name="ContentGrid" VerticalAlignment="Center" Margin="16 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -42,6 +44,9 @@
 
             <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" Foreground="{StaticResource Dark0Brush}">Website URL</TextBlock>
             <TextBox Grid.Column="1" Margin="8 4 0 4" Text="{Binding Blog.WebsiteUrl}"></TextBox>
+
+            <TextBlock Grid.Row="1" VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" Foreground="{StaticResource Dark0Brush}">Blog Font Size</TextBlock>
+            <customcontrols:NumericUpDown Grid.Row="1" Grid.Column="1" Margin="8 4 0 4" CurrentValue="{Binding Blog.ArticleFontSize}" Width="100" HorizontalAlignment="Left" ValueType="Pixels"></customcontrols:NumericUpDown>
         </Grid>
 
         <Border Grid.Row="2" Background="{StaticResource Light4Brush}">

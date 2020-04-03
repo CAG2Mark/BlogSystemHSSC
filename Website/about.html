@@ -10,7 +10,10 @@
     <base href="index.html" />
 
     <meta name="selectedNavigationItem" content="BLOG">
+    <link rel="shortcut icon" href="./icon.ico" />
+
     <link rel="stylesheet" type="text/css" href="./styles/global.css" />
+    <link rel="stylesheet" type="text/css" href="./styles/gallery.css" />
 
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1" name="viewport" />
@@ -162,7 +165,39 @@
 
             <!-- ALL CONTENT GOES HERE -->
 
-            <img src="./content/images/teamphoto.jpg" alt="The HSSC team" style="width: 100%; margin: 16px 0">
+            <div class="gallery" style="margin-top: 32px">
+
+                <div class="gallery-container">
+                    <img src="./content/images/teamphoto.jpg">
+                </div>
+
+                <div class="gallery-container">
+                    <img src="./content/images/paradigmii/1.jpg">
+                </div>
+
+                <div class="gallery-container">
+                    <img src="./content/images/paradigmii/2.jpg">
+                </div>
+
+                <div class="gallery-container">
+                    <img src="./content/images/paradigmii/3.jpg">
+                </div>
+
+                <div class="gallery-container">
+                    <img src="./content/images/paradigmii/4.jpg">
+                </div>
+
+                <div class="gallery-container">
+                    <img src="./content/images/paradigmii/5.jpg">
+                </div>
+
+
+                <div class="gallery-overlay">
+                    <span class="gallery-overlay-indicator-container no-select region-indicators">
+                        <span class="indicator template template-indicator"></span>
+                    </span>
+                </div>
+            </div>
 
             <div class="wide-area">
 
@@ -216,19 +251,47 @@
 
                 <h3>HSSC <i>The Paradigm</i></h3>
 
-                <a href="https://issuu.com/19wongr5/docs/hssc__the_paradigm__">
-                    <img src="./content/images/paradigmcover.jpg" alt="" style="width: 300px">
+                <a href="https://issuu.com/19wongr5/docs/hssc__the_paradigm__" target="_blank"></a>
+                <img src="./content/images/paradigmcover.jpg" alt="" style="width: 300px">
                 </a>
 
-                <p>Our flagship newsletter, <i>The Paradigm</i>, creates a centralized platform to promote student groups and
+                <p>Our flagship newsletter, <i>The Paradigm</i>, creates a centralized platform to promote student
+                    groups and
                     creates an avenue for discourse. The newsletter features a club catalog, an 'individual
                     achievements' section, and feature photos from around the campus.</p>
 
                 <p>
-                    <a href="https://issuu.com/19wongr5/docs/hssc__the_paradigm__">Read <i>The Paradigm</i></a>
+                    <a href="https://issuu.com/19wongr5/docs/hssc__the_paradigm__" target="_blank">Read <i>The
+                        Paradigm</i>
+                    </a>
+                </p>
+
+
+                <div class="separator-gray"></div>
+
+
+                <h3>HSSC <i>The Paradigm II</i></h3>
+
+                <!-- not yet published -->
+                <a href="https://issuu.com/reese_wong/docs/hssc_paradigm_ii" target="_blank">
+                    <img src="./content/images/paradigmii/cover.jpg" alt="" style="width: 300px">
+                </a>
+
+                <p>The HSSC was formed to strengthen the standing of the humanities and the social sciences at STC. To
+                    this end, Edition II of the Paradigm very much encapsulates our driving ethos: to provide a platform
+                    for student voice for representation and social engagement - all to cultivate independent passion in
+                    areas where platforms may not exist for high school students. This edition features the work of a
+                    diverse range of contributors from across year groups, including guest contributions from South
+                    Island School. The ideas explored in The Paradigm maintain contemporary relevance, ranging from
+                    addressing the recent outbreak of the novel coronavirus to rampant misogyny in the Middle East.</p>
+
+                <p>
+                    <a href="https://issuu.com/reese_wong/docs/hssc_paradigm_ii" target="_blank">Read <i>The
+                        Paradigm II</i></a>
                 </p>
 
                 <div class="separator-gray"></div>
+
 
                 <h3>HSSC “Word of the Day” Widget</h3>
 
@@ -266,6 +329,7 @@
             <!-- scripts -->
             <script src="./scripts/global.js"></script>
             <script src="./scripts/dateDisplay.js"></script>
+            <script src="./scripts/gallery.js"></script>
 
         </div>
 

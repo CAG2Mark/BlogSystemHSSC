@@ -149,17 +149,16 @@
     background: var(--border-color);
 }
 
-.grid-image {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-}
-
-
 .grid-sep-bottom {
     border-bottom-style: solid;
     border-bottom-color: var(--border-color);
     border-bottom-width: 2px;
+}
+
+.grid-image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }
 
 .childhover-parent:hover .childhover-target {

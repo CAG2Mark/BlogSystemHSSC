@@ -206,13 +206,28 @@ namespace BlogSystemHSSC.Blog
                 {
                     if (!post.HasBeenModified) continue;
 
-                    using (var output = File.Create(FilesPath + $"\\Articles\\{post.HtmlFriendlyTitle}.xml"))
+                    using (var output = File.Create(FilesPath + $"\\Articles\\{post.UId}.xml"))
                     {
                         XmlSerializer formatter = new XmlSerializer(typeof(BlogPost));
                         formatter.Serialize(output, post);
                     };
 
                     post.HasBeenModified = false;
+                }
+
+                // remove deleted posts, but dont delete backup
+                foreach (var uId in postsUIdToDelete)
+                {
+                    var fileStr = FilesPath + $"\\Articles\\{uId}.xml";
+
+                    try
+                    {
+                        if (File.Exists(fileStr)) File.Delete(fileStr);
+                    }
+                    catch (Exception)
+                    {
+                        // not implemented
+                    }
                 }
 
                 IsSaved = true;
@@ -475,15 +490,24 @@ namespace BlogSystemHSSC.Blog
 
             // notify the view
             PostCreated?.Invoke(this, new BlogPostEventArgs(newPost));
+
+            IsSaved = false;
         }
+
+        private List<String> postsUIdToDelete = new List<string>();
 
         private void deletePost(object param)
         {
             var post = (BlogPost)param;
             blog.BlogPosts.Remove(post);
+
+            postsUIdToDelete.Add(post.UId);
+
             OnPropertyChanged(nameof(VisibleBlogPosts));
 
             OpenBlogPosts.Remove(post);
+
+            IsSaved = false;
         }
 
         private bool isSaved = true;
@@ -674,6 +698,12 @@ namespace BlogSystemHSSC.Blog
                         var exported = replaceVariables(categoryTemplateStr, null, category, splitPosts[i], i + 1, splitPosts.Count());
                         // Special case - export all and archived posts.
                         File.WriteAllText($"{exportPath}\\blog\\{generateCategoryPageName(category, i + 1)}", exported);
+                    }
+
+                    if (splitPosts.Count() == 0)
+                    {
+                        var exported = replaceVariables(categoryTemplateStr, null, category, new List<BlogPost>(), 1, 1);
+                        File.WriteAllText($"{exportPath}\\blog\\{generateCategoryPageName(category, 1)}", exported);
                     }
                 }
             }
@@ -987,7 +1017,7 @@ namespace BlogSystemHSSC.Blog
                 {
                     // extract arguments
                     var categoryIndex = Convert.ToInt32(region[0].Arguments[1]);
-                    var length = region[0].Arguments[2];
+                    var length = Convert.ToInt32(region[0].Arguments[2]);
 
                     // first get categories
                     // special cases: 0 = all, 1 = archived.
@@ -1004,6 +1034,8 @@ namespace BlogSystemHSSC.Blog
                                 y => y.Name.Equals(Blog.Categories[categoryIndex].Name)).Count() > 0
                                 );
                     }
+
+                    newPosts = newPosts.Take(length);
                     
                     regionOffset += populateCategoryPostArea(newPosts, region, regionOffset, sb, templateDictionary);
                 }
@@ -1373,10 +1405,6 @@ namespace BlogSystemHSSC.Blog
                             {
                                 if ((type == BlogVariableType.ENDREGION || type == BlogVariableType.ENDTEMPLATE) && parts[1].Equals(muffledRegionName))
                                 {
-                                    if (text.Contains("Articles - HSSC"))
-                                    {
-                                        Console.WriteLine("test");
-                                    }
                                     // Exit muffled region if match.
                                     inMuffledRegion = false;
                                 }
@@ -1660,10 +1688,10 @@ namespace BlogSystemHSSC.Blog
 
             // FONT SIZE
             // Ignore font size for subscripts and superscripts.
-            // The font size is multipled by 20/18 as the default font size in the editor is 18 but on the webpage it is 20.
+            // The font size is multipled by 20/18 as the default font size in the editor is 18 but on the webpage it is custom defined.
             if (r.BaselineAlignment == BaselineAlignment.Baseline)
                 // Font size for the e-mail is smaller
-                attributes += $"font-size: {(isExportingBlog ? Math.Round(r.FontSize * 20.0 / 18.0, 1) : r.FontSize)}px; ";
+                attributes += $"font-size: {(isExportingBlog ? Math.Round(r.FontSize * Blog.ArticleFontSize / 18.0, 1) : r.FontSize)}px; ";
 
             if (!isExportingBlog)
                 attributes += "word-wrap: break-word; ";
