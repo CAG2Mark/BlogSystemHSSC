@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -36,6 +37,17 @@ namespace BlogSystemHSSC.Views
                 vm.SaveBlogCommand.Execute(null);
 
             DialogResult = true;
+        }
+
+        private void ChangeExportLocation(object sender, RoutedEventArgs e)
+        {
+            var ofd = new FolderBrowserDialog();
+            ofd.SelectedPath = ExportPathTextBox.Text;
+
+            if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+
+            ExportPathTextBox.Text = ofd.SelectedPath;
+
         }
     }
 }

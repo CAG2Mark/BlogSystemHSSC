@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -65,11 +66,45 @@ namespace BlogSystemHSSC.CustomControls
                 EditorTextBox.IsDocumentEnabled = true;
 
                 setChild();
+
+                // fix images
+                fixImages();
             }
             else wasChangedInternally = false;
         }
 
-
+        private void fixImages()
+        {
+            foreach (var block in RichDocument.AssignedDocument.Blocks.ToList())
+            {
+                if (block.GetType() == typeof(BlockUIContainer))
+                {
+                    var container = (BlockUIContainer)block;
+                    var child = container.Child;
+                    if (child.GetType() == typeof(BlogImage))
+                    {
+                        var img = (BlogImage)child;
+                        if (img.Source == null) img.ForceUpdate();
+                    }
+                }
+                if (block.GetType() == typeof(Paragraph))
+                {
+                    foreach (var inline in ((Paragraph)block).Inlines.ToList())
+                    {
+                        if (inline.GetType() == typeof(InlineUIContainer))
+                        {
+                            var container = (InlineUIContainer)inline;
+                            var child = container.Child;
+                            if (child.GetType() == typeof(BlogImage))
+                            {
+                                var img = (BlogImage)child;
+                                if (img.Source == null) img.ForceUpdate();
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         private void EditorTextBox_RequestDisconnect(object sender, EventArgs e)
         {
@@ -281,18 +316,16 @@ namespace BlogSystemHSSC.CustomControls
 
             try
             {
-                
-                var src = $"{imagePath}\\{PostUId}_{Path.GetFileName(dialog.FileName)}";
+
+                var src = Global.ViewModel.GenerateImageFileName(PostUId, dialog.FileName);
 
                 File.Copy(dialog.FileName, src);
 
                 var bitmap = new BitmapImage(new Uri(src));
-                var image = new Image();
-                image.Source = bitmap;
+
+                var image = new BlogImage(Path.GetFileName(src));
 
                 p.Inlines.Add(image);
-
-                image.MaxWidth = 500;
 
                 // You have to use a try catch here as PreviousBlock.get returning null throws an exception even if it is never referenced
                 try
@@ -501,41 +534,51 @@ namespace BlogSystemHSSC.CustomControls
 
         private void saveTextboxImages(FlowDocument doc)
         {
-            foreach (var block in doc.Blocks)
+            foreach (var block in doc.Blocks.ToList())
             {
                 if (block.GetType() == typeof(BlockUIContainer))
                 {
                     if (((BlockUIContainer)block).Child.GetType() != typeof(Image)) continue;
+
+                    var container = (BlockUIContainer)block;
                     var image = (Image)((BlockUIContainer)block).Child;
-                    savePastedImage(image);
+
+                    var blogImage = savePastedImage(image);
+
+                    if (blogImage != null)
+                        container.Child = blogImage;
                 }
 
                 if (block.GetType() == typeof(Paragraph))
                 {
                     var inlines = ((Paragraph)block).Inlines;
-                    foreach (var inline in inlines)
+                    foreach (var inline in inlines.ToList())
                     {
                         if (inline.GetType() == typeof(InlineUIContainer))
                         {
                             if (((InlineUIContainer)inline).Child.GetType() != typeof(Image)) continue;
+
+                            var container = (InlineUIContainer)inline;
                             var image = (Image)((InlineUIContainer)inline).Child;
-                            savePastedImage(image);
+
+                            var blogImage = savePastedImage(image);
+
+                            if (blogImage != null)
+                                container.Child = blogImage;
                         }
                     }
                 }
             }
         }
 
-        private readonly string imagePath = $"{Global.FilesPath}\\Images";
+        private readonly string imagePath = $"{Global.ViewModel.FilesPath}\\Images";
 
-        private void savePastedImage(Image image)
+        private BlogImage savePastedImage(Image image)
         {
-            image.MaxWidth = 500;
-
             var sourceStr = image.Source.ToString();
 
             // When an image is pasted it starts with pack, so this is when it needs to be saved
-            if (!sourceStr.StartsWith("pack")) return;
+            if (!sourceStr.StartsWith("pack")) return null;
 
             // Convert image to byte array to save
             var bitmap = (BitmapImage)image.Source;
@@ -576,9 +619,11 @@ namespace BlogSystemHSSC.CustomControls
                     i++;
                 }
             }
-            
 
-            image.Source = new BitmapImage(new Uri($"{fileNamePart}{i}.png"));
+            var finalName = $"{PostUId}_{Path.GetFileNameWithoutExtension(sourceStr)}-{i}.png";
+
+            return new BlogImage(finalName);
+           
         }
 
         private async void onPaste(object sender, DataObjectPastingEventArgs e)

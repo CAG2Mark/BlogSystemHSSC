@@ -91,11 +91,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BindableBase.cs" />
+    <Compile Include="Blog\BlogConfig.cs" />
     <Compile Include="Blog\BlogModel.cs" />
     <Compile Include="Blog\BlogVariable.cs" />
     <Compile Include="Blog\HtmlHelper.cs" />
     <Compile Include="Blog\LinkedRichDocument.cs" />
     <Compile Include="Blog\BlogCategory.cs" />
+    <Compile Include="CustomControls\BlogImage.cs" />
     <Compile Include="CustomControls\CategoryDialog.xaml.cs">
       <DependentUpon>CategoryDialog.xaml</DependentUpon>
     </Compile>
@@ -121,6 +123,7 @@
     <Compile Include="IBindableBase.cs" />
     <Compile Include="RelayCommand.cs" />
     <Compile Include="CustomControls\NonReloadingTabControl.cs" />
+    <Compile Include="SerializationHelper.cs" />
     <Compile Include="ValueConverters.cs" />
     <Compile Include="Views\BlogSettingsDialog.xaml.cs">
       <DependentUpon>BlogSettingsDialog.xaml</DependentUpon>
@@ -136,6 +139,9 @@
     </Compile>
     <Compile Include="Views\PostEditor.xaml.cs">
       <DependentUpon>PostEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SplashScreen.xaml.cs">
+      <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
     <Compile Include="Website\PageGenerator.cs" />
     <Compile Include="Website\PostListPageGenerator.cs" />
@@ -220,6 +226,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\PostEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SplashScreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

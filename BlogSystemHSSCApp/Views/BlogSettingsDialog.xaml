@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:BlogSystemHSSC.Views"
         xmlns:customcontrols="clr-namespace:BlogSystemHSSC.CustomControls"
         mc:Ignorable="d" x:Name="Window"
-        Title="Blog Settings" Height="217" Width="400" DataContext="{StaticResource BlogViewModel}" Background="{StaticResource Light0Brush}">
+        WindowStartupLocation="CenterScreen"
+        Title="Blog Settings" Height="250" Width="400" DataContext="{StaticResource BlogViewModel}" Background="{StaticResource Light0Brush}">
 
     <WindowChrome.WindowChrome>
         <WindowChrome ResizeBorderThickness="5" GlassFrameThickness="0,0.1,0,0" CaptionHeight="40"/>
@@ -35,6 +36,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -47,6 +49,20 @@
 
             <TextBlock Grid.Row="1" VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" Foreground="{StaticResource Dark0Brush}">Blog Font Size</TextBlock>
             <customcontrols:NumericUpDown Grid.Row="1" Grid.Column="1" Margin="8 4 0 4" CurrentValue="{Binding Blog.ArticleFontSize}" Width="100" HorizontalAlignment="Left" ValueType="Pixels"></customcontrols:NumericUpDown>
+
+            <TextBlock Grid.Row="2" VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" Foreground="{StaticResource Dark0Brush}">Blog Font Size</TextBlock>
+            <Grid Grid.Row="2" Grid.Column="1" Margin="8 4 0 4">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBox Text="{Binding Config.ExportPath, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" x:Name="ExportPathTextBox"></TextBox>
+                <customcontrols:RoundedButton Grid.Column="1" Margin="4 0 0 0" Click="ChangeExportLocation">
+                    <Path Data="{StaticResource MoreIcon}" Margin="10"></Path>
+                </customcontrols:RoundedButton>
+            </Grid>
         </Grid>
 
         <Border Grid.Row="2" Background="{StaticResource Light4Brush}">

@@ -148,7 +148,7 @@ namespace BlogSystemHSSC.Blog
 
                 try
                 {
-                    return new BitmapImage(new Uri(HeaderImageStr));
+                    return new BitmapImage(new Uri(Global.ViewModel.FilesPath + "\\Images\\" + HeaderImageStr));
                 }
                 catch (Exception)
                 {

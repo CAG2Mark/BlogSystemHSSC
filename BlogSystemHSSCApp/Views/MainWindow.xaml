@@ -71,7 +71,6 @@
 
                 <ListBoxItem>Home</ListBoxItem>
                 <ListBoxItem>Posts</ListBoxItem>
-                <ListBoxItem>Settings</ListBoxItem>
             </ListBox>
 
             <Button Style="{StaticResource NavbarButtonStyle}" Click="ClickClose" ToolTip="Close" DockPanel.Dock="Right" Height="28" Width="28" HorizontalAlignment="Right" Margin="2 2 6 2">

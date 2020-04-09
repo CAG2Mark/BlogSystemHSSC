@@ -40,8 +40,14 @@ namespace BlogSystemHSSC.Views
 
             InitializeComponent();
 
-            browser = new ChromiumWebBrowser(Global.ExportPath + "\\index.html");
+            browser = new ChromiumWebBrowser(Global.ViewModel.Config.ExportPath + "\\index.html");
             WfHost.Child = browser;
+
+            Global.ViewModel.BlogExported += (o, e) =>
+            {
+                browser.Load(Global.ViewModel.Config.ExportPath + "\\index.html");
+                browser.Refresh();
+            };
         }
 
         public event EventHandler<BlogPostEventArgs> RequestOpenPost;

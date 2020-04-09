@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BlogSystemHSSC.CustomControls"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         Title="Header Image" Height="400" Width="600" Background="{StaticResource Light0Brush}" x:Name="Window">
 
     <WindowChrome.WindowChrome>

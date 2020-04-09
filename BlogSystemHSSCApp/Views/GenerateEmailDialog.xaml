@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:BlogSystemHSSC.Views"
         xmlns:customcontrols="clr-namespace:BlogSystemHSSC.CustomControls"
         mc:Ignorable="d" x:Name="Window"
+        WindowStartupLocation="CenterScreen"
         Title="Generate Email" Height="400" Width="400" DataContext="{StaticResource BlogViewModel}" Background="{StaticResource Light0Brush}">
 
     <WindowChrome.WindowChrome>

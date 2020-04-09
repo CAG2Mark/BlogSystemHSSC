@@ -27,19 +27,72 @@ namespace BlogSystemHSSC.Blog
 
         public BlogViewModel()
         {
+
+        }
+
+        public void Initialize(string folderName)
+        {
+
+            setCurrentDir(folderName);
+
             if (!loadBlog())
             {
                 MessageBox.Show("Could not load the blog file");
             }
 
+            loadConfig();
+
             Blog.BlogPosts = getSavedPosts();
 
             loadCategories();
+
+            if (String.IsNullOrEmpty(Config.ExportPath)) Config.ExportPath = FilesPath + "\\Export";
+        }
+
+        // temporary script to repair after change
+        private void fixImages()
+        {
+            foreach (BlogPost post in Blog.BlogPosts)
+            {
+                var doc = post.Document.AssignedDocument;
+                foreach (var block in doc.Blocks.ToList())
+                {
+                    if (block.GetType() == typeof(BlockUIContainer))
+                    {
+                        var container = (BlockUIContainer)block;
+                        var child = container.Child;
+                        if (child.GetType() == typeof(Image))
+                        {
+                            var img = (Image)child;
+                            var newImg = new BlogImage(Path.GetFileName(img.Source.ToString()));
+                            container.Child = newImg;
+                        }
+                    }
+                    if (block.GetType() == typeof(Paragraph))
+                    {
+                        foreach (var inline in ((Paragraph)block).Inlines.ToList())
+                        {
+                            if (inline.GetType() == typeof(InlineUIContainer))
+                            {
+                                var container = (InlineUIContainer)inline;
+                                var child = container.Child;
+                                if (child.GetType() == typeof(Image))
+                                {
+                                    var img = (Image)child;
+                                    var newImg = new BlogImage(Path.GetFileName(img.Source.ToString()));
+                                    container.Child = newImg;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         #region serialzation
 
-        public static string FilesPath => Global.FilesPath;
+        // TODO: change
+        public string FilesPath => currentDir;
 
 
         /// <summary>
@@ -55,6 +108,13 @@ namespace BlogSystemHSSC.Blog
 
             // Load blog file.
 
+            BlogModel file = (BlogModel)SerializationHelper.LoadFile($"{FilesPath}\\blog.xml", typeof(BlogModel));
+            if (file != null) Blog = file;
+
+            return file != null;
+
+            #region legacy code
+            /*
             XmlSerializer serializer =
                 new XmlSerializer(typeof(BlogModel));
 
@@ -96,6 +156,25 @@ namespace BlogSystemHSSC.Blog
                 return true;
             }
 
+            */
+
+            #endregion
+
+        }
+
+        private bool loadConfig()
+        {
+            if (!File.Exists(FilesPath + @"\config.xml"))
+            {
+                // If the config file doesn't exist, create a new blog file. Return whether it was successful.
+                return saveConfig();
+            }
+
+            
+            BlogConfig config = (BlogConfig)SerializationHelper.LoadFile($"{FilesPath}\\config.xml", typeof(BlogConfig));
+            if (config != null) Config = config;
+
+            return config != null;
         }
 
 
@@ -103,7 +182,7 @@ namespace BlogSystemHSSC.Blog
         /// Loads the blog posts.
         /// </summary>
         /// <returns>Whether the load was successful.</returns>
-        private static ObservableCollection<BlogPost> getSavedPosts()
+        private ObservableCollection<BlogPost> getSavedPosts()
         {
             var posts = new ObservableCollection<BlogPost>();
 
@@ -124,6 +203,11 @@ namespace BlogSystemHSSC.Blog
             {
                 if (!file.Extension.Contains("xml")) continue;
 
+                BlogPost post = (BlogPost)SerializationHelper.LoadFile(file.FullName, typeof(BlogPost));
+                if (post != null) posts.Add(post);
+
+                #region legacy code
+                /*
                 try
                 {
                     using (var fs = new FileStream(file.FullName, FileMode.Open))
@@ -160,6 +244,8 @@ namespace BlogSystemHSSC.Blog
                         // not implemented
                     }
                 }
+                */
+                #endregion
             }
 
             // sort the collection
@@ -195,6 +281,10 @@ namespace BlogSystemHSSC.Blog
                 Directory.CreateDirectory(FilesPath);
                 Directory.CreateDirectory($"{FilesPath}\\Articles");
 
+                SerializationHelper.SaveFile(Blog, FilesPath + @"\blog.xml");
+
+                /*
+                
                 // write the main blog file
                 using (var output = File.Create(FilesPath + @"\blog.xml"))
                 {
@@ -202,15 +292,21 @@ namespace BlogSystemHSSC.Blog
                     formatter.Serialize(output, Blog);
                 };
 
+                */
+
                 foreach (var post in Blog.BlogPosts)
                 {
                     if (!post.HasBeenModified) continue;
 
+                    SerializationHelper.SaveFile(post, FilesPath + $"\\Articles\\{post.UId}.xml");
+
+                    /*
                     using (var output = File.Create(FilesPath + $"\\Articles\\{post.UId}.xml"))
                     {
                         XmlSerializer formatter = new XmlSerializer(typeof(BlogPost));
                         formatter.Serialize(output, post);
                     };
+                    */
 
                     post.HasBeenModified = false;
                 }
@@ -239,6 +335,11 @@ namespace BlogSystemHSSC.Blog
                 MessageBox.Show("Could not save the blog file.");
                 return false;
             }
+        }
+
+        private bool saveConfig()
+        {
+            return SerializationHelper.SaveFile(Config, FilesPath + @"\config.xml");
         }
 
 
@@ -319,6 +420,7 @@ namespace BlogSystemHSSC.Blog
 
         #endregion
 
+        #region models
         private BlogModel blog = new BlogModel();
         /// <summary>
         /// The blog that is currently being edited.
@@ -326,8 +428,28 @@ namespace BlogSystemHSSC.Blog
         public BlogModel Blog
         {
             get => blog;
-            set => Set(ref blog, value);
+            set {
+                Set(ref blog, value);
+                saveBlog();
+            }
         }
+
+        private BlogConfig config = new BlogConfig();
+        /// <summary>
+        /// The local configuration of the blog.
+        /// </summary>
+        public BlogConfig Config
+        {
+            get => config;
+            set => Set(ref config, value);
+        }
+
+        #endregion
+
+        private string currentDir;
+        public string GetCurrentDir => currentDir;
+
+        private void setCurrentDir(string dirName) => currentDir = $"{Global.FilesPath}\\{dirName}";
 
         #endregion
 
@@ -442,7 +564,7 @@ namespace BlogSystemHSSC.Blog
             {
                 if (saveBlogCommand == null)
                 {
-                    saveBlogCommand = new RelayCommand(param => saveBlog(),
+                    saveBlogCommand = new RelayCommand(param => { saveBlog(); saveConfig(); },
                         param => !isSaved);
                 }
                 return saveBlogCommand;
@@ -461,6 +583,37 @@ namespace BlogSystemHSSC.Blog
                 }
                 return exportBlogCommand;
             }
+        }
+
+        #endregion
+
+        #region external helper methods
+
+        public string GenerateImageFileName(string postUId, string fileFullName)
+        {
+            var imagesPath = $"{FilesPath}\\Images";
+
+            int i = 0;
+
+            while (File.Exists($"{imagesPath}\\{postUId}_{Path.GetFileNameWithoutExtension(fileFullName)}-{i}{Path.GetExtension(fileFullName)}"))
+            {
+                i++;
+            }
+
+            return $"{imagesPath}\\{postUId}_{Path.GetFileNameWithoutExtension(fileFullName)}-{i}{Path.GetExtension(fileFullName)}";
+        }
+
+        public static ObservableCollection<string> GetBlogList()
+        {
+            ObservableCollection<string> list = new ObservableCollection<string>();
+            var dir = new DirectoryInfo(Global.FilesPath);
+
+            foreach (var subdir in dir.GetDirectories())
+            {
+                list.Add(subdir.Name);
+            }
+
+            return list;
         }
 
         #endregion
@@ -581,14 +734,14 @@ namespace BlogSystemHSSC.Blog
         {
             var category = new BlogCategory("New Category");
 
-            blog.Categories.Add(category);
+            Blog.Categories.Add(category);
             VisibleCategories.Add(category);
         }
         
         private void deleteCategory(object param)
         {
             var category = (BlogCategory)param;
-            blog.Categories.Remove(category);
+            Blog.Categories.Remove(category);
             visibleCategories.Remove(category);
 
             category.Delete();
@@ -623,11 +776,11 @@ namespace BlogSystemHSSC.Blog
 
             if (searchPost.Length == 0)
             {
-                BlogExported.Invoke(this, new BlogExportEventArgs(false, "The blog post template could not be found."));
+                BlogExported?.Invoke(this, new BlogExportEventArgs(false, "The blog post template could not be found."));
             }
             if (searchCategory.Length == 0)
             {
-                BlogExported.Invoke(this, new BlogExportEventArgs(false, "The blog category template could not be found."));
+                BlogExported?.Invoke(this, new BlogExportEventArgs(false, "The blog category template could not be found."));
             }
 
             FileInfo blogTemplate = searchPost[0];
@@ -643,6 +796,7 @@ namespace BlogSystemHSSC.Blog
             try
             {
                 if (!Directory.Exists(exportPath)) Directory.CreateDirectory(exportPath);
+                if (!Directory.Exists(exportImagePath)) Directory.CreateDirectory(exportImagePath);
 
                 // Export every post file
                 foreach (var post in allPosts)
@@ -656,7 +810,7 @@ namespace BlogSystemHSSC.Blog
                     if (!string.IsNullOrWhiteSpace(post.HeaderImageStr))
                     {
                         // Export the header image
-                        File.Copy(post.HeaderImageStr, $"{imagePath}\\{post.HeaderImageName}", true);
+                        File.Copy($"{FilesPath}\\Images\\{Path.GetFileName(post.HeaderImageStr)}", $"{exportImagePath}\\{post.HeaderImageName}", true);
                     }
 
                     if (!Directory.Exists(exportPath + "\\blog")) Directory.CreateDirectory(exportPath + "\\blog");
@@ -857,8 +1011,8 @@ namespace BlogSystemHSSC.Blog
             }
         }
 
-        private static readonly string exportPath = Global.ExportPath;
-        private static readonly string imagePath = exportPath + "\\content\\images";
+        private string exportPath => Config.ExportPath;
+        private string exportImagePath => exportPath + "\\content\\images";
 
         private bool isExportingBlog = true;
         /// <summary>
@@ -1611,7 +1765,7 @@ namespace BlogSystemHSSC.Blog
         {
             string html = "";
 
-            foreach (var obj in blocks)
+            foreach (var obj in blocks.ToList())
             {
                 // Here you check what type of block it is
 
@@ -1721,7 +1875,7 @@ namespace BlogSystemHSSC.Blog
         {
             string html = "";
 
-            foreach (var inline in inlines)
+            foreach (var inline in inlines.ToList())
             {
 
                 if (inline.GetType() == typeof(Run))
@@ -1750,15 +1904,22 @@ namespace BlogSystemHSSC.Blog
 
         private string imageToHtml(Image image, string postUId)
         {
-            var imageName = Path.GetFileName(image.Source.ToString());
+            var imagePath = FilesPath + "\\Images\\" + ((BlogImage)image).FileName;
 
-            // Copy the image the folder.
-            var fileName = $"{postUId}_{imageName}";
-            if (!Directory.Exists(imagePath)) Directory.CreateDirectory(imagePath);
-            File.Copy(
-                image.Source.ToString().Replace("file:///", ""), $"{imagePath}\\{fileName}", true);
+            try
+            {
+                // first try copy from the images folder
+                File.Copy(
+                    imagePath, $"{exportImagePath}\\{((BlogImage)image).FileName}", true);
+            }
+            catch (Exception)
+            {
+                // then try copy from original location
+                File.Copy(
+                    image.Source.ToString().Replace("file:///", ""), $"{exportImagePath}\\{((BlogImage)image).FileName}", true);
+            }
 
-            return  $"<img style=\"max-width: 100%\" src=\"{(isExportingBlog ? "" : Blog.WebsiteUrl)}content/images/{fileName}\" />";
+            return  $"<img style=\"max-width: 100%\" src=\"{(isExportingBlog ? "" : Blog.WebsiteUrl)}content/images/{((BlogImage)image).FileName}\" />";
         }
 
         #endregion

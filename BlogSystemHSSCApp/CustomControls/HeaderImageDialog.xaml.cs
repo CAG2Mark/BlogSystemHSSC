@@ -2,6 +2,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -54,6 +55,7 @@ namespace BlogSystemHSSC.CustomControls
                 try
                 {
                     ofd.InitialDirectory = System.IO.Path.GetDirectoryName(post.HeaderImageStr);
+                    ofd.FileName = post.HeaderImageStr;
                 }
                 catch (Exception)
                 {
@@ -67,8 +69,11 @@ namespace BlogSystemHSSC.CustomControls
             // Don't continue if no image was selected
             if (ofd.ShowDialog() == false) return;
 
+            var dir = Global.ViewModel.GenerateImageFileName(post.UId, ofd.FileName);
+            File.Copy(ofd.FileName, dir);
+
             // Set the header image directory in the mode.
-            post.HeaderImageStr = ofd.FileName;
+            post.HeaderImageStr = System.IO.Path.GetFileName(dir);
         }
     }
 }
