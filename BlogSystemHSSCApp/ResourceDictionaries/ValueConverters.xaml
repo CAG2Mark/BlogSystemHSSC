@@ -4,6 +4,6 @@
                     xmlns:root="clr-namespace:BlogSystemHSSC">
 
     <root:BoolToVisibilityConverter x:Key="BoolVisibilityConverter"></root:BoolToVisibilityConverter>
-    
+    <root:SearchBlogPostValueConverter x:Key="SearchValueConverter"></root:SearchBlogPostValueConverter>
     
 </ResourceDictionary>

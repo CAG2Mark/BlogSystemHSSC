@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlogSystemHSSC.Blog;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -35,6 +36,27 @@ namespace BlogSystemHSSC
                 if ((int)parameter == 1) visible = !visible;
 
             return visible;
+        }
+    }
+
+    public class SearchBlogPostValueConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            IEnumerable<BlogPost> blogPosts = (IEnumerable<BlogPost>)values[0];
+            string searchTerm = (string)values[1];
+            searchTerm = searchTerm.ToLower();
+
+            if (string.IsNullOrWhiteSpace(searchTerm)) return blogPosts;
+
+            return blogPosts.Where(x =>
+                x.Title.ToLower().Contains(searchTerm) || x.Author.ToLower().Contains(searchTerm)
+                );
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

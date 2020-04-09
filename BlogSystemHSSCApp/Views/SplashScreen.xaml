@@ -36,7 +36,7 @@
                       Fill="{StaticResource Dark0Brush}"/>
             </Button>
 
-            <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="32">
+            <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="32 32 32 72">
                 <TextBlock FontFamily="{StaticResource SourceSansProLight}" FontSize="48">Select a blog</TextBlock>
                 <ListBox ItemsSource="{Binding BlogList}" Background="Transparent" BorderThickness="0" Margin="-22 0 0 0">
 

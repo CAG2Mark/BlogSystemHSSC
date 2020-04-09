@@ -40,14 +40,17 @@ namespace BlogSystemHSSC.CustomControls
         #region dependencyProperties
 
         public static readonly DependencyProperty MinValueProperty =
-        DependencyProperty.Register("MinValue", typeof(double), typeof(NumericUpDown), new PropertyMetadata(Convert.ToDouble(1)));
+        DependencyProperty.Register("MinValue", typeof(double), typeof(NumericUpDown), new PropertyMetadata(Convert.ToDouble(1), (o, e) => ((NumericUpDown)o).valueBoundsChanged()));
 
 
         public static readonly DependencyProperty MaxValueProperty =
-        DependencyProperty.Register("MaxValue", typeof(double), typeof(NumericUpDown), new PropertyMetadata(Convert.ToDouble(10)));
+        DependencyProperty.Register("MaxValue", typeof(double), typeof(NumericUpDown), new PropertyMetadata(Convert.ToDouble(10), (o, e) => ((NumericUpDown)o).valueBoundsChanged()));
 
         public static readonly DependencyProperty CurrentValueProperty =
 DependencyProperty.Register("CurrentValue", typeof(double), typeof(NumericUpDown), new PropertyMetadata(Convert.ToDouble(1), (o, e) => ((NumericUpDown)o).SetVal()));
+
+        public static readonly DependencyProperty LeftPadProperty =
+DependencyProperty.Register("LeftPad", typeof(int), typeof(NumericUpDown), new PropertyMetadata(0, (o, e) => ((NumericUpDown)o).leftPadChanged()));
 
         public static readonly DependencyProperty ValueTypeProperty =
 DependencyProperty.RegisterAttached("ValueType", typeof(NumberValueType), typeof(NumericUpDown), new PropertyMetadata(NumberValueType.Integer));
@@ -72,6 +75,12 @@ DependencyProperty.RegisterAttached("ValueType", typeof(NumberValueType), typeof
             set => SetValue(CurrentValueProperty, value);
         }
 
+        public int LeftPad
+        {
+            get => (int)GetValue(LeftPadProperty);
+            set => SetValue(LeftPadProperty, value);
+        }
+
         public bool buttonsVisible
         {
             get => (bool)GetValue(UpDownButtonsVisibleProperty);
@@ -85,6 +94,17 @@ DependencyProperty.RegisterAttached("ValueType", typeof(NumberValueType), typeof
         }
 
         #endregion
+
+        private void valueBoundsChanged()
+        {
+            if (CurrentValue > MaxValue) CurrentValue = MaxValue;
+            else if (CurrentValue < MinValue) CurrentValue = MinValue;
+        }
+
+        private void leftPadChanged()
+        {
+
+        }
 
 
 
@@ -155,7 +175,7 @@ DependencyProperty.RegisterAttached("ValueType", typeof(NumberValueType), typeof
             }
             else
             {
-                NumberTextBox.Text = CurrentValue.ToString();
+                NumberTextBox.Text = CurrentValue.ToString().PadLeft(LeftPad, '0');
             }
         }
 

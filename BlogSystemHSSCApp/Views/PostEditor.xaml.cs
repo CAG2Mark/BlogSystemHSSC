@@ -134,5 +134,13 @@ namespace BlogSystemHSSC.Views
             var d = new HeaderImageDialog(BlogPost);
             d.ShowDialog();
         }
+
+        private void setPublishDate(object sender, RoutedEventArgs e)
+        {
+            var d = new SetDateDialog(BlogPost.PublishTime);
+            d.ShowDialog();
+
+            BlogPost.PublishTime = d.NewTime;
+        }
     }
 }

@@ -1,0 +1,67 @@
+﻿<Window x:Class="BlogSystemHSSC.Views.SetDateDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BlogSystemHSSC.Views"
+        xmlns:customcontrols="clr-namespace:BlogSystemHSSC.CustomControls"
+        mc:Ignorable="d"
+        Title="Set date" Height="200" Width="300" ResizeMode="NoResize" Closing="Window_Closing" WindowStartupLocation="CenterScreen">
+    <WindowChrome.WindowChrome>
+        <WindowChrome ResizeBorderThickness="5" GlassFrameThickness="0,0.1,0,0" CaptionHeight="40"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <Border Background="{StaticResource AccentColor}">
+            <DockPanel>
+                <TextBlock FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" Foreground="White"
+                           VerticalAlignment="Center" Margin="8" Text="{Binding ElementName=Window, Path=Title}"/>
+
+                <Button Click="ClickOK" ToolTip="Close" Style="{StaticResource NavbarButtonStyle}" DockPanel.Dock="Right" Height="28" Width="28" HorizontalAlignment="Right" Margin="2 2 6 2">
+                    <Path Stretch="Fill" Height="20" Width="20" Data="M28.45,25.86L18.59,16l9.86-9.86c0.73-0.73,0.73-1.93,0-2.66v0c-0.73-0.73-1.93-0.73-2.66,0l-9.86,9.86           L6.21,3.62c-0.73-0.73-1.93-0.73-2.66,0v0c-0.73,0.73-0.73,1.93,0,2.66L13.26,16l-9.72,9.72c-0.73,0.73-0.73,1.93,0,2.66           s1.93,0.73,2.66,0l9.72-9.72l9.86,9.86c0.73,0.73,1.93,0.73,2.66,0C29.18,27.79,29.18,26.59,28.45,25.86z" Fill="White"/>
+                </Button>
+
+            </DockPanel>
+        </Border>
+
+        <StackPanel Grid.Row="1" VerticalAlignment="Center" Margin="8">
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock FontSize="18" FontFamily="{StaticResource SourceSansProRegular}" HorizontalAlignment="Right" Margin="0 0 4 0" VerticalAlignment="Center">Date: </TextBlock>
+                
+                <customcontrols:NumericUpDown Margin="4 0" Width="64" MinValue="1" x:Name="DaySelector"
+                                              CurrentValue="{Binding Day}"></customcontrols:NumericUpDown>
+                <TextBlock FontSize="18" FontFamily="{StaticResource SourceSansProRegular}" HorizontalAlignment="Right" Margin="0 2 0 0">/</TextBlock>
+                
+                <customcontrols:NumericUpDown Margin="4 0" Width="64" MinValue="1" MaxValue="12" x:Name="MonthSelector" ValueChanged="MonthYearChanged"
+                                              CurrentValue="{Binding Month}"></customcontrols:NumericUpDown>
+                <TextBlock FontSize="18" FontFamily="{StaticResource SourceSansProRegular}" HorizontalAlignment="Right" Margin="0 2 0 0">/</TextBlock>
+                
+                <customcontrols:NumericUpDown Margin="4 0" Width="100" MinValue="1" x:Name="YearSelector" ValueChanged="MonthYearChanged"
+                                              CurrentValue="{Binding Year}"></customcontrols:NumericUpDown>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0 8 0 0">
+                <TextBlock FontSize="18" FontFamily="{StaticResource SourceSansProRegular}" HorizontalAlignment="Right" Margin="0 0 4 0" VerticalAlignment="Center">Time:</TextBlock>
+                
+                <customcontrols:NumericUpDown Margin="4 0" Width="64" MinValue="0" MaxValue="23" x:Name="HourSelector"
+                                              CurrentValue="{Binding Hour}"></customcontrols:NumericUpDown>
+                <TextBlock FontSize="18" FontFamily="{StaticResource SourceSansProRegular}" HorizontalAlignment="Right" Margin="0 2 0 0">:</TextBlock>
+                <customcontrols:NumericUpDown Margin="4 0" Width="64" MinValue="0" MaxValue="59" x:Name="MinuteSelector"
+                                              CurrentValue="{Binding Minute}" LeftPad="2"></customcontrols:NumericUpDown>
+            </StackPanel>
+        </StackPanel>
+
+        <Border Grid.Row="2" Background="{StaticResource Light4Brush}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                <Button Width="80" Margin="0 0 8 0" Click="ClickOK">OK</Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

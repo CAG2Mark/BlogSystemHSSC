@@ -1,0 +1,49 @@
+﻿<Window x:Class="BlogSystemInstaller.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BlogSystemInstaller"
+        mc:Ignorable="d"
+        Title="Blog System Installer" Height="400" Width="600" ResizeMode="NoResize">
+
+    <TabControl x:Name="MasterTabControl" SelectedIndex="{Binding ElementName=TabControlListBox, Path=SelectedIndex}" Margin="-2 -4 -2 -2" BorderThickness="0" Background="Transparent" ClipToBounds="True">
+        <TabControl.Resources>
+            <Style TargetType="TabItem">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate></ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </TabControl.Resources>
+
+        <TabItem>
+            <Grid>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <TextBox x:Name="LicenseTextBox" Margin="8" Height="Auto" IsReadOnly="True" TextWrapping="Wrap" ScrollViewer.VerticalScrollBarVisibility="Visible"></TextBox>
+
+                    <StackPanel Grid.Row="1"  Margin="8">
+                        <CheckBox x:Name="InstallingUpdateCheckBox">Install update</CheckBox>
+                        <Button Grid.Row="1" Click="InstallClicked" Margin="0 4 0 0">Agree &amp; Install</Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </TabItem>
+
+        <TabItem>
+            <StackPanel VerticalAlignment="Center" Margin="16" HorizontalAlignment="Center">
+                <TextBlock FontSize="28" FontFamily="{StaticResource SourceSansProRegular}">Installation Successful</TextBlock>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 8 0 0">
+                    <Button Width="120" Margin="0 0 16 0" Click="Launch">Launch</Button>
+                    <Button Width="100" Click="Close">Close</Button>
+                </StackPanel>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+</Window>

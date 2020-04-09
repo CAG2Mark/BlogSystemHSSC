@@ -126,6 +126,7 @@
             <CheckBox IsChecked="{Binding BlogPost.IsDraft}" Margin="0 0 16 0" VerticalAlignment="Center">Draft</CheckBox>
             <CheckBox IsChecked="{Binding BlogPost.IsArchived}" Margin="0 0 16 0" VerticalAlignment="Center">Archived</CheckBox>
             <Button Width="170" VerticalAlignment="Center" Margin="0 0 0 4" Click="setHeaderImage">Set Header Image</Button>
+            <Button Width="157" VerticalAlignment="Center" Margin="8 0 0 4" Click="setPublishDate">Set Publish Date</Button>
         </StackPanel>
 
         <customcontrols:RichTextEditor x:Name="Editor" Grid.Row="3" LostFocus="editorLostFocus" RichDocument="{Binding BlogPost.Document}"></customcontrols:RichTextEditor>

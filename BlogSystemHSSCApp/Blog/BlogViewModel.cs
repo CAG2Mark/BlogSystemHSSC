@@ -27,7 +27,7 @@ namespace BlogSystemHSSC.Blog
 
         public BlogViewModel()
         {
-
+            Directory.CreateDirectory(Global.FilesPath);
         }
 
         public void Initialize(string folderName)
@@ -576,7 +576,7 @@ namespace BlogSystemHSSC.Blog
         {
             get
             {
-                if (exportBlogCommand == null)
+                if (exportBlogCommand == null) 
                 {
                     exportBlogCommand = new RelayCommand(param => exportBlog(),
                         param => this.canExecute);
@@ -605,6 +605,8 @@ namespace BlogSystemHSSC.Blog
 
         public static ObservableCollection<string> GetBlogList()
         {
+            Directory.CreateDirectory(Global.FilesPath);
+
             ObservableCollection<string> list = new ObservableCollection<string>();
             var dir = new DirectoryInfo(Global.FilesPath);
 
@@ -752,9 +754,9 @@ namespace BlogSystemHSSC.Blog
         #region blog export
 
         // temporary
-        const string websiteDirectory = @"C:\Users\markn\source\repos\BlogSystemHSSC\Website";
+        string websiteDirectory => FilesPath + "\\Website Template";
         // temporary
-        const string emailDirectory = @"C:\Users\markn\source\repos\BlogSystemHSSC\Email Template";
+        string emailDirectory =>  FilesPath + "\\Email Template";
 
         static int postsPerPage = 10;
 

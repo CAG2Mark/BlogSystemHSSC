@@ -50,7 +50,7 @@
             <TextBlock Grid.Row="1" VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" Foreground="{StaticResource Dark0Brush}">Blog Font Size</TextBlock>
             <customcontrols:NumericUpDown Grid.Row="1" Grid.Column="1" Margin="8 4 0 4" CurrentValue="{Binding Blog.ArticleFontSize}" Width="100" HorizontalAlignment="Left" ValueType="Pixels"></customcontrols:NumericUpDown>
 
-            <TextBlock Grid.Row="2" VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" Foreground="{StaticResource Dark0Brush}">Blog Font Size</TextBlock>
+            <TextBlock Grid.Row="2" VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProRegular}" FontSize="18" Foreground="{StaticResource Dark0Brush}">Blog Export Path</TextBlock>
             <Grid Grid.Row="2" Grid.Column="1" Margin="8 4 0 4">
 
                 <Grid.ColumnDefinitions>

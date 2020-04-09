@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,6 +46,16 @@ namespace BlogSystemHSSC.Views
 
             Global.ViewModel.BlogExported += (o, e) =>
             {
+                if (e.Success)
+                {
+                    Process.Start(Global.ViewModel.Config.ExportPath);
+                }
+                else
+                {
+                    MessageBox.Show("Blog could not be exported. The error is as follows: " + Environment.NewLine + Environment.NewLine +
+                        e.ErrorMessage);
+                }
+
                 browser.Load(Global.ViewModel.Config.ExportPath + "\\index.html");
                 browser.Refresh();
             };

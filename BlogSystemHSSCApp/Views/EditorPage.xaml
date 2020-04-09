@@ -114,7 +114,7 @@
                     <DockPanel DockPanel.Dock="Top" Margin="0 8 0 0">
 
                         <TextBlock VerticalAlignment="Center" FontFamily="{StaticResource SourceSansProRegular}" Foreground="{StaticResource Dark0Brush}" FontSize="18" Margin="0 0 6 0">Search</TextBlock>
-                        <TextBox VerticalAlignment="Center" Width="136"></TextBox>
+                        <TextBox x:Name="SearchPostsTextBox"  VerticalAlignment="Center" Width="136" ></TextBox>
 
 
                         <customcontrols:RoundedButton HorizontalAlignment="Right" Margin="-1 -1 18 -1" Command="{Binding CreatePostCommand}">
@@ -122,11 +122,18 @@
                         </customcontrols:RoundedButton>
                     </DockPanel>
 
-                    <ListBox PreviewMouseWheel="HandleScrollSpeed" DockPanel.Dock="Top" Grid.Row="2" ItemsSource="{Binding VisibleBlogPosts}" Height="Auto"
+                    <ListBox PreviewMouseWheel="HandleScrollSpeed" DockPanel.Dock="Top" Grid.Row="2" Height="Auto"
                                          Background="Transparent" BorderThickness="0" 
                                          Padding="0 0 8 0" Margin="0 8 -8 -12" ScrollViewer.CanContentScroll="False"
                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                          ScrollViewer.VerticalScrollBarVisibility="Visible">
+
+                        <ListBox.ItemsSource>
+                            <MultiBinding Converter="{StaticResource SearchValueConverter}">
+                                <Binding Path="VisibleBlogPosts"></Binding>
+                                <Binding ElementName="SearchPostsTextBox" Path="Text"></Binding>
+                            </MultiBinding>
+                        </ListBox.ItemsSource>
 
                         <ListBox.Resources>
                             <Style TargetType="ListBoxItem">
