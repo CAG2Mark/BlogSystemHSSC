@@ -758,7 +758,7 @@ namespace BlogSystemHSSC.Blog
         // temporary
         string emailDirectory =>  FilesPath + "\\Email Template";
 
-        static int postsPerPage = 10;
+        private int postsPerPage => Blog.PostsPerPage;
 
         const string ignoreFlag = "<!-- !BLOG IGNORE -->";
 

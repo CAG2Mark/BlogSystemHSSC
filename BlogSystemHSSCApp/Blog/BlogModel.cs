@@ -59,5 +59,12 @@ namespace BlogSystemHSSC.Blog
             get => articleFontSize;
             set => Set(ref articleFontSize, value);
         }
+
+        private int postsPerPage = 10;
+        public int PostsPerPage
+        {
+            get => postsPerPage;
+            set => Set(ref postsPerPage, value);
+        }
     }
 }
