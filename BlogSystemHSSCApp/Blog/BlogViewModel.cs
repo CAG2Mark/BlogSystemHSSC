@@ -885,6 +885,8 @@ namespace BlogSystemHSSC.Blog
 
             replaceVariablesInDirectory(exportPath, allPosts);
 
+
+
             await Task.Delay(500);
             BlogExported?.Invoke(this, new BlogExportEventArgs(true));
 
@@ -925,7 +927,8 @@ namespace BlogSystemHSSC.Blog
                 else if (file.Name.Equals("blog_CATEGORY.html")) file.Delete();
                 else
                 {
-                    if (!file.Extension.Contains("html")) continue;
+                    // check for html AND xml (for sitemap)
+                    if (!file.Extension.Contains("html") && !file.Extension.Contains("xml")) continue;
 
                     var text = File.ReadAllText(file.FullName);
                     if (text.StartsWith(ignoreFlag)) continue;
@@ -1028,7 +1031,7 @@ namespace BlogSystemHSSC.Blog
         /// <param name="pageCount">The total number of pages.</param>
         /// <param name="canIgnoreMissingData">Whether missing data can safely be ignored.</param>
         /// <returns>The text with the variables replaced.</returns>
-        private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null, IEnumerable<BlogPost> posts = null, int currentPage = -1, int pageCount = -1, bool canIgnoreMissingData = false)
+        private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null, IEnumerable<BlogPost> posts = null, int currentPage = -1, int pageCount = -1, bool canIgnoreMissingData = false, string xmlUrl = null)
         {
 
             List<BlogVariable> variables = findVariables(text, post, category);
@@ -1102,6 +1105,10 @@ namespace BlogSystemHSSC.Blog
                         if (currentPage == -1 || category == null) throw new Exception("A PAGEIND variable is specified but the page number and category are not provided.");
                         replacingText = pageIndVariableToText(variable, category, currentPage);
 
+                        break;
+                    case BlogVariableType.SITEMAP:
+                        if (xmlUrl == null) throw new Exception("A SITEMAP variable is specified but no URL is provided.");
+                        else replacingText = sitemapVariableToText(variable, xmlUrl);
                         break;
                 }
 
@@ -1332,6 +1339,11 @@ namespace BlogSystemHSSC.Blog
                         }
                     }
                 }
+
+                else if (region[0].VariableName.Equals("SITEMAP_URL_AREA"))
+                {
+                    regionOffset += populateSitemapArea(region, regionOffset, sb, templateDictionary);
+                }
             }
 
             return sb.ToString();
@@ -1385,6 +1397,53 @@ namespace BlogSystemHSSC.Blog
             }
 
             return tempOffset;
+        }
+
+        private int populateSitemapArea(BlogVariable[] region, int regionOffset, StringBuilder sb, Dictionary<string, string> templateDictionary)
+        {
+            int tempOffset = 0;
+
+            var files = getSitemapFiles(new DirectoryInfo(Config.ExportPath));
+
+            foreach (FileInfo file in files)
+            {
+                if (!Blog.WebsiteUrl.EndsWith("/")) Blog.WebsiteUrl = Blog.WebsiteUrl + "/";
+
+                string url = $"{Blog.WebsiteUrl}{file.FullName.Replace(Config.ExportPath + "\\", "")}";
+                url = url.Replace("\\", "/");
+                string template;
+                if (templateDictionary.TryGetValue(region[0].Arguments[0], out template))
+                {
+                    var replacedText = replaceVariables(template, null, null, null, -1, -1, false, url);
+                    // + 4 is to make sure it's placed after the comment
+                    tempOffset += insertIntoRegion(region, replacedText, sb, regionOffset + tempOffset, 5);
+                }
+            }
+
+            return tempOffset;
+        }
+
+        private static IEnumerable<FileInfo> getSitemapFiles(DirectoryInfo directory)
+        {
+            List<FileInfo> files = new List<FileInfo>();
+
+            foreach (FileInfo file in directory.GetFiles())
+            {
+                if (file.Extension.Contains("html"))
+                {
+                    if (!File.ReadAllText(file.FullName).Contains("<!-- !SITEMAP IGNORE -->"))
+                    {
+                        files.Add(file);
+                    }
+                }
+            }
+
+            foreach (DirectoryInfo subDir in directory.GetDirectories())
+            {
+                files = files.Concat(getSitemapFiles(subDir)).ToList();
+            }
+
+            return files;
         }
 
         private int insertIntoRegion(BlogVariable[] region, string textToInsert, StringBuilder sb, int regionOffset, int commentOffset = 4)
@@ -1539,6 +1598,9 @@ namespace BlogSystemHSSC.Blog
                                     break;
                                 case "PAGEIND":
                                     type = BlogVariableType.PAGEIND;
+                                    break;
+                                case "SITEMAP":
+                                    type = BlogVariableType.SITEMAP;
                                     break;
 
                                 default:
@@ -1737,6 +1799,17 @@ namespace BlogSystemHSSC.Blog
                 case "PAGE_FILENAME":
                     return generateCategoryPageName(category, page);
             }
+            return null;
+        }
+
+        private string sitemapVariableToText(BlogVariable v, string url)
+        {
+            switch (v.VariableName.ToUpper())
+            {
+                case "URL":
+                    return url;
+            }
+
             return null;
         }
 

@@ -17,6 +17,7 @@ namespace BlogSystemHSSC.Blog
         TEMPLATE = 5,
         ENDTEMPLATE = 6,
         PAGEIND = 7,
+        SITEMAP = 8,
     }
 
     internal class BlogVariable
