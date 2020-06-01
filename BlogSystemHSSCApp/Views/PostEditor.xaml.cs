@@ -115,6 +115,7 @@ namespace BlogSystemHSSC.Views
             var button = (Button)sender;
             var category = (BlogCategory)button.CommandParameter;
             BlogPost.Categories.Remove(category);
+            InvokePostChange();
         }
 
         private void categoryAdd(object sender, RoutedEventArgs e)
@@ -126,7 +127,10 @@ namespace BlogSystemHSSC.Views
 
             // categories must be unique
             if (!BlogPost.Categories.Contains(d.SelectedCategory))
+            {
                 BlogPost.Categories.Add(d.SelectedCategory);
+                InvokePostChange();
+            }
         }
 
         private void setHeaderImage(object sender, RoutedEventArgs e)

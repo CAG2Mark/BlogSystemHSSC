@@ -1150,6 +1150,9 @@ namespace BlogSystemHSSC.Blog
             Dictionary<string, string> templateDictionary = new Dictionary<string, string>();
 
             // Handle any specific region cases
+
+            #region Handling of defined region types
+
             foreach (var region in pairedRegions)
             {
 
@@ -1346,8 +1349,15 @@ namespace BlogSystemHSSC.Blog
                 }
             }
 
+            #endregion
+
             return sb.ToString();
         }
+
+        #region Population of repeated region types
+
+        // All of these will return how much the text beyond will be offset as a result of the method's actions.
+        // Therefore, it is important to add the returned value to the running total of the offset in the main function.
 
         private int populateCategoriesArea(IEnumerable<BlogCategory> categories, BlogVariable[] region, int regionOffset, StringBuilder sb, Dictionary<string, string> templateDictionary)
         { 
@@ -1361,7 +1371,7 @@ namespace BlogSystemHSSC.Blog
                     if (templateDictionary.TryGetValue(region[0].Arguments[0], out template))
                     {
                         var replacedText = replaceVariables(template, null, cat);
-                        // + 4 is to make sure it's placed after the comment
+                        // + 5 is to make sure it's placed after the comment
                         tempOffset += insertIntoRegion(region, replacedText, sb, regionOffset + tempOffset, 5);
                     }
                     else
@@ -1446,6 +1456,10 @@ namespace BlogSystemHSSC.Blog
             return files;
         }
 
+        #endregion
+
+        #region Region helpers
+
         private int insertIntoRegion(BlogVariable[] region, string textToInsert, StringBuilder sb, int regionOffset, int commentOffset = 4)
         {
             var pos = region[1].StartPos + regionOffset - commentOffset;
@@ -1491,6 +1505,8 @@ namespace BlogSystemHSSC.Blog
 
             return str;
         }
+
+        #endregion
 
         /// <summary>
         /// Finds the variables in the form $(TYPE VARIABLE_NAME [args]) in a string.

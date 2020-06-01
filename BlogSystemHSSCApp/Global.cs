@@ -12,8 +12,8 @@ namespace BlogSystemHSSC
         public static readonly string FilesPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
             @"\Blog System Files";
 
-        // temporary
-        public static readonly string ExportPath = FilesPath + @"\Export\hsscstc.github.io";
+        // temporary for testing
+        // public static readonly string ExportPath = FilesPath + @"\Export\hsscstc.github.io";
 
         public static BlogViewModel ViewModel => (BlogViewModel)App.Current.Resources["BlogViewModel"];
     }
