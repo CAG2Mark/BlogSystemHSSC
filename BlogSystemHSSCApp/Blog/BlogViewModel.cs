@@ -918,6 +918,11 @@ namespace BlogSystemHSSC.Blog
         // Ignore these directories. They have nothing that needs replacing and should be ignored for performance
         string[] ignoredDirectories = { "content", "styles", "scripts", ".git" };
 
+        /// <summary>
+        /// Replaces the variables of exported blog files in a directory.
+        /// </summary>
+        /// <param name="directory">The directory to loop through.</param>
+        /// <param name="allPosts">The supplied current blog posts.</param>
         private void replaceVariablesInDirectory(DirectoryInfo directory, IEnumerable<BlogPost> allPosts)
         {
             foreach (var file in directory.GetFiles())
@@ -933,7 +938,7 @@ namespace BlogSystemHSSC.Blog
                     var text = File.ReadAllText(file.FullName);
                     if (text.StartsWith(ignoreFlag)) continue;
 
-                    var exportedText = ignoreFlag + replaceVariables(text, null, null, allPosts);
+                    var exportedText = replaceVariables(text, null, null, allPosts);
 
                     File.WriteAllText(file.FullName, exportedText);
                 }
@@ -971,6 +976,12 @@ namespace BlogSystemHSSC.Blog
             return listArr;
         }
 
+        /// <summary>
+        /// Helper to generate the category page HTML file name.
+        /// </summary>
+        /// <param name="category">The category to generate the file name for.</param>
+        /// <param name="pageNo">The page number.</param>
+        /// <returns></returns>
         private static string generateCategoryPageName(BlogCategory category, int pageNo)
         {
             if (pageNo == 1) return $"{HtmlHelper.ToUrlFileName(category.Name)}.html";
@@ -1019,7 +1030,11 @@ namespace BlogSystemHSSC.Blog
         private string exportPath => Config.ExportPath;
         private string exportImagePath => exportPath + "\\content\\images";
 
+        /// <summary>
+        /// Defines whether one is exporting the blog or something else (ie. an email) and is changed on a case by case basis
+        /// </summary>
         private bool isExportingBlog = true;
+
         /// <summary>
         /// Replaces the variables in a string.
         /// </summary>
@@ -1030,6 +1045,7 @@ namespace BlogSystemHSSC.Blog
         /// <param name="currentPage">The current page number.</param>
         /// <param name="pageCount">The total number of pages.</param>
         /// <param name="canIgnoreMissingData">Whether missing data can safely be ignored.</param>
+        /// <param name="xmlUrl">The URL to add in an XML file (for sitemap generation)</param>
         /// <returns>The text with the variables replaced.</returns>
         private string replaceVariables(string text, BlogPost post = null, BlogCategory category = null, IEnumerable<BlogPost> posts = null, int currentPage = -1, int pageCount = -1, bool canIgnoreMissingData = false, string xmlUrl = null)
         {
@@ -1358,6 +1374,7 @@ namespace BlogSystemHSSC.Blog
 
         // All of these will return how much the text beyond will be offset as a result of the method's actions.
         // Therefore, it is important to add the returned value to the running total of the offset in the main function.
+        // Additionally, when creating extra functions, make sure they return the correct value otherwise all the code will be thrown off.
 
         private int populateCategoriesArea(IEnumerable<BlogCategory> categories, BlogVariable[] region, int regionOffset, StringBuilder sb, Dictionary<string, string> templateDictionary)
         { 

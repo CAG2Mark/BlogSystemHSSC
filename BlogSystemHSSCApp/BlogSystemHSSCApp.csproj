@@ -152,10 +152,6 @@
     <Compile Include="Views\SplashScreen.xaml.cs">
       <DependentUpon>SplashScreen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Website\PageGenerator.cs" />
-    <Compile Include="Website\PostListPageGenerator.cs" />
-    <Compile Include="Website\PostPageGenerator.cs" />
-    <Compile Include="Website\TagPageGenerator.cs" />
     <Page Include="CustomControls\CategoryDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
