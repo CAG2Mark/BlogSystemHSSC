@@ -1,5 +1,5 @@
 # Blog System
-Static website blog system for HSSC. This is IB Computer Science IA project.
+Static website blog system for HSSC. This is my IB Computer Science IA project.
 
 # Building and Running
 
