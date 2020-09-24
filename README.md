@@ -1,6 +1,8 @@
 # Blog System
 Static website blog system for HSSC. This is my IB Computer Science IA project.
 
+NOTE: The account `ngp16` was my school's GitHub account on which I did this project on, but I have since migrated it to my personal account.
+
 # Building and Running
 
 Binaries are not yet available, so you will have to build it yourself.
